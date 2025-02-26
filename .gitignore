@@ -1,0 +1,63 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Production
+dist/
+build/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Compiled output
+lib/
+coverage/
+
+# Webpack
+webpack.config.js
+
+# ESLint and Prettier files
+.eslintcache
+
+# VS Code settings
+.vscode/
+
+# Ignore Docker artifacts
+Dockerfile
+docker-compose.yml
+
+# Environment Variables
+.env
+.env.dev
+.env.prod
+
+# Testing
+*.lcov
+
+# Temporary Files
+*.tmp
+*.swp
+*.swo
+
+# MacOS
+*.DS_Store
+
+# Parcel-bundler cache (if applicable)
+.cache/
+
+# Ignore any built JavaScript/TypeScript assets
+*.js.map
+*.tsbuildinfo
+.idea
+npm-debug.log.*
+*.css.d.ts
+*.sass.d.ts
+*.scss.d.ts
