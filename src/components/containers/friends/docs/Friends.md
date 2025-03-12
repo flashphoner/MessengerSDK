@@ -41,16 +41,16 @@
 
 ### 🛠 Methods
 
-| **Method**                           | **Description**                       |
-|--------------------------------------|---------------------------------------|
-| [Connect](connect)                   | Connect to the server.                |
-| [Disconnect](disconnect)             | Disconnect from the server.           |
-| [Add friend](addFriend)              | Send a friend request.                |
-| [Revoke invite](revokeFriendInvite)  | Revoke an outgoing friend request.    |
-| [Accept friend](acceptFriendRequest) | Accept an incoming friend request.    |
-| [Reject invite](rejectFriendInvite)  | Reject an incoming friend request.    |
-| [Get contacts](getContacts)          | Retrieve the list of friends.         |
-| [Remove friend](removeFriend)        | Remove a friend from your list.       |
+| **Method**                          | **Description**                       |
+|-------------------------------------|---------------------------------------|
+| [Connect](connect)                  | Connect to the server.                |
+| [Disconnect](disconnect)            | Disconnect from the server.           |
+| [Add friend](addFriend)             | Send a friend request.                |
+| [Revoke invite](revokeFriendInvite) | Revoke an outgoing friend request.    |
+| [Accept friend](acceptFriendInvite) | Accept an incoming friend request.    |
+| [Reject invite](rejectFriendInvite) | Reject an incoming friend request.    |
+| [Get contacts](getContacts)         | Retrieve the list of friends.         |
+| [Remove friend](removeFriend)       | Remove a friend from your list.       |
 
 ---
 

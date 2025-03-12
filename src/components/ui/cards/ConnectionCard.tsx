@@ -1,5 +1,5 @@
 // External deps
-import React, { FC } from "react";
+import React, { FC, useEffect } from 'react';
 import classNames from "classnames";
 
 // Internal deps
@@ -41,6 +41,14 @@ const ConnectionCard: FC<ConnectionCardProps> = (props) => {
   const handleDisconnect = () => {
     disconnect();
   };
+
+  useEffect(() => {
+    return () => {
+      if (isConnected) {
+        handleDisconnect();
+      }
+    };
+  }, [userName, isConnected]);
 
   // styles
   const cardTitleClasses = classNames("font-semibold text-base text-gray-700");
