@@ -15,7 +15,7 @@ export const handlePresenceEvents = (
   }: {
     setOwnStatus: Dispatch<SetStateAction<PresenceStatus | undefined>>;
     setContacts: Dispatch<SetStateAction<Contact[]>>;
-    selfUserId: string | null;
+    selfUserId?: string;
   },
 ) => {
   sdkInstance
@@ -26,7 +26,8 @@ export const handlePresenceEvents = (
           status,
         }),
       );
-      if (selfUserId && userId === selfUserId) {
+
+      if (selfUserId && selfUserId && userId === selfUserId) {
         setOwnStatus(status);
       }
     });

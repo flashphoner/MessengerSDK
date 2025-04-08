@@ -1,21 +1,19 @@
-**One-to-One Chat SDK Usage Guide**
+The **One-to-One Chat** page demonstrates a practical example of using the SDK for managing server connections, creating and managing chats, and interacting with contacts. This guide explains each section and includes critical notes about the behavior of chats and contact relationships.
 
-The `One-to-One Chat` page demonstrates a practical example of using the SDK for managing server connections, creating and managing chats, and interacting with contacts. This guide explains each section and includes critical notes about the behavior of chats and contact relationships.
 
----
-
-### 📌 Overview
+## Overview
 
 The interface is divided into the following functional areas:
 
-1. 🌐 **Server Connection**: Connect or disconnect from the server.
-2. 💬 **Group Chat Management**: Create, leave, and manage group chats.
-3. 👥 **Contacts**: Maintain contacts dynamically based on group chat membership.
----
+- **Server Connection**: Connect or disconnect from the server.
+- **Group Chat Management**: Create, leave, and manage group chats.
+- **Contacts**: Maintain contacts dynamically based on group chat membership.
 
-### 🚀 How to Use
 
-#### 1. Connection to Server
+## How to Use
+
+### 1. Connection to Server
+
 - **Purpose**: Establish or terminate a connection to a server using valid credentials.
 - **Steps**:
     - Click **Connect** to establish a connection.
@@ -25,27 +23,27 @@ The interface is divided into the following functional areas:
     - Ensure the connection status updates accurately.
     - If the connection fails, check the credentials and server URL.
 
----
 
-#### 2. Managing Chats
+### 2. Managing Chats
+
 - **Purpose**: Create, manage, and interact within one-to-one chats.
 - **Steps**:
     1. **Create a Chat**:
         - Click **Create Chat** in the **Chat** section to establish a one-to-one chat between the connected users.
-        - The chat name will reflect the usernames of the participants (e.g., `user90, user84`).
+        - The chat name will reflect the usernames of the participants.
     2. **Delete or Leave a Chat**:
-        - To remove the chat:
-            - The **Delete** button allows complete deletion of the chat.
-            - The **Leave** button removes the user from the chat.
+        - The **Delete** button removes the chat completely.
+        - The **Leave** button allows a user to exit the chat.
 - **Critical Note**:
-    - If **either user deletes or leaves the chat**, the associated contacts will lose their connection. This means the relationship between the users is no longer maintained unless a new chat is created.
+    - If **either user deletes or leaves the chat**, the associated contacts will lose their connection.
+    - A new chat must be created to re-establish the relationship.
 - **What to Monitor**:
     - Ensure the chat reflects the current participants accurately.
     - Monitor the contact list to confirm that relationships are preserved only while the chat exists.
 
----
 
-#### 3. Managing Contacts
+### 3. Managing Contacts
+
 - **Purpose**: View and interact with contacts associated with the chat.
 - **Steps**:
     - Contacts displayed in the **Contacts** section are automatically associated when a chat is created.
@@ -54,45 +52,8 @@ The interface is divided into the following functional areas:
     - Ensure the contact list updates dynamically when chats are created or removed.
     - Understand that contacts are tied to the chat’s existence.
 
+### Methods
 ---
-
-### 🔑 Key SDK Functionalities
-
-1. **Connection Management**:
-    - Use the `connect` and `disconnect` methods to handle server connections.
-2. **Chat Management**:
-    - Use `createChat` to start a chat between users.
-    - Use `deleteChat` or `leaveChat` to terminate the chat and remove the relationship between contacts.
-3. **Contact Management**:
-    - Contacts are tied to the existence of chats and are managed dynamically.
-
----
-
-### 📄 Example Interface Sections
-
-### Connection to Server
-- Shows the current connection state (e.g., CONNECTED, DISCONNECTED).
-- Buttons: **Connect** and **Disconnect**.
-
-### Chat
-- **Create Chat**: Establish a one-to-one chat between users.
-- **Delete Chat**: Completely remove the chat and associated contact relationships.
-- **Leave Chat**: Exit the chat, removing contact associations for the leaving user.
-
-### Contacts
-- Displays the list of contacts associated with the current chat.
-- Updates dynamically when chats are created or removed.
-
----
-
-### ⚠️ Important Note
-
-- **Contact Relationships**: Contacts are tied directly to the existence of chats. If a user leaves or deletes the chat:
-    - The associated contacts will lose their relationship.
-    - To re-establish the connection, a new chat must be created.
----
-### 🛠 Methods
-
 | **Method**                   | **Description**                                    |
 |------------------------------|----------------------------------------------------|
 | [Connect](connect)           | Establish a connection to the server.             |
@@ -101,5 +62,3 @@ The interface is divided into the following functional areas:
 | [Delete a chat](deleteChat)  | Delete the chat and remove associated contacts.    |
 | [Leave from chat](leaveChat) | Leave the chat and remove the relationship.        |
 | [Get contacts](getContacts)  | Retrieve the list of associated contacts.          |
-
----

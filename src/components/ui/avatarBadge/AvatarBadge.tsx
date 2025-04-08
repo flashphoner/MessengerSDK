@@ -8,7 +8,8 @@ type AvatarBadgeProps = {
   name: string;
   badgeContent?: string;
   status?: Status;
-  size?: "small" | "medium" | "large";
+  size?: "extraSmall" | "small" | "medium" | "large";
+  hideUserStatus?: boolean;
 };
 
 const corporateColors: string[] = [
@@ -38,20 +39,28 @@ const getInitials = (name: string): string => {
 };
 
 const getAvatarColor = (name: string): string => {
-  const nameHash = Array.from(name).reduce(
-    (acc, char) => acc + char.charCodeAt(0),
-    0,
-  );
-  const colorIndex = nameHash % corporateColors.length;
-  return corporateColors[colorIndex];
+  const hashName = (name: string): number => {
+    let hash = 5381;
+    for (let i = 0; i < name.length; i++) {
+      hash = (hash * 33) ^ name.charCodeAt(i);
+    }
+    return Math.abs(hash);
+  };
+
+  const uniqueCode = hashName(name) % corporateColors.length;
+  return corporateColors[uniqueCode];
 };
 
+
+
 const getAvatarSizeClasses = (
-  size: "small" | "medium" | "large",
+  size: "extraSmall" |"small" | "medium" | "large",
 ): { avatar: string; badge: string } => {
   switch (size) {
+    case "extraSmall":
+      return { avatar: "w-4 h-4 text-xs", badge: "w-1 h-1" };
     case "small":
-      return { avatar: "w-8 h-8 text-sm", badge: "w-2.5 h-2.5" };
+      return { avatar: "w-8 h-8 text-xs", badge: "w-2.5 h-2.5" };
     case "medium":
       return { avatar: "w-12 h-12 text-lg", badge: "w-3 h-3" };
     case "large":
@@ -65,6 +74,7 @@ export const AvatarBadge: FC<AvatarBadgeProps> = ({
   badgeContent,
   status = "OFFLINE",
   size = "medium",
+  hideUserStatus = false
 }) => {
   const initials = useMemo(() => getInitials(name), [name]);
   const avatarBgColor = useMemo(() => getAvatarColor(name), [name]);
@@ -84,13 +94,13 @@ export const AvatarBadge: FC<AvatarBadgeProps> = ({
       >
         {initials}
       </div>
-      <span
+      {!hideUserStatus && <span
         className={classNames(
-          "absolute bottom-0 right-0 rounded-full",
+          'absolute bottom-0 right-0 rounded-full',
           badgeSizeClasses,
-          statusBadgeColor,
+          statusBadgeColor
         )}
-      />
+      /> }
 
       {badgeContent && (
         <span

@@ -42,7 +42,6 @@ const ServerURLInput: FC<UrlInputProps> = ({ onUrlChange }) => {
         }
       })
       .catch((error) => {
-        console.log('Error:', error.message);
         setErrorMessage('Server not available');
       });
   };

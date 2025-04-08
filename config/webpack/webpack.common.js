@@ -17,6 +17,9 @@ module.exports = (env) => {
       alias: {
         '@': path.resolve(__dirname, '../../src'),
       },
+      fallback: {
+        crypto: false,
+      },
     },
     module: {
       rules: [

@@ -16,7 +16,6 @@ const useWebSocket = (url: string) => {
       // socket events
       socket.addEventListener('open', () => {
         setStatus('open');
-        console.log('WebSocket connected');
       });
 
       socket.addEventListener('message', (event) => {
@@ -29,7 +28,6 @@ const useWebSocket = (url: string) => {
       });
 
       socket.addEventListener('close', () => {
-        console.log('WebSocket connection closed');
         setStatus('closed');
       });
 

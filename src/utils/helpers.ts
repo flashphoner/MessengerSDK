@@ -69,3 +69,19 @@ export const checkServerAvailability = async (url: string): Promise<boolean> => 
     return false;
   }
 };
+
+export const getStorageKey = (key: string): string => `${key}`;
+
+export const encodeBase64 = (buffer: ArrayBuffer): string => {
+  const binary = String.fromCharCode(...new Uint8Array(buffer));
+  return btoa(binary);
+};
+export const decodeBase64 = (base64: string): ArrayBuffer => {
+  const binary = atob(base64);
+  const buffer = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    buffer[i] = binary.charCodeAt(i);
+  }
+  return buffer.buffer;
+};
+

@@ -132,7 +132,7 @@ const GroupChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
             />
           )}
           {singleChat && (
-            <ChatCard name={singleChat?.name} members={singleChat?.members} />
+            <ChatCard name={singleChat?.name} members={singleChat?.members.map((user) => user)} />
           )}
           { userCredentials && users && singleChat && singleChat.owner !== userCredentials.username && (
             <ActionButton

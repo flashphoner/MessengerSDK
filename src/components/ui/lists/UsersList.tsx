@@ -67,10 +67,6 @@ const UsersList: FC<UsersListProps> = ({
               <p className="align-middle ml-1 text-md truncate first-letter:uppercase text-xs">
                 {user?.nickname}
               </p>
-
-              {/*<p className="align-middle ml-1 text-md truncate text-xs">*/}
-              {/*  {user.userId}*/}
-              {/*</p>*/}
             </div>
             {listType !== usersListType.Contacts &&
               listType !== usersListType.Presence && (

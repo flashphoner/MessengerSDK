@@ -63,6 +63,7 @@ const useExampleManager = (props: useExampleManagerProps) => {
     users,
     isModalOpen,
     errorExample,
+    setIsModalOpen
   };
 };
 

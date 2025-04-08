@@ -17,6 +17,8 @@ export type ExamplePageTypes = {
   showSecondConnection?: boolean;
   isCanUseSecondConnection?: () => void;
   isShowSecondConnection: boolean;
+  onCollapseDocPanel?: () => void;
+  isCollapsedDocPanel?: boolean;
 };
 export type ExamplePagePanelTypes = {
   colorName: string,
@@ -30,6 +32,8 @@ export type ExamplePagePanelTypes = {
   updateSharedToken?: (token: string) => void,
   users: Array<CredentialsType>,
   serverUrl: string,
+  offAutoEncryption?: boolean,
+  countUsers?: number
 }
 export type ExamplePanelHandlers = {
   clearData?: () => void;
@@ -41,3 +45,6 @@ export enum usersListType {
   Friends = "Friends",
   Contacts = "Contacts",
 }
+export type UserPanelHandlers = {
+  clearData: () => void;
+};

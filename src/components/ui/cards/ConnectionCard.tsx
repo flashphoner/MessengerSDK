@@ -5,9 +5,14 @@ import classNames from "classnames";
 // Internal deps
 import CopyButton from "@/components/ui/buttons/CopyButton";
 import Card from "@/components/ui/cards/Card";
+import SafeIconUrl from "@/assets/icons/safe.svg";
+import UnsafeIconUrl from '@/assets/icons/unsafe.svg';
 
 // Local deps
 import { AvatarBadge, Status } from "../avatarBadge/AvatarBadge";
+import Tooltip from '@/components/ui/tooltip/Tooltip';
+import { SAFE_SELF_USER_TXT, UNSAFE_SELF_USER_TXT} from '@/utils/constants';
+import ActionButton from '@/components/ui/buttons/ActionButton';
 
 type ConnectionCardProps = {
   className?: string;
@@ -18,6 +23,9 @@ type ConnectionCardProps = {
   ownStatus: Status | undefined;
   isCopy?: boolean;
   isConnecting?: boolean;
+  isEncryption?: boolean;
+  onUpgradeSecurity?: () => void;
+  isDisconnectOff?: boolean
 };
 
 const ConnectionCard: FC<ConnectionCardProps> = (props) => {
@@ -31,6 +39,9 @@ const ConnectionCard: FC<ConnectionCardProps> = (props) => {
     ownStatus,
     isCopy = false,
     isConnecting,
+    isEncryption = false,
+    onUpgradeSecurity,
+    isDisconnectOff = false,
   } = props;
 
 
@@ -40,6 +51,11 @@ const ConnectionCard: FC<ConnectionCardProps> = (props) => {
 
   const handleDisconnect = () => {
     disconnect();
+  };
+  const handleTooltipClick = () => {
+    if (!isEncryption && onUpgradeSecurity) {
+      onUpgradeSecurity();
+    }
   };
 
   useEffect(() => {
@@ -68,21 +84,28 @@ const ConnectionCard: FC<ConnectionCardProps> = (props) => {
       <p className={cardTitleClasses}>Connection to server</p>
       <div className={cardUserClasses}>
         {userName && <AvatarBadge name={userName} status={ownStatus} size="small" /> }
-        <div className="flex items-center ml-2">
-          <p className="align-middle text-sm text-gray-800 font-normal mr-2">
+        <div className="flex items-center ml-2 z-10">
+          <p className="align-middle text-sm text-gray-800 font-normal mr-1">
             {userName}
           </p>
           {isCopy && userName && (
             <CopyButton
               text={userName}
               isDisabled={!isConnected}
-              className={"ml-2"}
             />
           )}
+
+          {isConnected && isDisconnectOff && <Tooltip message={isEncryption ? `${SAFE_SELF_USER_TXT}`: `${UNSAFE_SELF_USER_TXT}`}
+                                   onClickBtn={handleTooltipClick}
+                                   btnText={isEncryption ? undefined : 'Increase'}>
+            <div className="flex items-center space-x-2 cursor-pointer mr-1">
+              { <img src={isEncryption ? SafeIconUrl : UnsafeIconUrl} width={'24px'} height={'24px'} alt="safe" /> }
+            </div>
+          </Tooltip>}
         </div>
       </div>
       <div className={connectedCardFooterClasses}>
-        <button
+        <ActionButton
           onClick={isConnected ? handleDisconnect : handleConnect}
           className={classNames(
             "px-1 py-0.5 rounded-md h-5 font-normal flex items-center justify-start text-xs border border-black transition-colors duration-200 ease-in-out",
@@ -92,7 +115,7 @@ const ConnectionCard: FC<ConnectionCardProps> = (props) => {
                 ? "bg-white text-black hover:bg-gray-100"
                 : "bg-white text-black hover:bg-gray-100",
           )}
-          disabled={isConnecting}
+          isDisabled={isConnecting || (isConnected && isDisconnectOff)}
         >
           {isConnecting ? (
             <div className="w-3 h-3 border-2 border-t-transparent border-black rounded-full animate-spin text-xs"></div>
@@ -101,7 +124,7 @@ const ConnectionCard: FC<ConnectionCardProps> = (props) => {
           ) : (
             "Connect"
           )}
-        </button>
+        </ActionButton>
         <p className={isConnectedTextClasses}>
           {isConnected ? "CONNECTED" : "DISCONNECTED"}
         </p>

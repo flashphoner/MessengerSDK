@@ -13,6 +13,9 @@ import ChangeNickName from "@/pages/direct/ChangeNickName";
 import AccessRights from "@/pages/spaces/AccessRights";
 import Contacts from "@/pages/spaces/Contacts";
 import PresenceActivity from '@/pages/direct/PresenceActivity';
+import UpgradeSecurity from '@/pages/encryption/UpgradeSecurity';
+import EncryptedChat from '@/pages/encryption/EncryptedChat';
+import EncryptedGroupChat from '@/pages/encryption/EncryptedGroupChat';
 
 const MainRoutes: FC = () => {
   const location = useLocation();
@@ -148,6 +151,39 @@ const MainRoutes: FC = () => {
                 path="AccessRights"
                 element={
                   <AccessRights
+                    serverUrl={serverUrl}
+                    handleSetDynamicTitle={setHeaderTitle}
+                    isCanUseSecondConnection={isCanUseSecondConnection}
+                    isShowSecondConnection={isShowSecondConnection}
+                  />
+                }
+              />
+              <Route
+                path="UpgradeSecurity"
+                element={
+                  <UpgradeSecurity
+                    serverUrl={serverUrl}
+                    handleSetDynamicTitle={setHeaderTitle}
+                    isCanUseSecondConnection={isCanUseSecondConnection}
+                    isShowSecondConnection={isShowSecondConnection}
+                  />
+                }
+              />
+              <Route
+                path="EncryptedChat"
+                element={
+                  <EncryptedChat
+                    serverUrl={serverUrl}
+                    handleSetDynamicTitle={setHeaderTitle}
+                    isCanUseSecondConnection={isCanUseSecondConnection}
+                    isShowSecondConnection={isShowSecondConnection}
+                  />
+                }
+              />
+              <Route
+                path="EncryptedGroupChat"
+                element={
+                  <EncryptedGroupChat
                     serverUrl={serverUrl}
                     handleSetDynamicTitle={setHeaderTitle}
                     isCanUseSecondConnection={isCanUseSecondConnection}

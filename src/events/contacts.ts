@@ -26,18 +26,13 @@ export const handleContactEvents = (
     setOwnStatus: Dispatch<SetStateAction<PresenceStatus | undefined>>;
     resetOutGoingList?: (inviteId: string) => void;
     currentUserId?: string;
-    selfUserId?: string;
   },
 ) => {
   sdkInstance
     .on(SfuEvent.NEW_CONTACT, (event) => {
       const { contact } = event as NewContact;
       setContacts((prev) =>
-        updateArrayByProperties(prev, contact.userId, {
-          nickname: contact.nickname,
-          status: contact.status,
-          friend: contact.friend,
-        }),
+        updateArrayByProperties(prev, contact.userId, contact)
       );
     })
     .on(SfuEvent.CONTACT_DELETED, (event) => {

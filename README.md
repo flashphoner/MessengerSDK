@@ -15,13 +15,13 @@ This project demonstrates the use of the Flashphoner Messenger SDK to enable rea
 
 - **`config`**: Configuration files for Webpack and PostCSS.
 - **`src`**: Main source code:
-  - **`components`**: Reusable UI components.
-  - **`events`**: Handlers for Messenger-specific events.
-  - **`hooks`**: Custom React hooks for SDK and app logic.
-  - **`pages`**: Full-page components for features like direct communication and spaces.
-  - **`routes`**: Application routing.
-  - **`utils`**: Helper functions and utilities.
-  - **`types`**: TypeScript type definitions.
+    - **`components`**: Reusable UI components.
+    - **`events`**: Handlers for Messenger-specific events.
+    - **`hooks`**: Custom React hooks for SDK and app logic.
+    - **`pages`**: Full-page components for features like direct communication and spaces.
+    - **`routes`**: Application routing.
+    - **`utils`**: Helper functions and utilities.
+    - **`types`**: TypeScript type definitions.
 - **`styles`**: Global styles and Tailwind CSS configurations.
 - **`public`**: Static assets, including `index.html`.
 
@@ -57,7 +57,7 @@ npm start
 ```sh
 npm run build
 ```
-This will generate a production-ready build in the `dist` folder.
+   This will generate a production-ready build in the `dist` folder.
 
 2. **Serve the production build**:  
    To serve the `dist` folder locally, use the `serve` package:

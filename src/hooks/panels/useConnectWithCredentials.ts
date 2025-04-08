@@ -12,7 +12,7 @@ type UseConnectWithCredentialsProps = {
   connect: (userCredentials: CredentialsType, token?: string, serverUrl?: string) => Promise<void> | Promise<unknown>;
   sdkInitialized: boolean;
   initializeSdk: () => Promise<void>;
-  serverUrl: string;
+  serverUrl?: string;
 };
 
 const useConnectWithCredentials = (props: UseConnectWithCredentialsProps) => {

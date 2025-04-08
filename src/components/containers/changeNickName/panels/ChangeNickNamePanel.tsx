@@ -1,22 +1,17 @@
 // External deps
-import React, {
-  ChangeEvent,
-  forwardRef,
-  useEffect,
-  useImperativeHandle,
-  useState
-} from 'react';
-import classNames from "classnames";
+import React, { ChangeEvent, forwardRef, useEffect, useImperativeHandle, useState } from 'react';
+import classNames from 'classnames';
 
 // Internal deps
 import { ExamplePagePanelTypes, ExamplePanelHandlers, usersListType } from '@/types/Client';
-import ConnectionCard from "@/components/ui/cards/ConnectionCard";
-import UsersList from "@/components/ui/lists/UsersList";
-import ActionButton from "@/components/ui/buttons/ActionButton";
-import ChatCard from "@/components/containers/oneToOneChat/panels/ChatCard";
-import { useSDK } from "@/hooks/sdk/useSDK";
-import Card from "@/components/ui/cards/Card";
+import ConnectionCard from '@/components/ui/cards/ConnectionCard';
+import UsersList from '@/components/ui/lists/UsersList';
+import ActionButton from '@/components/ui/buttons/ActionButton';
+import ChatCard from '@/components/containers/oneToOneChat/panels/ChatCard';
+import { useSDK } from '@/hooks/sdk/useSDK';
+import Card from '@/components/ui/cards/Card';
 import useConnectWithCredentials from '@/hooks/panels/useConnectWithCredentials';
+import { ChatType } from '@flashphoner/sfusdk/dist/sdk/constants';
 
 const ChangeNickNamePanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes>((props, ref) => {
   const { userCredentials, colorName, users, sharedToken, serverUrl, updateSharedToken } = props;
@@ -69,7 +64,11 @@ const ChangeNickNamePanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTyp
     if (users) {
       const chatUsers = users.filter((user) => user.username !== userCredentials?.username)[0].username;
       if (chatUsers && !!chatUsers.length) {
-        await handleCreateChat({members: [chatUsers]});
+        await handleCreateChat({
+          type: ChatType.PRIVATE,
+          channel: false,
+          members: [chatUsers],
+        });
       }
     }
   };
@@ -122,7 +121,7 @@ const ChangeNickNamePanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTyp
         {users[0].username === userCredentials.username && (
           <ActionButton
             isDisabled={!isConnected || Boolean(singleChat)}
-            text={"Create Group Chat"}
+            text={"Create chat"}
             onClick={handleCreateGroupChat}
             className={"mr-2"}
           />

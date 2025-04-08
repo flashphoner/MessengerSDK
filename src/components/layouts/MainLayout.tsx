@@ -1,4 +1,4 @@
-// Layout.tsx
+// src/layouts/MainLayout.tsx
 import React, { FC } from 'react';
 import Sidebar from "@/components/ui/navigation/SideBar";
 import Header from "@/components/ui/header/Header";
@@ -25,8 +25,11 @@ const MainLayout: FC<MainLayoutProps> = (props) => {
 
   return (
     <div className="layout flex h-screen">
+      {/* left block - Sidebar */}
       <Sidebar />
-      <div className="main-content flex-grow overflow-x-auto overflow-y-hidden">
+
+      {/* right block – Header + Outlet */}
+      <div className="custom-scrollbar flex-grow overflow-x-auto overflow-y-hidden">
         <Header
           title={headerTitle}
           serverUrl={serverUrl}
@@ -34,7 +37,6 @@ const MainLayout: FC<MainLayoutProps> = (props) => {
           onToggleSecondConnection={onToggleSecondConnection}
           onChangeServerUrl={onChangeServerUrl}
           isShowSecondConnection={isShowSecondConnection}
-
         />
         <Outlet />
       </div>

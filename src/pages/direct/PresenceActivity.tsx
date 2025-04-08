@@ -8,6 +8,10 @@ import useExampleManager from '@/hooks/panels/useExampleManager';
 import AlertModal from '@/components/ui/alertModal/AlertModal';
 import { ExamplePageTypes } from '@/types/Client';
 import PresenceActivityStatusPanel from '@/components/containers/presenceActivityStatus/panel/PresenceActivityStatusPanel';
+// Hook and action from global store
+import { useLayoutStore } from '@/hooks/helpers/useLayoutStore';
+import { toggleDocsOpen } from '@/stores/layoutStore';
+
 
 const PresenceActivity: FC<ExamplePageTypes> = (props) => {
   const {
@@ -18,6 +22,8 @@ const PresenceActivity: FC<ExamplePageTypes> = (props) => {
   } = props;
 
   const countUsers = 2;
+  // State for whether the docs panel is open
+  const docsOpen = useLayoutStore(state => state.docsOpen);
 
   const {
     setSecondConnectionToken,
@@ -44,11 +50,12 @@ const PresenceActivity: FC<ExamplePageTypes> = (props) => {
         isOpen={isModalOpen}
         message={errorExample}
       />}
-      <div className="flex w-full p-4">
-        <div className="flex-grow mr-4 overflow-x-auto max-w-[75%] calc-main-height">
+      <div className="flex w-full calc-main-height">
+        {/* Central column (flex-grow) */}
+        <div className="flex-1 overflow-x-auto h-full custom-scrollbar py-6 px-6">
           {!!users.length && users.length === countUsers && (
             <div className="flex gap-4 whitespace-nowrap">
-              <div className="w-64 min-w-[16rem]">
+              <div className="w-64 min-w-[20rem]">
                 <PresenceActivityStatusPanel
                   colorName={
                     "bg-blue-100"}
@@ -60,7 +67,7 @@ const PresenceActivity: FC<ExamplePageTypes> = (props) => {
               </div>
 
               {isShowSecondConnection && secondConnectionToken &&
-                <div className="w-64 min-w-[16rem]">
+                <div className="w-64 min-w-[20rem]">
                   <PresenceActivityStatusPanel
                     colorName={
                       "bg-pink-100"}
@@ -71,7 +78,7 @@ const PresenceActivity: FC<ExamplePageTypes> = (props) => {
                   />
                 </div>
               }
-              <div className="w-64 min-w-[16rem]">
+              <div className="w-64 min-w-[20rem]">
                 <PresenceActivityStatusPanel
                   userCredentials={users[1]}
                   colorName={
@@ -84,16 +91,18 @@ const PresenceActivity: FC<ExamplePageTypes> = (props) => {
           )}
           {!users.length && <div className="w-full flex gap-4 whitespace-nowrap">
             {Array.from({ length: countUsers }).map((_, index) => (
-              <div key={index} className="w-64 min-w-[16rem]">
+              <div key={index} className="w-64 min-w-[20rem]">
                 <SkeletonLoader />
               </div>
             ))}
           </div>
           }
         </div>
-        <div className="w-2/6 flex-shrink-0 ml-4 top-4 right-2">
-          <DocsPanel />
-        </div>
+        {/* Right column with docs panel (not removed from DOM, only width changes) */}
+        <DocsPanel
+          docsOpen={docsOpen}
+          onClickCollapseDocHeader={toggleDocsOpen}
+        />
       </div>
     </div>
   );

@@ -1,17 +1,18 @@
 import { useEffect, useCallback } from 'react';
-import { ChatMap, Contact } from '@flashphoner/sfusdk/dist/sdk/constants';
-
+import { ChatMap, ChatType, Contact, UserSpecificChatInfo } from '@flashphoner/sfusdk/dist/sdk/constants';
+import { createChatTypes } from '@/hooks/sdk/useSdkChats';
 
 const useGroupChatPanel = (props: {
   isConnected: boolean;
   userCredentials: { url: string; username: string; password: string; email?: string };
   userChats: ChatMap | undefined;
-  users: Array<string>;
+  users: string[];
   handleGetContacts: () => Promise<undefined | Array<Contact>>;
-  handleCreateChat: (membersList: { members: Array<string> }) => Promise<void>
+  handleCreateChat: ({ type, channel, members, isEncryptionEnabled, encryptedPrivateKey, publicKey, encryptedChatPasswords }: createChatTypes) => Promise<undefined | UserSpecificChatInfo>
 }) => {
   const {
     isConnected,
+    // loadChats,
     userChats,
     users,
     userCredentials,
@@ -22,7 +23,11 @@ const useGroupChatPanel = (props: {
   const createGroupChat = useCallback(async () => {
     if (users && !!users.length) {
       try {
-          await handleCreateChat({members: users});
+          await handleCreateChat({
+            type: ChatType.PRIVATE,
+            channel: false,
+            members: users,
+          });
       } catch (error) {
         console.error("Failed to create group chat:", error);
       }
@@ -31,7 +36,7 @@ const useGroupChatPanel = (props: {
     }
   }, [users, userCredentials, handleCreateChat]);
 
-  // load chats
+  // load contacts
   useEffect(() => {
     (async () => {
       try {
