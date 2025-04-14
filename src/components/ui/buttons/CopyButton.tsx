@@ -4,11 +4,11 @@ import classNames from "classnames";
 
 // Internal deps
 import useCopyToClipboard from '@/hooks/helpers/useCopyToClipBoard';
+import Icon from '@/components/ui/icon/Icon';
 
 // Icons
-import { FaCheck } from "react-icons/fa";
 import CopyIcon from '@/assets/icons/copy.svg';
-import Icon from '@/components/ui/icon/Icon';
+import Check from '@/assets/icons/chevronRegular.svg';
 
 type CopyButtonProps = {
   text: string;
@@ -31,7 +31,7 @@ const CopyButton: FC<CopyButtonProps> = ({
 
   // styles
   const buttonClasses = classNames(
-    "rounded-md transition-colors duration-300",
+    "rounded-md transition-colors duration-300 flex justify-items-center",
     {
       "opacity-50 cursor-not-allowed": isDisabled,
       className,
@@ -44,7 +44,7 @@ const CopyButton: FC<CopyButtonProps> = ({
       className={buttonClasses}
       disabled={isDisabled}
     >
-      {isCopied ? <FaCheck size={12} color={"#758F93"}  /> : <Icon src={CopyIcon} size={size} />}
+      {isCopied ?  <Icon src={Check} size={16} className="mt-1 pl-1" strokeColor="#758F93" /> : <Icon src={CopyIcon} size={size} />}
     </button>
   );
 };

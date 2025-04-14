@@ -1,6 +1,5 @@
 // External deps
 import React, { FC } from "react";
-import { FaCheck, FaTimes } from "react-icons/fa";
 import classNames from "classnames";
 
 // Internal deps
@@ -74,17 +73,17 @@ const UsersList: FC<UsersListProps> = ({
                   {onAccept && (
                     <ActionButton
                       onClick={() => handleAccept(user)}
-                      className={"w-5 h-5 flex items-center mb-1"}
+                      className={"w-5 mr-2 h-5 flex items-center mb-1 text-customColors-textBlue text-xs"}
                     >
-                      <FaCheck className={"text-customColors-green"} />
+                      Add
                     </ActionButton>
                   )}
                   {onReject && (
                     <ActionButton
                       onClick={() => handleReject(user)}
-                      className={"w-5 h-5 flex items-center"}
+                      className={"mr-2 w-5 h-5 flex items-center text-customColors-textBlue text-xs"}
                     >
-                      <FaTimes className={"text-customColors-red"} />
+                      Reject
                     </ActionButton>
                   )}
                 </div>
