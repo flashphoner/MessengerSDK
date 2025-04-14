@@ -29,10 +29,15 @@ module.exports = (env) => {
           use: 'ts-loader',
         },
         {
-          test: /\.(png|jpe?g|gif|svg)$/i,
-          type: 'asset/resource',
+          test: /\.svg$/,
+          issuer: /\.[jt]sx?$/,
+          use: ["@svgr/webpack"],
+        },
+        {
+          test: /\.(png|jpe?g|gif)$/i,
+          type: "asset/resource",
           generator: {
-            filename: 'assets/[name].[hash][ext]',
+            filename: "assets/[name].[hash][ext]",
           },
         },
         {

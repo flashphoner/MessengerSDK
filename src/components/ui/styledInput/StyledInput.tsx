@@ -23,7 +23,8 @@ const StyledInput: FC<StyledInputProps> = (props) => {
 
   // styles
   const inputClasses = classNames(
-    "w-full border block border-gray-300 rounded-md pt-1 pb-1 pl-2 pr-2 text-xs focus:outline-none focus:border-black transition-colors duration-300 placeholder: text-xs",
+    "w-[172px] h-[40px] border border-gray-300 rounded-l-[12px] px-2 text-xs",
+    "focus:outline-none focus:border-black transition-colors duration-300 placeholder:text-xs",
     className,
   );
 

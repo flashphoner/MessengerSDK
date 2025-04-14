@@ -3,6 +3,7 @@ import React, { useEffect, useState, FC } from "react";
 import classNames from "classnames";
 import { Link, useLocation } from "react-router-dom";
 import ChevronIcon from '@/assets/icons/chevron.svg';
+import Icon from '@/components/ui/icon/Icon';
 
 export type FolderProps = {
   title: string;
@@ -24,19 +25,17 @@ const Folder: FC<FolderProps> = ({ title, pages }) => {
   const pageLinkClasses = (isActive: boolean) =>
     classNames("block py-1 hover:text-customColors-textBlue text-md", {
       "text-customColors-textBlue": isActive,
-      "text-customColor-grey": !isActive,
+      "text-customColors-textGray": !isActive,
     });
 
   return (
     <div className="mb-4">
       <div className={folderHeaderClasses} onClick={() => setIsOpen(!isOpen)}>
-        <span className="font-bold">{title}</span>
+        <span className="font-bold text-customColors-textGray">{title}</span>
         {
-          <img
+          <Icon
             src={ChevronIcon}
-            width="16px"
-            height="16px"
-            alt="safe"
+            size={16}
             className={`${isOpen ? '' : 'transform rotate-180'} transition-transform duration-300`}
           />
         }

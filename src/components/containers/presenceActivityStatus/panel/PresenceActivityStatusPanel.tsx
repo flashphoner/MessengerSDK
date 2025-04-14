@@ -133,8 +133,8 @@ const PresenceActivityStatusPanel = forwardRef<ExamplePanelHandlers, ExamplePage
             />
 
             <Card className={colorName}>
-              <p className="card-title text-xs">Current activity is: <span className="font-bold">{isConnected && ownActivity ? 'online' : 'idle'}</span></p>
-              <ActionButton text={'Change activity'} onClick={handleChangeStatusActivity} isDisabled={!isConnected} />
+              <p className="card-title text-md">Current activity is: <span className="font-bold text-xs">{isConnected && ownActivity ? 'online' : 'idle'}</span></p>
+              <ActionButton className='text-customColors-textBlue my-2' text={'Change activity'} onClick={handleChangeStatusActivity} isDisabled={!isConnected} />
             </Card>
             <Card className={colorName}>
               <p className="card-title mb-2">Friends</p>

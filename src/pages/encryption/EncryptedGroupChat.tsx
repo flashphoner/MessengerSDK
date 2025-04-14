@@ -66,13 +66,6 @@ const EncryptedGroupChat: FC<ExamplePageTypes> = (props) => {
           {!!users.length && users.length === countUsers && (
             <div className="flex gap-4 whitespace-nowrap">
               {users.map((user, index) => {
-                const colorName =
-                  index === 0
-                    ? "bg-blue-100"
-                    : index === 1 && isShowSecondConnection
-                      ? "bg-pink-100"
-                      : "bg-purple-100";
-
                 const sharedToken =
                   index === 1 && isShowSecondConnection
                     ? secondConnectionToken
@@ -84,7 +77,7 @@ const EncryptedGroupChat: FC<ExamplePageTypes> = (props) => {
                     className="w-64 min-w-[20rem]"
                   >
                     <EncryptedGroupChatPanel
-                      colorName={colorName}
+                      colorName="bg-customColors-lightGrayBg"
                       userCredentials={user}
                       sharedToken={sharedToken}
                       users={users}

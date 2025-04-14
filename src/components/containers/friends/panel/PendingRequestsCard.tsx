@@ -1,10 +1,10 @@
 // External deps
 import React, { FC } from "react";
-import classNames from "classnames";
 
 // Internal deps
 import UsersList, { UserInvite } from "@/components/ui/lists/UsersList";
 import { usersListType } from "@/types/Client";
+import Card from '@/components/ui/cards/Card';
 
 type PendingRequestsCardProps = {
   className?: string;
@@ -25,13 +25,8 @@ const PendingRequestsCard: FC<PendingRequestsCardProps> = (props) => {
     revokeOutGoingFriendRequest,
   } = props;
 
-  // styles
-  const cardTitleClasses = classNames("font-bold text-lg");
-
   return (
-    <div className={className}>
-      <p className={cardTitleClasses}>Pending Requests</p>
-      <div className="asd"></div>
+    <Card className={className} title="Pending Requests">
       <UsersList
         users={incomingList}
         onAccept={acceptFriendRequest}
@@ -43,7 +38,7 @@ const PendingRequestsCard: FC<PendingRequestsCardProps> = (props) => {
         onReject={revokeOutGoingFriendRequest}
         listType={usersListType.Outgoing}
       />
-    </div>
+    </Card>
   );
 };
 export default PendingRequestsCard;

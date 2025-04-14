@@ -1,14 +1,15 @@
 import React from "react";
 
 type ToggleProps = {
+  className?: string;
   label?: string;
   enabled: boolean;
   onToggle: (value: boolean) => void;
 };
 
-const Toggle: React.FC<ToggleProps> = ({ label, enabled, onToggle }) => {
+const Toggle: React.FC<ToggleProps> = ({ className, label, enabled, onToggle }) => {
   return (
-    <div className="flex items-center gap-2">
+    <div className={`flex items-center gap-2 ${className}`}>
       <button
         type="button"
         onClick={() => onToggle(!enabled)}
@@ -22,7 +23,7 @@ const Toggle: React.FC<ToggleProps> = ({ label, enabled, onToggle }) => {
           }`}
         />
       </button>
-      {label && <span className="text-xs font-medium">{label}</span>}
+      {label && <span className="text-xs font-medium text-customColors-textGray">{label}</span>}
     </div>
   );
 };

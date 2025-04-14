@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useDeferredValue, useRef } from "react";
+import React, { FC, ReactNode, HTMLAttributes, useEffect, useState, useDeferredValue, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -179,8 +179,8 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
                  }: {
             inline?: boolean;
             className?: string;
-            children?: React.ReactNode;
-          } & React.HTMLAttributes<HTMLElement>) => {
+            children?: ReactNode;
+          } & HTMLAttributes<HTMLElement>) => {
             if (inline) {
               return (
                 <code className={`${className || ""} px-1 py-0.5 bg-gray-100`} {...props}>
@@ -217,7 +217,7 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
                 >
                   <CopyButton
                     text={String(children).trim()}
-                    className="text-sm color-customColors-lightGreyGreen"
+                    className="text-sm color-customColors-lightGrayGreen"
                   />
                 </div>
                 <SyntaxHighlighter

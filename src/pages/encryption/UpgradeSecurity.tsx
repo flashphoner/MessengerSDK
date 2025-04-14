@@ -59,9 +59,9 @@ const UpgradeSecurity: FC<ExamplePageTypes> = ({ serverUrl, handleSetDynamicTitl
         <div className="flex-1 overflow-x-auto h-full custom-scrollbar py-6 px-6">
           {isUsersLoaded ? (
             <div className="flex gap-4 whitespace-nowrap">
-              {renderPanel(0, "bg-blue-100")}
-              {isShowSecondConnection && renderPanel(0, "bg-pink-100", secondConnectionToken)}
-              {renderPanel(1, "bg-purple-100")}
+              {renderPanel(0, "bg-customColors-lightGrayBg")}
+              {isShowSecondConnection && renderPanel(0, "bg-customColors-lightGrayBg", secondConnectionToken)}
+              {renderPanel(1, "bg-customColors-lightGrayBg")}
             </div>
           ) : (
             <div className="w-full flex gap-4 whitespace-nowrap">

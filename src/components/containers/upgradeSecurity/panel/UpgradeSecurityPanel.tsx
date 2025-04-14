@@ -21,6 +21,7 @@ import useEncryption from '@/hooks/encryption/useEncryption';
 // Icons
 import SafeIconUrl from '@/assets/icons/safe.svg';
 import UnsafeIconUrl from '@/assets/icons/unsafe.svg';
+import Icon from '@/components/ui/icon/Icon';
 
 export type UserPanelHandlers = {
   clearData: () => void;
@@ -171,12 +172,10 @@ const UpgradeSecurityPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes
                     onClickBtn={handleTurnOnEncryption}
                     btnText={encryptionEnabled ? undefined : 'Increase'}
                   >
-                    <div className="flex items-center cursor-pointer">
-                      <img
+                    <div className="flex items-center cursor-pointer mr-1">
+                      <Icon
                         src={encryptionEnabled ? SafeIconUrl : UnsafeIconUrl}
-                        width="24px"
-                        height="24px"
-                        alt="safe"
+                        size={16}
                       />
                     </div>
                   </Tooltip>
@@ -195,14 +194,14 @@ const UpgradeSecurityPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes
               </ul>
               {!encryptionEnabled && (
                 <ActionButton
-                  className="card-title mb-0.5 w-full h-6 font-bold"
+                  className="card-title mb-0.5 w-full h-6 font-bold text-customColors-textBlue"
                   onClick={handleTurnOnEncryption}
                   isDisabled={!isConnected}
                 >
                   Turn ON
                 </ActionButton>
               )}
-              <p className="text-xs text-customColors-lightGrey mt-0.5">
+              <p className="text-xs text-customColors-lightGray mt-0.5">
                 Secure chat is a chat backed by End to End encryption
               </p>
             </Card>

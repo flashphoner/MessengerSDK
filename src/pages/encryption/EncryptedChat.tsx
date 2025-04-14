@@ -55,8 +55,7 @@ const EncryptedChat: FC<ExamplePageTypes> = (props) => {
             <div className="flex gap-4 whitespace-nowrap">
               <div className="w-64 min-w-[20rem]">
                 <EncryptedChatPanel
-                  colorName={
-                    "bg-blue-100"}
+                  colorName='bg-customColors-lightGrayBg'
                   userCredentials={users[0]}
                   updateSharedToken={handleUpdateSharedToken}
                   users={users}
@@ -67,8 +66,7 @@ const EncryptedChat: FC<ExamplePageTypes> = (props) => {
               {isShowSecondConnection &&
                 <div className="w-64 min-w-[20rem]">
                   <EncryptedChatPanel
-                    colorName={
-                      "bg-pink-100"}
+                    colorName='bg-customColors-lightGrayBg'
                     userCredentials={users[0]}
                     sharedToken={secondConnectionToken}
                     users={users}
@@ -79,8 +77,7 @@ const EncryptedChat: FC<ExamplePageTypes> = (props) => {
               <div className="w-64 min-w-[20rem]">
                 <EncryptedChatPanel
                   userCredentials={users[1]}
-                  colorName={
-                    "bg-purple-100"}
+                  colorName='bg-customColors-lightGrayBg'
                   users={users}
                   serverUrl={serverUrl}
                 />

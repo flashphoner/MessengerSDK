@@ -2,12 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 @layer utilities {
-  ul {
-    color: #000000;
-  }
-  ul li {
-    color: #000000;
-  }
   .calc-main-height {
     height: calc(100vh - 5rem);
   }
@@ -35,7 +29,7 @@
   
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.3);
-    border-radius: 3px;
+    border-radius: 4px;
   }
   
   .custom-scrollbar:hover::-webkit-scrollbar-thumb {

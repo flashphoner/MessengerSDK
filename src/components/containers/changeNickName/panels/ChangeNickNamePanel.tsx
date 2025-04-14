@@ -12,6 +12,7 @@ import { useSDK } from '@/hooks/sdk/useSDK';
 import Card from '@/components/ui/cards/Card';
 import useConnectWithCredentials from '@/hooks/panels/useConnectWithCredentials';
 import { ChatType } from '@flashphoner/sfusdk/dist/sdk/constants';
+import StyledInput from '@/components/ui/styledInput/StyledInput';
 
 const ChangeNickNamePanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes>((props, ref) => {
   const { userCredentials, colorName, users, sharedToken, serverUrl, updateSharedToken } = props;
@@ -46,7 +47,7 @@ const ChangeNickNamePanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTyp
 
   } = useSDK();
 
-  const [nickNameValue, setNickNameValue] = useState<string>();
+  const [nickNameValue, setNickNameValue] = useState<string>('');
 
   useImperativeHandle(ref, () => ({
     async clearData() {},
@@ -101,7 +102,6 @@ const ChangeNickNamePanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTyp
 
   // styles
   const cardClasses = classNames(
-    "card p-2 border rounded-md transition-colors duration-300 mb-4",
     colorName,
   );
 
@@ -116,38 +116,37 @@ const ChangeNickNamePanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTyp
         ownStatus={ownStatus}
         isConnecting={isConnecting}
       />
-      <Card className={colorName}>
-        <p>Chat</p>
+      <Card className={colorName} title='Chat'>
         {users[0].username === userCredentials.username && (
           <ActionButton
-            isDisabled={!isConnected || Boolean(singleChat)}
+            isDisabled={!isConnected || Boolean(singleChat?.id)}
             text={"Create chat"}
             onClick={handleCreateGroupChat}
-            className={"mr-2"}
+            className={"mr-2 text-customColors-textBlue"}
           />
         )}
         {singleChat && (
           <ChatCard name={singleChat?.name} members={singleChat?.members} />
         )}
       </Card>
-      <Card className={colorName}>
-        <p>Change nick name</p>
-        <div className={"flex flex-col"}>
-          <input
-            type="text"
-            className={"mt-2 p-1 outline-0 text-xs"}
+      <Card className={colorName} title='Change nick name'>
+        <div className="flex items-center">
+          <StyledInput
+            value={nickNameValue}
             onChange={handleUpdateNickname}
+            placeholder={"Enter nickname"}
+            disabled={Boolean(!singleChat?.id)}
+            className={'className="w-[172px] h-[40px] border border-customColors-lightBorderGray px-2 text-xs focus:outline-none focus:border-black transition-colors duration-300 placeholder:text-xs text-customColors-placeholderLightGreen"'}
           />
           <ActionButton
-            text={"Submit"}
-            className={"mt-2 w-20"}
+            isDisabled={!singleChat?.id || nickNameValue.trim().length === 0}
             onClick={handleChangeUserNickname}
-            isDisabled={!nickNameValue?.length}
+            text={"Save"}
+            className={"w-full h-[40px] rounded-r-[12px] rounded-l-[0] px-6 py-2 text-base transition duration-300 bg-customColors-textBlue border-0 text-white"}
           />
         </div>
       </Card>
-      <Card className={colorName}>
-        <p className="card-title mb-2">Contacts</p>
+      <Card className={colorName} title='Contacts'>
         {isConnected && (
           <UsersList
             users={contacts.filter(

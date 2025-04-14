@@ -81,7 +81,6 @@ const SpaceUserPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
     }, [isConnected, sdkInitialized]);
 
     const cardClasses = classNames(
-      "card p-2 rounded-md transition-colors duration-300 mb-4",
       colorName,
     );
 
@@ -129,10 +128,10 @@ const SpaceUserPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
                   <p className="mt-1 mb-1">{singleSpace.name}</p>
                   {
                     userCredentials.username !== users[0]?.username ?
-                    <ActionButton isDisabled={!isConnected || !singleSpace} onClick={() => leaveSpace(singleSpace.id)}>
+                    <ActionButton className='text-customColors-textBlue' isDisabled={!isConnected || !singleSpace} onClick={() => leaveSpace(singleSpace.id)}>
                       Leave
                     </ActionButton> :
-                    <ActionButton isDisabled={!isConnected || !singleSpace} onClick={() => deleteSpace(singleSpace.id)}>
+                    <ActionButton className='text-customColors-textBlue' isDisabled={!isConnected || !singleSpace} onClick={() => deleteSpace(singleSpace.id)}>
                       Delete
                     </ActionButton>
                   }
@@ -155,22 +154,23 @@ const SpaceUserPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
           userCredentials?.username === users[0]?.username && (
             <Card className={colorName}>
               <AccordionContent title={'Invite code'}>
-                {(
-                  <ActionButton isDisabled={!isConnected || Boolean(singleSpaceInviteCode)} onClick={() => inviteToSpace(singleSpace.id)}>
-                    Generate space invite
-                  </ActionButton>
-                )}
-                {(singleSpaceInviteCode && (
-                  <div className="flex items-start mt-2">
-                    <p className="mr-2">{singleSpaceInviteCode}</p>
-                    <CopyButton text={singleSpaceInviteCode} />
-                  </div>
-                ))}
+                <div className="flex items-between w-full items-center">
+                  {(singleSpaceInviteCode && (
+                    <div className="flex items-center mt-2 w-full">
+                      <p className="mr-2">{singleSpaceInviteCode}</p>
+                      <CopyButton text={singleSpaceInviteCode} />
+                    </div>
+                  ))}
+                  {(
+                    <ActionButton isDisabled={!isConnected || Boolean(singleSpaceInviteCode)} onClick={() => inviteToSpace(singleSpace.id)} className="border-0 text-customColors-textBlue">
+                      Generate
+                    </ActionButton>
+                  )}
+                </div>
               </AccordionContent>
             </Card>
           )}
-        <Card className={cardClasses + ` ${colorName}`}>
-          <p className="card-title mb-2 font-bold">Contacts</p>
+        <Card className={cardClasses + ` ${colorName}`} title='Contacts'>
           {isConnected && (
             <UsersList
               users={contacts.filter(

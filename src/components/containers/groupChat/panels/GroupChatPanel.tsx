@@ -106,7 +106,6 @@ const GroupChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
 
     // styles
     const cardClasses = classNames(
-      "card p-2 border rounded-md transition-colors duration-300 mb-4",
       colorName,
     );
 
@@ -121,14 +120,13 @@ const GroupChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
           ownStatus={ownStatus}
           isConnecting={isConnecting}
         />
-        <Card className={cardClasses + ` ${colorName}`}>
-          <p>Chat</p>
+        <Card className={cardClasses + ` ${colorName}`} title='Chat'>
           {users && users[0].username === userCredentials?.username && (
             <ActionButton
               isDisabled={!isConnected || Boolean(singleChat)}
               text={"Create Group Chat"}
               onClick={createGroupChat}
-              className={"mr-2"}
+              className={"mr-2 text-customColors-textBlue"}
             />
           )}
           {singleChat && (
@@ -136,6 +134,7 @@ const GroupChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
           )}
           { userCredentials && users && singleChat && singleChat.owner !== userCredentials.username && (
             <ActionButton
+              className='text-customColors-textBlue mt-2'
               isDisabled={!isConnected}
               text={"Leave"}
               onClick={() =>
@@ -147,14 +146,14 @@ const GroupChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
             singleChat &&
             singleChat.owner === userCredentials.username && (
               <ActionButton
+                className='text-customColors-textBlue mt-2'
                 isDisabled={!isConnected}
                 text={"Remove"}
                 onClick={() => handleDeleteChat(singleChat?.id)}
               />
             )}
         </Card>
-        <Card className={cardClasses + ` ${colorName}`}>
-          <p className="card-title mb-2">Contacts</p>
+        <Card className={cardClasses + ` ${colorName}`} title='Contacts'>
           {isConnected && (
             <UsersList
               users={contacts.filter(

@@ -56,7 +56,7 @@ const GroupChat: FC<ExamplePageTypes> = (props) => {
             <div className="flex gap-4 whitespace-nowrap">
               <div className="w-64 min-w-[20rem]">
                 <GroupChatPanel
-                  colorName={'bg-blue-100'}
+                  colorName={'bg-customColors-lightGrayBg'}
                   userCredentials={users[0]}
                   updateSharedToken={handleUpdateSharedToken}
                   users={users}
@@ -64,9 +64,9 @@ const GroupChat: FC<ExamplePageTypes> = (props) => {
                 />
               </div>
               {isShowSecondConnection && secondConnectionToken && (
-                <div className="w-64 min-w-[16rem]">
+                <div className="w-64 min-w-[20rem]">
                   <GroupChatPanel
-                    colorName={'bg-pink-100'}
+                    colorName={'bg-customColors-lightGrayBg'}
                     userCredentials={users[0]}
                     sharedToken={secondConnectionToken}
                     users={users}
@@ -74,18 +74,18 @@ const GroupChat: FC<ExamplePageTypes> = (props) => {
                   />
                 </div>
               )}
-              <div className="w-64 min-w-[16rem]">
+              <div className="w-64 min-w-[20rem]">
                 <GroupChatPanel
-                  colorName={'bg-yellow-100'}
+                  colorName={'bg-customColors-lightGrayBg'}
                   userCredentials={users[1]}
                   users={users}
                   serverUrl={serverUrl}
                 />
               </div>
               {users.length > 2 &&
-                <div className="w-64 min-w-[16rem]">
+                <div className="w-64 min-w-[20rem]">
                   <GroupChatPanel
-                    colorName={'bg-purple-100'}
+                    colorName={'bg-customColors-lightGrayBg'}
                     userCredentials={users[2]}
                     users={users}
                     serverUrl={serverUrl}
@@ -96,7 +96,7 @@ const GroupChat: FC<ExamplePageTypes> = (props) => {
           )}
           {!users.length && <div className="w-full flex gap-4 whitespace-nowrap">
             {Array.from({ length: countUsers }).map((_, index) => (
-              <div key={index} className="w-64 min-w-[16rem]">
+              <div key={index} className="w-64 min-w-[20rem]">
                 <SkeletonLoader />
               </div>
             ))}

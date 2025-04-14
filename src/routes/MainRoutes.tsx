@@ -63,7 +63,6 @@ const MainRoutes: FC = () => {
             <Route path="/" element={
               <MainLayout
                 serverUrl={serverUrl}
-                headerTitle={headerTitle}
                 isSecondConnectionAvailable={isSecondConnectionAvailable}
                 onToggleSecondConnection={handleToggleSecondConnection}
                 onChangeServerUrl={handleChangeServerUrl}

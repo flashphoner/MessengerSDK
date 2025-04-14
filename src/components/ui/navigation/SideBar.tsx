@@ -1,10 +1,14 @@
-// src/components/ui/navigation/SideBar/index.tsx
+// External deps
 import React, { FC, useRef, useState, useEffect } from "react";
+
+// Internal deps
 import { useLayoutStore } from "@/hooks/helpers/useLayoutStore";
 import { toggleSidebarOpen } from "@/stores/layoutStore";
-
 import Folder from "./Folder";
 import { FoldersData } from "./SideBarData";
+import Icon from '@/components/ui/icon/Icon';
+
+// Icons
 import BurgerArrowIcon from '@/assets/icons/burger-arrow-left.svg';
 
 const Sidebar: FC = () => {
@@ -26,7 +30,7 @@ const Sidebar: FC = () => {
       const scrollH = contentRef.current?.scrollHeight || 0;
       setMaxHeight(scrollH * 4);  // expand to the real height
     } else {
-      setMaxHeight(0);       // collapse to 0
+      setMaxHeight(0);  // collapse to 0
     }
   }, [sidebarOpen]);
 
@@ -34,12 +38,11 @@ const Sidebar: FC = () => {
     <div
       className={`
         min-h-screen
-        border-r border-customColors-borderGrey
-        bg-customColors-sidebarGrey
+        border-r border-customColors-borderGray
+        ${sidebarOpen ? 'bg-customColors-lightGrayBg' : 'bg-white'}
         flex-shrink-0
         transition-width duration-300 ease-in-out
         overflow-hidden
-        bg-customColors-sideBarGrey
       `}
       style={{ width: sidebarWidth }}
     >
@@ -50,10 +53,10 @@ const Sidebar: FC = () => {
 
         {/* Toggle button */}
         <button onClick={toggleSidebarOpen} className="mt-1">
-          <img
+          <Icon
             src={BurgerArrowIcon}
-            alt="toggle sidebar"
-            className={`transition-transform duration-200 ${sidebarOpen ? 'rotate-0' : 'rotate-180'}`}
+            size={20}
+            className={`transition-transform duration-200 ${sidebarOpen ? 'rotate-180' : 'rotate-0'}`}
           />
         </button>
       </div>

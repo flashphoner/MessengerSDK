@@ -1,6 +1,5 @@
 // External deps
-import React, { FC, useEffect } from 'react';
-import classNames from "classnames";
+import React, { FC, useEffect, useState } from 'react';
 
 // Internal deps
 import CopyButton from "@/components/ui/buttons/CopyButton";
@@ -12,7 +11,8 @@ import UnsafeIconUrl from '@/assets/icons/unsafe.svg';
 import { AvatarBadge, Status } from "../avatarBadge/AvatarBadge";
 import Tooltip from '@/components/ui/tooltip/Tooltip';
 import { SAFE_SELF_USER_TXT, UNSAFE_SELF_USER_TXT} from '@/utils/constants';
-import ActionButton from '@/components/ui/buttons/ActionButton';
+import ConnectionCardsHeader from '@/components/ui/cards/ConnectionCardsHeader';
+import Icon from '@/components/ui/icon/Icon';
 
 type ConnectionCardProps = {
   className?: string;
@@ -44,14 +44,22 @@ const ConnectionCard: FC<ConnectionCardProps> = (props) => {
     isDisconnectOff = false,
   } = props;
 
+  const [showMenu, setShowMenu] = useState(false);
+  const [isDisconnected, setIsDisconnected] = useState(false);
 
   const handleConnect = async () => {
-     await connect();
+    if (isDisconnected) {
+      setIsDisconnected(false);
+    }
+    await connect();
   };
 
   const handleDisconnect = () => {
     disconnect();
+    setShowMenu(false);
+    setIsDisconnected(true);
   };
+
   const handleTooltipClick = () => {
     if (!isEncryption && onUpgradeSecurity) {
       onUpgradeSecurity();
@@ -66,24 +74,19 @@ const ConnectionCard: FC<ConnectionCardProps> = (props) => {
     };
   }, [userName, isConnected]);
 
-  // styles
-  const cardTitleClasses = classNames("font-semibold text-base text-gray-700");
-  const connectedCardFooterClasses = classNames(
-    "flex justify-between items-center mt-3",
-  );
-  const isConnectedTextClasses = classNames(
-    "text-xs align-middle ml-2 font-normal",
-    isConnected ? "text-green-500" : "text-red-500",
-  );
-  const cardUserClasses = classNames(
-    "flex justify-start items-center mt-2 mb-3",
-  );
-
   return (
     <Card className={className}>
-      <p className={cardTitleClasses}>Connection to server</p>
-      <div className={cardUserClasses}>
-        {userName && <AvatarBadge name={userName} status={ownStatus} size="small" /> }
+      <ConnectionCardsHeader
+        isConnected={isConnected}
+        isConnecting={isConnecting}
+        onConnect={handleConnect}
+        isDisconnected={isDisconnected}
+        onDisconnect={handleDisconnect}
+        showMenu={showMenu}
+        setShowMenu={setShowMenu}
+      />
+      <div className="flex justify-start items-center mt-3">
+        {userName && <AvatarBadge name={userName} status={ownStatus} size="small" />}
         <div className="flex items-center ml-2 z-10">
           <p className="align-middle text-sm text-gray-800 font-normal mr-1">
             {userName}
@@ -92,42 +95,18 @@ const ConnectionCard: FC<ConnectionCardProps> = (props) => {
             <CopyButton
               text={userName}
               isDisabled={!isConnected}
+              className="p-0"
             />
           )}
 
-          {isConnected && isDisconnectOff && <Tooltip message={isEncryption ? `${SAFE_SELF_USER_TXT}`: `${UNSAFE_SELF_USER_TXT}`}
-                                   onClickBtn={handleTooltipClick}
-                                   btnText={isEncryption ? undefined : 'Increase'}>
+          {isConnected && isDisconnectOff && <Tooltip message={isEncryption ? `${SAFE_SELF_USER_TXT}` : `${UNSAFE_SELF_USER_TXT}`}
+                                                      onClickBtn={handleTooltipClick}
+                                                      btnText={isEncryption ? undefined : 'Increase'}>
             <div className="flex items-center space-x-2 cursor-pointer mr-1">
-              { <img src={isEncryption ? SafeIconUrl : UnsafeIconUrl} width={'24px'} height={'24px'} alt="safe" /> }
+              { <Icon src={isEncryption ? SafeIconUrl : UnsafeIconUrl} size={16} />}
             </div>
           </Tooltip>}
         </div>
-      </div>
-      <div className={connectedCardFooterClasses}>
-        <ActionButton
-          onClick={isConnected ? handleDisconnect : handleConnect}
-          className={classNames(
-            "px-1 py-0.5 rounded-md h-5 font-normal flex items-center justify-start text-xs border border-black transition-colors duration-200 ease-in-out",
-            isConnecting
-              ? "bg-gray-100 text-black cursor-not-allowed text-xs"
-              : isConnected
-                ? "bg-white text-black hover:bg-gray-100"
-                : "bg-white text-black hover:bg-gray-100",
-          )}
-          isDisabled={isConnecting || (isConnected && isDisconnectOff)}
-        >
-          {isConnecting ? (
-            <div className="w-3 h-3 border-2 border-t-transparent border-black rounded-full animate-spin text-xs"></div>
-          ) : isConnected ? (
-            "Disconnect"
-          ) : (
-            "Connect"
-          )}
-        </ActionButton>
-        <p className={isConnectedTextClasses}>
-          {isConnected ? "CONNECTED" : "DISCONNECTED"}
-        </p>
       </div>
     </Card>
   );

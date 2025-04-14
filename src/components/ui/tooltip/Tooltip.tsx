@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, ReactNode, useState } from 'react';
 import ReactDOM from 'react-dom';
 import {
   useFloating,
@@ -13,9 +13,9 @@ import {
   useInteractions,
 } from '@floating-ui/react';
 
-const Tooltip: React.FC<{
+const Tooltip: FC<{
   message: string;
-  children: React.ReactNode;
+  children: ReactNode;
   btnText?: string;
   onClickBtn?: () => void;
 }> = ({ message, children, btnText, onClickBtn }) => {
@@ -54,13 +54,13 @@ const Tooltip: React.FC<{
 
   return (
       <>
-        <div
+        <span
             ref={refs.setReference}
             {...getReferenceProps()}
-            className="cursor-pointer flex items-center space-x-3 relative z-10"
+            className="block cursor-pointer flex items-center space-x-3 relative z-10"
         >
           {children}
-        </div>
+        </span>
 
         {isOpen &&
             ReactDOM.createPortal(

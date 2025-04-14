@@ -16,7 +16,6 @@ import useConnectWithCredentials from '@/hooks/panels/useConnectWithCredentials'
 
 const FriendPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes>((props, ref) => {
   const {
-    colorName,
     userCredentials,
     updateSharedToken,
     sharedToken,
@@ -76,8 +75,7 @@ const FriendPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes>((pro
 
   // styles
   const cardClasses = classNames(
-    "card p-2 border rounded-md transition-colors duration-300 mb-4",
-    colorName,
+    'bg-customColors-lightGrayBg'
   );
   return (
     <div className="friend-panel-example">

@@ -1,19 +1,27 @@
 // External deps
 import React, { FC } from 'react';
 import classNames from "classnames";
-import { FaCheck } from "react-icons/fa";
+
+// Internal deps
 import useCopyToClipboard from '@/hooks/helpers/useCopyToClipBoard';
+
+// Icons
+import { FaCheck } from "react-icons/fa";
 import CopyIcon from '@/assets/icons/copy.svg';
+import Icon from '@/components/ui/icon/Icon';
 
 type CopyButtonProps = {
   text: string;
   isDisabled?: boolean;
   className?: string;
+  size?: number
 };
+
 const CopyButton: FC<CopyButtonProps> = ({
   className,
   text,
   isDisabled = false,
+  size
 }) => {
   const [copyToClipboard, isCopied] = useCopyToClipboard();
 
@@ -23,7 +31,7 @@ const CopyButton: FC<CopyButtonProps> = ({
 
   // styles
   const buttonClasses = classNames(
-    "rounded-md transition-colors duration-300 p-1",
+    "rounded-md transition-colors duration-300",
     {
       "opacity-50 cursor-not-allowed": isDisabled,
       className,
@@ -36,7 +44,7 @@ const CopyButton: FC<CopyButtonProps> = ({
       className={buttonClasses}
       disabled={isDisabled}
     >
-      {isCopied ? <FaCheck size={16} color={"#758F93"}  /> : <img src={CopyIcon} width={'24px'} height={'24px'} alt="i" />}
+      {isCopied ? <FaCheck size={12} color={"#758F93"}  /> : <Icon src={CopyIcon} size={size} />}
     </button>
   );
 };

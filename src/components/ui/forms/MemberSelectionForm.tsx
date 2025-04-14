@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { PresenceStatus } from '@flashphoner/sfusdk/dist/sdk/constants';
 import { AvatarBadge } from '@/components/ui/avatarBadge/AvatarBadge';
 import SafeIconUrl from '@/assets/icons/safe.svg';
@@ -12,6 +12,7 @@ import {
   UNSAFE_USER_TXT,
 } from '@/utils/constants';
 import ActionButton from '@/components/ui/buttons/ActionButton';
+import Icon from '@/components/ui/icon/Icon';
 
 export type SelectedContactType = {
   userId: string;
@@ -34,12 +35,11 @@ export type MemberSelectionFormProps = {
   countUsers?: number;
 };
 
-const MemberSelectionForm: React.FC<MemberSelectionFormProps> = (props) => {
+const MemberSelectionForm: FC<MemberSelectionFormProps> = (props) => {
   const {
     selfContacts,
     onAction,
     isHeader = false,
-    isTitle = false,
     isCheckBox = false,
     btnTxt,
     askToUpgradeProfile,
@@ -96,11 +96,9 @@ const MemberSelectionForm: React.FC<MemberSelectionFormProps> = (props) => {
           btnText={contact.encryptionEnabled ? undefined : 'Ask'}
         >
           <div className="flex items-center space-x-2 cursor-pointer mr-1 z-1">
-            <img
+            <Icon
               src={contact.encryptionEnabled ? SafeIconUrl : UnsafeIconUrl}
-              width="24px"
-              height="24px"
-              alt="safe"
+              size={20}
             />
           </div>
         </Tooltip>
@@ -117,11 +115,11 @@ const MemberSelectionForm: React.FC<MemberSelectionFormProps> = (props) => {
   return (
     <div>
       {isHeader && (
-        <div className="flex justify-between items-center mb-2">
+        <div className="flex justify-between items-center mb-2 mt-2">
           <Toggle
             label="End to End Encryption"
             enabled={true}
-            onToggle={(value) => {}}
+            onToggle={() => {}}
           />
         </div>
       )}
@@ -130,7 +128,7 @@ const MemberSelectionForm: React.FC<MemberSelectionFormProps> = (props) => {
 
       {btnTxt && onAction && (
         <ActionButton
-          className="px-4 mt-4 rounded focus:ring-2 focus:ring-indigo-500 focus:ring-offset-1"
+          className="text-customColors-textBlue mt-2"
           onClick={() => onAction(selectedMembers)}
           isDisabled={finalIsDisabled}
         >

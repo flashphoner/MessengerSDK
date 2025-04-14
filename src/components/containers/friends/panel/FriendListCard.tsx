@@ -1,11 +1,10 @@
 // External deps
 import React, { FC } from "react";
-import classNames from "classnames";
 
 // Internal deps
 import { usersListType } from "@/types/Client";
 import UsersList, { UserInvite } from "@/components/ui/lists/UsersList";
-import ActionButton from "@/components/ui/buttons/ActionButton";
+import Card from '@/components/ui/cards/Card';
 
 type FriendsListCardProps = {
   className?: string;
@@ -17,23 +16,15 @@ type FriendsListCardProps = {
 };
 
 const FriendsListCard: FC<FriendsListCardProps> = (props) => {
-  const { className, users, removeFriend, getContacts, isDisabled } = props;
-  const cardTitleClasses = classNames("font-bold text-lg");
+  const { className, users, removeFriend } = props;
   return (
-    <div className={className}>
-      <p className={cardTitleClasses}>Friends</p>
-      <ActionButton
-        text={"Refresh list"}
-        onClick={getContacts}
-        className={"mb-2"}
-        isDisabled={isDisabled}
-      />
+    <Card className={className} title="Friends">
       <UsersList
         users={users}
         onReject={removeFriend}
         listType={usersListType.Friends}
       />
-    </div>
+    </Card>
   );
 };
 

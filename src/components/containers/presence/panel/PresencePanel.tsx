@@ -124,8 +124,7 @@ const PresencePanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
               isConnecting={isConnecting}
             />
 
-            <Card className={colorName}>
-              <p className="card-title">Change the status</p>
+            <Card className={colorName} title='Change the status'>
               <select
                 value={ownStatus}
                 onChange={handleChangeStatus}
@@ -138,8 +137,7 @@ const PresencePanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
                 <option value="OFFLINE">Invisible</option>
               </select>
             </Card>
-            <Card className={colorName}>
-              <p className="card-title mb-2">Friends</p>
+            <Card className={colorName} title='Friends'>
               {isConnected && (
                 <UsersList
                   users={contacts.filter((item) => item.friend)}

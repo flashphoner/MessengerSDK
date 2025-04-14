@@ -58,7 +58,7 @@ const Friends: FC<ExamplePageTypes> = (props) => {
           {!!users.length && users.length === countUsers && <div className="flex gap-4 whitespace-nowrap">
             <div className="w-64 min-w-[20rem]">
               <FriendPanel
-                colorName={'bg-blue-100'}
+                colorName={'bg-customColors-lightGrayBg'}
                 userCredentials={users[0]}
                 updateSharedToken={handleUpdateSharedToken}
                 users={users}
@@ -68,7 +68,7 @@ const Friends: FC<ExamplePageTypes> = (props) => {
             {
               isShowSecondConnection && <div className="w-64 min-w-[20rem]">
                 <FriendPanel
-                  colorName={'bg-pink-100'}
+                  colorName={'bg-customColors-lightGrayBg'}
                   userCredentials={users[0]}
                   sharedToken={secondConnectionToken}
                   users={users}
@@ -78,7 +78,7 @@ const Friends: FC<ExamplePageTypes> = (props) => {
             }
             <div className="w-64 min-w-[20rem]">
               <FriendPanel
-                colorName={'bg-purple-100'}
+                colorName={'bg-customColors-lightGrayBg'}
                 userCredentials={users[1]}
                 users={users}
                 serverUrl={serverUrl}

@@ -64,7 +64,7 @@ const Presence: FC<ExamplePageTypes> = (props) => {
               <div className="w-64 min-w-[20rem]">
                 <PresencePanel
                   colorName={
-                    "bg-blue-100"}
+                    "bg-customColors-lightGrayBg"}
                   userCredentials={users[0]}
                   updateSharedToken={handleUpdateSharedToken}
                   users={users}
@@ -76,7 +76,7 @@ const Presence: FC<ExamplePageTypes> = (props) => {
                 <div className="w-64 min-w-[20rem]">
                   <PresencePanel
                     colorName={
-                      "bg-pink-100"}
+                      "bg-customColors-lightGrayBg"}
                     userCredentials={users[0]}
                     sharedToken={secondConnectionToken}
                     users={users}
@@ -88,7 +88,7 @@ const Presence: FC<ExamplePageTypes> = (props) => {
                 <PresencePanel
                   userCredentials={users[1]}
                   colorName={
-                    "bg-purple-100"}
+                    "bg-customColors-lightGrayBg"}
                   users={users}
                   serverUrl={serverUrl}
                 />

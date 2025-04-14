@@ -10,6 +10,7 @@ import React, {
 import StyledInput from "@/components/ui/styledInput/StyledInput";
 import ActionButton from "@/components/ui/buttons/ActionButton";
 import { UserInvite } from '@/components/ui/lists/UsersList';
+import Card from '@/components/ui/cards/Card';
 
 type AddFriendFormPropsTypes = {
   onAddFriend: (email: string) => void;
@@ -50,21 +51,24 @@ const AddFriendFormCard: FC<AddFriendFormPropsTypes> = (props) => {
   }, [contactsError]);
 
   return (
-    <div>
-      <StyledInput
-        value={userName}
-        onChange={handleInputChange}
-        placeholder={"Enter username"}
-        disabled={!isConnected || !!users.length}
-      />
+    <Card title={'Send a friend request'}>
+      <div className="flex items-center">
+        <StyledInput
+          value={userName}
+          onChange={handleInputChange}
+          placeholder={"Enter username"}
+          disabled={!isConnected || !!users.length}
+          className={'className="w-[172px] h-[40px] border border-customColors-lightBorderGray px-2 text-xs focus:outline-none focus:border-black transition-colors duration-300 placeholder:text-xs text-customColors-placeholderLightGreen"'}
+        />
+        <ActionButton
+          isDisabled={!isConnected || !!users.length}
+          onClick={handleSubmit}
+          text={"Add Friend"}
+          className={"w-full h-[40px] rounded-r-[12px] rounded-l-[0] px-6 py-2 text-base transition duration-300 bg-customColors-textBlue border-0 text-white"}
+        />
+      </div>
       <p className="text-customColors-red text-xs">{error}</p>
-      <ActionButton
-        isDisabled={!isConnected || !!users.length}
-        onClick={handleSubmit}
-        text={"Add Friend"}
-        className={"mt-2"}
-      />
-    </div>
+    </Card>
   );
 };
 

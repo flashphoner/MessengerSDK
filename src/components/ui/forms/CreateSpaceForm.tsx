@@ -5,29 +5,38 @@ import React, { FC, ReactElement, useState, ChangeEvent } from "react";
 import StyledInput from "@/components/ui/styledInput/StyledInput";
 import ActionButton from "@/components/ui/buttons/ActionButton";
 
-type createSpaceFormProps = {
+type CreateSpaceFormProps = {
   onClick: (value: string) => void;
   isDisabled?: boolean;
 };
 
-const CreateSpaceForm: FC<createSpaceFormProps> = (props): ReactElement => {
-  const { onClick, isDisabled } = props;
+const CreateSpaceForm: FC<CreateSpaceFormProps> = ({ onClick, isDisabled }): ReactElement => {
   const [name, setName] = useState("");
 
-  const handleInputChange = (
-    event: ChangeEvent<HTMLInputElement>,
-  ): void => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setName(event.target.value);
   };
+
   const handleClick = (): void => {
     onClick(name);
   };
 
   return (
-    <>
-      <StyledInput value={name} onChange={handleInputChange} disabled={isDisabled} />
-      <ActionButton isDisabled={isDisabled} text={"Create"} onClick={handleClick} className={"mt-2"} />
-    </>
+    <div className="flex items-center">
+      <StyledInput
+        value={name}
+        onChange={handleInputChange}
+        placeholder="Space name"
+        disabled={isDisabled}
+        className="text-customColors-textGray w-[172px] h-[40px] border border-customColors-lightBorderGray px-2 text-xs focus:outline-none focus:border-black transition-colors duration-300 placeholder:text-xs"
+      />
+      <ActionButton
+        isDisabled={isDisabled}
+        text="Create"
+        onClick={handleClick}
+        className="w-[96px] h-[40px] rounded-r-[12px] rounded-l-[0] px-6 py-2 transition duration-300 bg-customColors-textBlue border-0 text-white"
+      />
+    </div>
   );
 };
 

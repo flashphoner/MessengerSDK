@@ -89,7 +89,7 @@ const MessageList = (props: MessageListProps) => {
           </div>
           <div className="max-w-md break-words whitespace-normal text-xs mb-1 ml-9">{msg.body}</div>
           {encryptionEnabled && !decryptedMessages.has(msg.id) && (
-            <ActionButton text="Decrypt message" onClick={() => handleDecryptMessage(msg)} />
+            <ActionButton className="text-customColors-textBlue" text="Decrypt message" onClick={() => handleDecryptMessage(msg)} />
           )}
         </div>
       )),

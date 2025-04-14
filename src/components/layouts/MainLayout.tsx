@@ -6,7 +6,6 @@ import { Outlet } from 'react-router-dom';
 
 type MainLayoutProps = {
   serverUrl: string;
-  headerTitle: string;
   isSecondConnectionAvailable: boolean;
   onToggleSecondConnection: () => void;
   onChangeServerUrl: (url: string) => void;
@@ -16,7 +15,6 @@ type MainLayoutProps = {
 const MainLayout: FC<MainLayoutProps> = (props) => {
   const {
     serverUrl,
-    headerTitle,
     isSecondConnectionAvailable,
     onToggleSecondConnection,
     onChangeServerUrl,
@@ -31,7 +29,6 @@ const MainLayout: FC<MainLayoutProps> = (props) => {
       {/* right block – Header + Outlet */}
       <div className="custom-scrollbar flex-grow overflow-x-auto overflow-y-hidden">
         <Header
-          title={headerTitle}
           serverUrl={serverUrl}
           isSecondConnectionAvailable={isSecondConnectionAvailable}
           onToggleSecondConnection={onToggleSecondConnection}

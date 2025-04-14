@@ -27,7 +27,6 @@ const OneToOneChatPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes
       connect,
       disconnect,
       authToken,
-      selfUserInfo,
 
       // contacts
       handleGetContacts,
@@ -101,10 +100,10 @@ const OneToOneChatPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes
           <p>Chat</p>
           {users && users[1].username !== userCredentials.username && (
             <ActionButton
-              isDisabled={!isConnected || Boolean(singleChat)}
+              isDisabled={!isConnected || Boolean(singleChat?.id)}
               text={"Create Chat"}
               onClick={handleCreateDirectChat}
-              className={"mr-2"}
+              className={"mr-2 text-customColors-textBlue mt-2"}
             />
           )}
           {singleChat && (
@@ -112,6 +111,7 @@ const OneToOneChatPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes
           )}
           {userCredentials && singleChat && singleChat.owner !== userCredentials.username && (
             <ActionButton
+              className='text-customColors-textBlue mt-2'
               isDisabled={!isConnected}
               text={"Leave"}
               onClick={() =>

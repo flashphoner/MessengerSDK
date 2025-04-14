@@ -57,7 +57,7 @@ const AccessRights: FC<ExamplePageTypes> = (props) => {
                   <AccessRightsPanel
                     users={users}
                     userCredentials={users[0]}
-                    colorName={"bg-purple-100"}
+                    colorName={"bg-customColors-lightGrayBg"}
                     updateSharedToken={handleUpdateSharedToken}
                     serverUrl={serverUrl}
                   />
@@ -67,7 +67,7 @@ const AccessRights: FC<ExamplePageTypes> = (props) => {
                     <AccessRightsPanel
                       users={users}
                       userCredentials={users[0]}
-                      colorName={"bg-green-100"}
+                      colorName={"bg-customColors-lightGrayBg"}
                       sharedToken={secondConnectionToken}
                       serverUrl={serverUrl}
                     />
@@ -77,7 +77,7 @@ const AccessRights: FC<ExamplePageTypes> = (props) => {
                   <AccessRightsPanel
                     users={users}
                     userCredentials={users[1]}
-                    colorName={"bg-yellow-100"}
+                    colorName={"bg-customColors-lightGrayBg"}
                     serverUrl={serverUrl}
                   />
                 </div>

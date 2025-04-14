@@ -20,7 +20,7 @@ const EncryptionOptionsForm: FC<Props> = ({ onOptionsChange, isDisabled }) => {
   return (
     <div>
       <p className="text-md font-bold">Encryption Options</p>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 mt-2">
         <label className="flex items-center gap-2 text-xs">
           <input
             disabled={isDisabled}

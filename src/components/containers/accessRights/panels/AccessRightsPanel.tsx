@@ -13,8 +13,7 @@ import UsersList from "@/components/ui/lists/UsersList";
 import AccordionContent from "@/components/ui/accordion/AccordionContent";
 import Card from "@/components/ui/cards/Card";
 import useConnectWithCredentials from '@/hooks/panels/useConnectWithCredentials';
-import { FaLock } from 'react-icons/fa';
-import { FaUsers } from 'react-icons/fa6';
+import Toggle from '@/components/ui/toggle/Toggle';
 
 const AccessRightsPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes>((props, ref) => {
   const {  colorName, userCredentials, users, sharedToken, updateSharedToken, serverUrl } = props;
@@ -69,6 +68,9 @@ const AccessRightsPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes
   const [isChannelPrivate, setIsChannelPrivate] = useState<boolean>(singleSpace?.channels[0]?.private || false);
 
   const handleToggleSpaceChannel = async () => {
+    if (userCredentials.username !== users[0]?.username) {
+      return;
+    }
     const newIsPrivate = !isChannelPrivate;
     const spaceId = singleSpace?.id;
     const channel = singleSpace?.channels[0];
@@ -93,6 +95,7 @@ const AccessRightsPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes
     }
   };
 
+  const isPrivate = Boolean(singleSpace?.channels[0]?.private);
 
   useEffect(() => {
     if (authToken && updateSharedToken) {
@@ -134,14 +137,10 @@ const AccessRightsPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes
             isConnected && (
               <>
                 {userCredentials && !!users.length && userCredentials.username === users[0]?.username && (
-                  <div>
-                    <CreateSpaceForm isDisabled={!isConnected || Boolean(singleSpace)} onClick={createSpace} />
-                  </div>
+                  <CreateSpaceForm isDisabled={!isConnected || Boolean(singleSpace)} onClick={createSpace} />
                 )}
                 {userCredentials && !!users.length && userCredentials.username === users[1]?.username && (
-                  <div>
-                    <JoinToSpaceForm isDisabled={!isConnected || Boolean(singleSpace)} onClick={joinToSpace} />
-                  </div>
+                  <JoinToSpaceForm isDisabled={!isConnected || Boolean(singleSpace)} onClick={joinToSpace} />
                 )}
               </>
             )
@@ -151,20 +150,28 @@ const AccessRightsPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes
 
       <Card className={colorName}>
         <AccordionContent title={"Space"}>
-          <div>
+          <div className="w-full">
             {isConnected && singleSpace && (
-              <>
+              <div className="flex justify-between w-full">
                 <p className="mt-1 mb-1">{singleSpace.name}</p>
                 {
                   userCredentials.username !== users[0]?.username ?
-                    <ActionButton isDisabled={!isConnected || !singleSpace} onClick={() => leaveSpace(singleSpace.id)}>
+                    <ActionButton
+                      isDisabled={!isConnected || !singleSpace}
+                      onClick={() => leaveSpace(singleSpace.id)}
+                      className="border-0 text-customColors-textBlue"
+                    >
                       Leave
                     </ActionButton> :
-                    <ActionButton isDisabled={!isConnected || !singleSpace} onClick={() => deleteSpace(singleSpace.id)}>
+                    <ActionButton
+                      isDisabled={!isConnected || !singleSpace}
+                      onClick={() => deleteSpace(singleSpace.id)}
+                      className="border-0 text-customColors-textBlue"
+                    >
                       Delete
                     </ActionButton>
                 }
-              </>
+              </div>
             )}
           </div>
         </AccordionContent>
@@ -173,24 +180,26 @@ const AccessRightsPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes
         userCredentials?.username === users[0]?.username && (
           <Card className={colorName}>
             <AccordionContent title={'Invite code'}>
-              {(
-                <ActionButton isDisabled={!isConnected || Boolean(singleSpaceInviteCode)} onClick={() => inviteToSpace(singleSpace.id)}>
-                  Generate space invite
-                </ActionButton>
-              )}
-              {(singleSpaceInviteCode && (
-                <div className="flex items-start mt-2">
-                  <p className="mr-2">{singleSpaceInviteCode}</p>
-                  <CopyButton text={singleSpaceInviteCode} />
-                </div>
-              ))}
+              <div className="flex items-between w-full items-center">
+                {(singleSpaceInviteCode && (
+                  <div className="flex items-center mt-2 w-full">
+                    <p className="mr-2">{singleSpaceInviteCode}</p>
+                    <CopyButton text={singleSpaceInviteCode} />
+                  </div>
+                ))}
+                {(
+                  <ActionButton isDisabled={!isConnected || Boolean(singleSpaceInviteCode)} onClick={() => inviteToSpace(singleSpace.id)} className="border-0 text-customColors-textBlue">
+                    Generate
+                  </ActionButton>
+                )}
+              </div>
             </AccordionContent>
           </Card>
         )}
       <Card className={colorName}>
         <AccordionContent title={'Categories'}>
           <div>
-            {singleSpace && isConnected && <p className="text-xs">name: {singleSpace?.categories[0]?.name}</p>}
+            {singleSpace && isConnected && <p className="text-md text-customColors-textGray">{singleSpace?.categories[0]?.name}</p>}
           </div>
         </AccordionContent>
       </Card>
@@ -198,35 +207,21 @@ const AccessRightsPanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTypes
         <AccordionContent title={'Channels'}>
           <>
           {isConnected && singleSpace && !!singleSpace.channels.length && (
-            <div>
-              { singleSpace?.channels[0]?.private ? (
-                <div className="flex">
-                  <span className="text-xs mr-2">private:</span>
-                  <FaLock />
-                </div>
-              ) : (
-                <div className="flex justify-items-center">
-                  <span className="text-xs mr-2">public:</span>
-                  <FaUsers />
-                </div>
-              )}
-              {<p className="text-xs">name: {singleSpace?.channels[0]?.name}</p>}
+            <div className="flex justify-between  mt-2 w-full">
+              {<p className="text-md text-customColors-textGray">{singleSpace?.channels[0]?.name}</p>}
 
-              {userCredentials.username === users[0]?.username && (
-                <ActionButton
-                  isDisabled={!isConnected}
-                  className={'mr-2'}
-                  text={isChannelPrivate ? 'Make Public' : 'Make Private'}
-                  onClick={handleToggleSpaceChannel}
-                />
-              )}
+              <Toggle
+                className={'flex-row-reverse'}
+                label={isPrivate ? 'Private': 'Public'}
+                enabled={isPrivate}
+                onToggle={handleToggleSpaceChannel}
+              />
             </div>
           )}
           </>
         </AccordionContent>
       </Card>}
-      <Card className={`${colorName}`}>
-        <p className="card-title mb-2 font-bold">Contacts</p>
+      <Card className={`${colorName}`} title={'Contacts'}>
         {isConnected && (
           <UsersList
             users={contacts.filter(

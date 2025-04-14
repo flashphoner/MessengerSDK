@@ -3,6 +3,7 @@ import ActionButton from "@/components/ui/buttons/ActionButton";
 import Tooltip from '@/components/ui/tooltip/Tooltip';
 import { UNSAFE_SELF_USER_TXT } from '@/utils/constants';
 import UnsafeIconUrl from '@/assets/icons/unsafe.svg';
+import Icon from '@/components/ui/icon/Icon';
 
 type AlertModalProps = {
   isOpen: boolean;
@@ -27,7 +28,7 @@ const AlertModal: FC<AlertModalProps> = ({ isOpen, title = "Warning!", message, 
           {isActionButtons && <div className="flex items-center">
             {<Tooltip message={`${UNSAFE_SELF_USER_TXT}`}>
               <div className="flex items-center space-x-2 cursor-pointer mr-1">
-                {<img src={UnsafeIconUrl} width={'20px'} height={'20px'} alt="unsafe" />}
+                {<Icon src={UnsafeIconUrl} size={20} />}
               </div>
             </Tooltip>}
           </div> }

@@ -12,7 +12,7 @@ const ChatCard: FC<ChatCardProps> = (props): ReactElement => {
     <div className="chat-card">
       <ul className={"mt-2"}>
         <li className={"text-xs"}>
-          name: <span className={"font-bold text-xs"}>{name}</span>
+          <span className={"font-bold text-xs"}>{name}</span>
         </li>
       </ul>
     </div>

@@ -18,7 +18,7 @@ const DocsPanel: FC<DocsPanelProps> = (props) => {
       className="
         flex flex-col
         flex-shrink-0       /* Prevent this column from shrinking */
-        border-l border-customColors-borderGrey
+        border-l border-customColors-borderGray
       "
       /* Dynamic width: 450px when open, 52px when collapsed */
       style={{

@@ -1,4 +1,6 @@
 import React from 'react';
+import Icon from '@/components/ui/icon/Icon';
+import Chevron from '@/assets/icons/chevronCrumb.svg';
 
 export type BreadcrumbItem = {
   label: string;
@@ -25,21 +27,21 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
                 item.href ? (
                   <a
                     href={item.href}
-                    className="font-normal hover:underline hover:text-customColors-textGrey"
+                    className="font-normal hover:underline hover:text-customColors-textGray"
                   >
                     {item.label}
                   </a>
                 ) : (
-                  <span className="font-normal text-black">{item.label}</span>
+                  <span className="font-normal text-customColors-lightGray">{item.label}</span>
                 )
               ) : (
                 // The last item is bold and non-clickable
-                <span className="font-normal text-customColors-textGrey">{item.label}</span>
+                <span className="font-normal text-customColors-textGray">{item.label}</span>
               )}
 
               {/* Separator (shown except for the last item) */}
               {!isLast && (
-                <span className="px-2 text-gray-400">›</span>
+                <Icon src={Chevron} size={10} className={'ml-2'}/>
               )}
             </li>
           );

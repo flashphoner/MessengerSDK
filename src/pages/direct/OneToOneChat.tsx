@@ -60,7 +60,7 @@ const OneToOneChat: FC<ExamplePageTypes> = (props) => {
                 <OneToOneChatPanel
                   userCredentials={users[0]}
                   updateSharedToken={handleUpdateSharedToken}
-                  colorName={"bg-blue-100"}
+                  colorName={"bg-customColors-lightGrayBg"}
                   users={users}
                   serverUrl={serverUrl}
                 />
@@ -69,7 +69,7 @@ const OneToOneChat: FC<ExamplePageTypes> = (props) => {
                 <div className="w-64 min-w-[20rem]">
                   <OneToOneChatPanel
                     userCredentials={users[0]}
-                    colorName={"bg-purple-100"}
+                    colorName={"bg-customColors-lightGrayBg"}
                     sharedToken={secondConnectionToken}
                     users={users}
                     serverUrl={serverUrl}
@@ -79,7 +79,7 @@ const OneToOneChat: FC<ExamplePageTypes> = (props) => {
               <div className="w-64 min-w-[20rem]">
                 <OneToOneChatPanel
                   userCredentials={users[1]}
-                  colorName={"bg-pink-100"}
+                  colorName={"bg-customColors-lightGrayBg"}
                   users={users}
                   serverUrl={serverUrl}
                 />

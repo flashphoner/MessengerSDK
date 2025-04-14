@@ -1,23 +1,24 @@
-// src/stores/layoutStore.ts
-
 type LayoutState = {
   docsOpen: boolean;
   sidebarOpen: boolean;
 };
 
-let layoutState: LayoutState = {
-  docsOpen: true,
-  sidebarOpen: true, // Default state is "open"
-};
+const STORAGE_KEY = "layoutState";
+
+function loadLayoutState(): LayoutState {
+  const savedState = localStorage.getItem(STORAGE_KEY);
+  return savedState
+    ? JSON.parse(savedState)
+    : { docsOpen: true, sidebarOpen: true };
+}
+
+
+let layoutState: LayoutState = loadLayoutState();
 
 let listeners: Array<() => void> = [];
 
 /**
  * Subscribe to layout state changes.
- * The listener will be called when the state changes.
- *
- * @param listener - A callback function to be called on state change
- * @returns A function to unsubscribe the listener
  */
 export function subscribeLayoutStore(listener: () => void): () => void {
   listeners.push(listener);
@@ -35,20 +36,17 @@ function notifyAll() {
 
 /**
  * Get the current layout state.
- *
- * @returns The current layout state
  */
 export function getLayoutState(): LayoutState {
   return layoutState;
 }
 
 /**
- * Update the layout state with partial updates.
- *
- * @param partial - Partial state to be updated
+ * Update the layout state with partial updates and save to localStorage.
  */
 export function setLayoutState(partial: Partial<LayoutState>) {
   layoutState = { ...layoutState, ...partial };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(layoutState));
   notifyAll();
 }
 

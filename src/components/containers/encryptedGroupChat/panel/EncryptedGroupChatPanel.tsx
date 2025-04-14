@@ -78,7 +78,7 @@ const EncryptedGroupChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTy
     } = useSDK();
 
     const selfContacts = contacts.filter((contact) => contact.userId !== userCredentials.username);
-    const [inputMessageValue, setInputMessageValue] = useState('');
+    const [inputMessageValue, setInputMessageValue] = useState<string>('');
     const [options, setOptions] = useState({ useIVAndSalt: false});
 
     const { connectWithCredentials } = useConnectWithCredentials({
@@ -263,21 +263,21 @@ const EncryptedGroupChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTy
               isEncryption={encryptionInfo?.encryptionEnabled}
               isDisconnectOff
             />
-            <Card className={colorName}>
-              <p className="card-title font-bold">Keys</p>
+            <Card className={colorName} title={'Keys'}>
               {encryptionInfo?.privateKey && <p className={textClassKey}>Private key: <span className="font-bold">{encryptionInfo?.privateKey}</span></p>}
               {encryptionInfo?.publicKey && <p className={textClassKey}>Public key: <span className="font-bold">{encryptionInfo?.publicKey}</span></p>}
               {encryptionInfo?.iv && <p className={textClassKey}>IV: <span className="font-bold">{encryptionInfo?.iv}</span></p>}
               {encryptionInfo?.salt && <p className={textClassKey}>Salt: <span className="font-bold">{encryptionInfo?.salt}</span></p>}
             </Card>
-            <Card className={colorName}>
-              <EncryptionOptionsForm onOptionsChange={setOptions} isDisabled={Boolean(encryptionInfo?.encryptionEnabled)} />
-            </Card>
+            { !encryptionInfo?.encryptionEnabled &&
+              <Card className={colorName}>
+                <EncryptionOptionsForm onOptionsChange={setOptions} isDisabled={Boolean(encryptionInfo?.encryptionEnabled)} />
+              </Card>
+            }
             {
-              users[0].username === userCredentials.username && (
-                <Card className={colorName}>
-                  <p className="text-md font-bold">New group chat</p>
-                  {!singleChat && selfContacts.length > 0 && (
+              users[0].username === userCredentials.username  && !singleChat?.id && (
+                <Card className={colorName} title="New chat">
+                  {!singleChat && isConnected && selfContacts.length > 0 && (
                     <>
                       <MemberSelectionForm
                         selfContacts={selfContacts}
@@ -291,7 +291,7 @@ const EncryptedGroupChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTy
                     </>
                   )}
 
-                  {singleChat && (
+                  {singleChat && isConnected && (
                     <MemberSelectionForm
                       selfContacts={selfContacts}
                       askToUpgradeProfile={askToUpgradeProfile}
@@ -303,7 +303,7 @@ const EncryptedGroupChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTy
               )
             }
             <Card className={colorName}>
-              <p className="card-title mb-2 font-bold">Chat</p>
+              <p className="card-title mb-2 font-bold">Group chat</p>
               {singleChat && singleChat.encryptionEnabled && (
                 <ChatCard name={singleChat?.name} members={singleChat?.members} />
               )}
@@ -323,20 +323,22 @@ const EncryptedGroupChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTy
                 />
               )}
             </Card>
-            <Card className={colorName}>
-              <p className="card-title mb-2 font-bold">Send encrypted message</p>
-              <StyledInput
-                disabled={Boolean(!singleChat?.id)}
-                value={inputMessageValue}
-                onChange={handleChangeInputMessageValue}
-                placeholder={"Enter text message"}
-              />
-              <ActionButton
-                text="Send"
-                className="mt-2"
-                isDisabled={!singleChat?.id || inputMessageValue.trim().length === 0}
-                onClick={handleSendEncryptedMessage}
-              />
+            <Card className={colorName} title='Send encrypted message'>
+              <div className="flex items-center mt-2">
+                <StyledInput
+                  disabled={Boolean(!singleChat?.id)}
+                  value={inputMessageValue}
+                  onChange={handleChangeInputMessageValue}
+                  placeholder={"Enter text message"}
+                  className={'className="w-[172px] h-[40px] border border-customColors-lightBorderGray px-2 text-xs focus:outline-none focus:border-black transition-colors duration-300 placeholder:text-xs text-customColors-placeholderLightGreen"'}
+                />
+                <ActionButton
+                  text="Send"
+                  className={"h-[40px] rounded-r-[12px] rounded-l-[0] px-6 py-2 text-base transition duration-300 bg-customColors-textBlue border-0 text-white"}
+                  isDisabled={!singleChat?.id || inputMessageValue.trim().length === 0}
+                  onClick={handleSendEncryptedMessage}
+                />
+              </div>
             </Card>
           </div>
         )

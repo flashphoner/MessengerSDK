@@ -59,7 +59,7 @@ const Contacts: FC<ExamplePageTypes> = (props) => {
                   userCredentials={users[0]}
                   users={users}
                   updateSharedToken={handleUpdateSharedToken}
-                  colorName={"bg-purple-100"}
+                  colorName={"bg-customColors-lightGrayBg"}
                   serverUrl={serverUrl}
                 />
               </div>
@@ -69,7 +69,7 @@ const Contacts: FC<ExamplePageTypes> = (props) => {
                     userCredentials={users[0]}
                     users={users}
                     sharedToken={secondConnectionToken}
-                    colorName={"bg-green-100"}
+                    colorName={"bg-customColors-lightGrayBg"}
                     serverUrl={serverUrl}
                   />
                 </div>
@@ -78,7 +78,7 @@ const Contacts: FC<ExamplePageTypes> = (props) => {
                 <SpacePanel
                   userCredentials={users[1]}
                   users={users}
-                  colorName={"bg-yellow-100"}
+                  colorName={"bg-customColors-lightGrayBg"}
                   serverUrl={serverUrl}
                 />
               </div>

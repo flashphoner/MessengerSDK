@@ -1,5 +1,6 @@
 import React from "react";
 import BurgerArrowIcon from '@/assets/icons/burger-arrow-left.svg';
+import Icon from '@/components/ui/icon/Icon';
 
 export type DocsHeaderProps = {
   /** Flag: whether the panel is open or collapsed */
@@ -18,9 +19,9 @@ function DocHeader({ docsOpen = false, onClickCollapse }: DocsHeaderProps) {
 
       {/* Collapse icon button */}
       {onClickCollapse && <div className="cursor-pointer mr-4" onClick={onClickCollapse}>
-        <img
+        <Icon
+          size={20}
           src={BurgerArrowIcon}
-          alt="toggle docs"
           className={`transition-transform duration-200 ${docsOpen ? 'rotate-0' : 'rotate-180'}`}
         />
       </div>}

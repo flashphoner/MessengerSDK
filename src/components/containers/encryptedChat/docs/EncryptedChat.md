@@ -62,7 +62,7 @@ This guide explains how to use the **Encrypted Chat** feature, which enables sec
 
 ### 1. Generate RSA Key Pair
 
-[Code from GitHub (Lines 1–10)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L1-L10)
+[Code from GitHub (Lines 1–10)](https://github.com/homeronkis/test-code-snippets/blob/main/encryption.ts#L1-L10)
 
 - Generates an RSA key pair (public and private keys).
 - **Public key**: Used to encrypt messages.
@@ -79,13 +79,13 @@ Below is the **sequence of actions** required to **encrypt and decrypt** message
 Each user requires a unique **RSA key pair** to encrypt and decrypt messages.
 
 **Generate an RSA Key Pair**  
-[GitHub (Lines 1–13)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L1-L13)
+[GitHub (Lines 1–13)](https://github.com/homeronkis/test-code-snippets/blob/main/encryption.ts#L1-L13)
 - Creates both a public and private key.
 - The **public key** is shared with contacts for encrypting messages; the **private key** remains confidential.
 
 #### 1.1 exportPrivateKeyToBase64()
 
-[GitHub (Lines 15–18)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L15-L18)
+[GitHub (Lines 15–18)](https://github.com/homeronkis/test-code-snippets/blob/main/encryption.ts#L15-L18)
 
 - **Purpose**: Converts the generated private key into a Base64 string for storage or transmission.
 - **Usage**:
@@ -96,7 +96,7 @@ Each user requires a unique **RSA key pair** to encrypt and decrypt messages.
 
 #### 1.2 exportPublicKeyToBase64()
 
-[GitHub (Lines 34–37)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L34-L37)
+[GitHub (Lines 34–37)](https://github.com/homeronkis/test-code-snippets/blob/main/encryption.ts#L34-L37)
 
 - **Purpose**: Converts the generated public key into a Base64 string so that others can easily encrypt messages for you.
 - **Usage**:
@@ -105,7 +105,7 @@ Each user requires a unique **RSA key pair** to encrypt and decrypt messages.
 
 #### 1.3 importPublicKeyFromBase64()
 
-[GitHub (Lines 39–51)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L39-L51)
+[GitHub (Lines 39–51)](https://github.com/homeronkis/test-code-snippets/blob/main/encryption.ts#L39-L51)
 
 - **Purpose**: Converts a Base64-encoded **public key** back into a **CryptoKey** object.
 - **Usage**:
@@ -117,7 +117,7 @@ Each user requires a unique **RSA key pair** to encrypt and decrypt messages.
 
 #### 2.1 deriveKeyFromPassword()
 
-[GitHub (Lines 53–75)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L53-L75)
+[GitHub (Lines 53–75)](https://github.com/homeronkis/test-code-snippets/blob/main/encryption.ts#L53-L75)
 
 - **Purpose**: Derives a cryptographic key from a user-supplied password.
 - **Usage**:
@@ -126,7 +126,7 @@ Each user requires a unique **RSA key pair** to encrypt and decrypt messages.
 
 #### 2.2 encryptPrivateKeyWithEmbeddedIvSalt()
 
-[GitHub (Lines 96–114)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L96-L114)
+[GitHub (Lines 96–114)](https://github.com/homeronkis/test-code-snippets/blob/main/encryption.ts#L96-L114)
 
 - **Purpose**: Encrypts the Base64-encoded private key using a password-derived key, embedding the IV and salt in the resulting string.
 - **Usage**:
@@ -136,7 +136,7 @@ Each user requires a unique **RSA key pair** to encrypt and decrypt messages.
 
 #### 2.3 decryptPrivateKey()
 
-[GitHub (Lines 116–147)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L116-L147)
+[GitHub (Lines 116–147)](https://github.com/homeronkis/test-code-snippets/blob/main/encryption.ts#L116-L147)
 
 - **Purpose**: Decrypts the **encrypted private key** (including embedded IV and salt) back into its original Base64 form.
 - **Usage**:
@@ -149,7 +149,7 @@ Each user requires a unique **RSA key pair** to encrypt and decrypt messages.
 
 #### 3.1 encryptMessageWithPublicKey()
 
-[GitHub (Lines 149–160)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L149-L160)
+[GitHub (Lines 149–160)](https://github.com/homeronkis/test-code-snippets/blob/main/encryption.ts#L149-L160)
 
 - **Purpose**: Encrypts a message (plaintext) using a recipient’s **public key**.
 - **Usage**:
@@ -159,7 +159,7 @@ Each user requires a unique **RSA key pair** to encrypt and decrypt messages.
 
 #### 3.2 decryptMessageWithPrivateKey()
 
-[GitHub (Lines 162–172)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L162-L172)
+[GitHub (Lines 162–172)](https://github.com/homeronkis/test-code-snippets/blob/main/encryption.ts#L162-L172)
 
 - **Purpose**: Decrypts ciphertext using the corresponding **private key**.
 - **Usage**:
