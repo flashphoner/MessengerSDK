@@ -1,0 +1,140 @@
+import { useCallback, useState } from "react";
+import { SfuExtended } from "@flashphoner/sfusdk";
+import {
+  SfuSpace,
+  SfuSpaceInvite
+} from '@flashphoner/sfusdk/dist/sdk/constants';
+export function useSdkSpaces(sdkInstance: SfuExtended | null) {
+  const [singleSpace, setSingleSpace] = useState<SfuSpace | null>(null);
+  const [userSpaces, setUserSpaces] = useState<Array<SfuSpace>>([]);
+  const [singleSpaceInviteCode, setSingleSpaceInviteCode] = useState<
+    string | null
+  >(null);
+
+  // Create a space
+  const createSpace = useCallback(
+    async (name: string) => {
+      if (!sdkInstance) return;
+      try {
+        const response: SfuSpace = await sdkInstance.createSpace({ name });
+        setSingleSpace(response);
+      } catch (error) {
+        console.error("createSpace:", error);
+      }
+    },
+    [sdkInstance],
+  );
+
+  // Get user spaces
+  const getUserSpaces = useCallback(async () => {
+    if (!sdkInstance) return;
+    try {
+      const spaces: SfuSpace[] = await sdkInstance.getUserSpaces();
+      setUserSpaces(spaces);
+      if (spaces.length > 0) {
+        setSingleSpace(spaces[0]);
+      } else {
+        setSingleSpace(null);
+      }
+    } catch (error) {
+      console.error("getUserSpaces:", error);
+    }
+  }, [sdkInstance]);
+
+  // Invite to space
+  const inviteToSpace = useCallback(
+    async (spaceId: string) => {
+      if (!sdkInstance) return;
+      try {
+        const invite: SfuSpaceInvite = await sdkInstance.generateNewSpaceInvite(
+          { spaceId, lifespan: 10000 },
+        );
+        setSingleSpaceInviteCode(invite.inviteCode);
+      } catch (error) {
+        console.error("inviteToSpace:", error);
+      }
+    },
+    [sdkInstance],
+  );
+
+  // Join space by invite code
+  const joinToSpace = useCallback(
+    async (inviteCode: string) => {
+      if (!sdkInstance) return;
+      try {
+        const space: SfuSpace = await sdkInstance.joinSpaceByInviteCode(inviteCode);
+        setSingleSpace(space);
+      } catch (error) {
+        console.error("joinToSpace:", error);
+      }
+    },
+    [sdkInstance],
+  );
+
+  // Leave space
+  const leaveSpace = useCallback(
+    async (spaceId: string) => {
+      if (!sdkInstance) return;
+      try {
+        await sdkInstance.leaveSpace({ id: spaceId });
+        setSingleSpace(null);
+        await getUserSpaces();
+      } catch (error) {
+        console.error("leaveSpace:", error);
+      }
+    },
+    [sdkInstance],
+  );
+
+  // Delete space
+  const deleteSpace = useCallback(
+    async (spaceId: string) => {
+      if (!sdkInstance) return;
+      try {
+        await sdkInstance.deleteSpace({ id: spaceId });
+        setUserSpaces((prev) => prev.filter((space) => space.id !== spaceId));
+        if (singleSpace?.id === spaceId)  {
+          setSingleSpace(null);
+        }
+        setSingleSpaceInviteCode(null);
+      } catch (error) {
+        console.error("deleteSpace:", error);
+      }
+    },
+    [sdkInstance, singleSpace],
+  );
+
+  // updateSpaceChannel
+  const updateSpaceChannel = useCallback(
+    async (channel: {
+      spaceId: string;
+      channelId: string,
+      name: string,
+      isPrivate: boolean,
+      members: Array<string>
+
+    }) => {
+      if (!sdkInstance) return;
+      try {
+         await sdkInstance.updateSpaceChannel(channel);
+      } catch (error) {
+        console.error("updateSpaceChannel:", error);
+      }
+    },
+    [sdkInstance, singleSpace],
+  );
+
+  return {
+    singleSpace,
+    userSpaces,
+    singleSpaceInviteCode,
+    createSpace,
+    getUserSpaces,
+    inviteToSpace,
+    joinToSpace,
+    leaveSpace,
+    deleteSpace,
+    updateSpaceChannel,
+    setSingleSpace,
+  };
+}
