@@ -21,31 +21,31 @@ sequenceDiagram
 - Click on **Connect** button invoke  **[connect](connect)**  function on the SDK.
 
 ### Call
-[Code (Lines 86–95)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/sdk/useSdkConnection.ts#L86-L95)
+[Github (Lines 86–95)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L86-L95)
 
 
 ### Doc
-[Code (Lines 71–84)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/sdk/useSdkConnection.ts#L71-L84)
+[Github (Lines 71–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L71-L84)
 
 ### 2. Receive authToken from **[connect](connect)** response
-[Code (Lines 80–84)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/sdk/useSdkConnection.ts#L80-L84)
+[Github (Lines 80–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L80-L84)
 
 ### 3. Call **[getUserInfo](getUserInfo)**
 - After the connection is established, we are getting self-information about user
-[Code (Lines 104)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/sdk/useSdkConnection.ts#L104-L104)
+[Github (Lines 104)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L104-L104)
 
 ### 4. Receive USER_INFO
 - Information about user
-[Code (Lines 98-102)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/sdk/useSdkConnection.ts#L98-L102)
+[Github (Lines 98-102)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L98-L102)
 
 
 ### 5. Call **[getUserEncryptionInfo](getUserEncryptionInfo)**
 - Retrieves encryption parameters previously saved for the user.
-[Code (Lines 17)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/sdk/useSdkEncryption.ts#L17-L17)
+[Github (Lines 17)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkEncryption.ts#L17-L17)
 
 ### 6. Response USER_ENCRYPTION_INFO
 
-[Code (Lines 19–27)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/sdk/useSdkEncryption.ts#L19-L27)
+[Github (Lines 19–27)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkEncryption.ts#L19-L27)
 
 
 ### App actions:
@@ -61,34 +61,34 @@ sequenceDiagram
 
 ### 7. Generate RSA Key Pair and get keys from service
 **Call**
-[Code (Lines 25)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/encryption/useEncryption.ts#L25-L25)
+[Github (Lines 25)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L25-L25)
 **Doc**
-[Code (Lines 27-33)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/encryption/useEncryption.ts#L27-L33)
+[Github (Lines 27-33)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L27-L33)
 - Required for encrypting your data.
 - Inside **generateKeysForUser()** we are using a function **generateRSAKeyPair()** for generate keys
 
 ### See also
 - Store the keys
-[Code (Lines 14-23)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/services/keyManagementService.ts#L14-L23)
+[Github (Lines 14-23)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/services/keyManagementService.ts#L14-L23)
 - Trying to generate keys
-[Code (Lines 10-28)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/utils/encryption.ts#L10-L28)
+[Github (Lines 10-28)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L10-L28)
 
 
 ### 8. Export Keys to Base64
 
 **Call export private key**
-[GitHub (Lines 31–31)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L31-L31)
+[GitHub (Lines 42–42)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L42-L42)
 
 **Doc**
-[GitHub (Lines 44–45)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/encryption/useEncryption.ts#L44-L45)
+[GitHub (Lines 44–45)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L44-L45)
 
 
 ### See also
 - Utils
-[GitHub (Lines 29–52)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/utils/encryption.ts#L29-L52)
+[GitHub (Lines 29–52)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L29-L52)
 
 **Call export public key**
-[GitHub (Lines 32–32)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L32-L32)
+[GitHub (Lines 47-47)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L47-L47)
 
 - **Purpose**: Converts the generated private key into a Base64 string for storage or transmission.
 - **Usage**:
@@ -98,32 +98,32 @@ sequenceDiagram
 > **Important**: Always protect the Base64 private key. Encrypt it (e.g., with a password) before saving or transmitting.
 
 **Doc**
-[GitHub (Lines 44–45)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/encryption/useEncryption.ts#L44-L45)
+[GitHub (Lines 44–45)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L44-L45)
 ### See also
 - Utils
-[GitHub (Lines 54–77)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/utils/encryption.ts#L54-L77)
+[GitHub (Lines 54–77)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L54-L77)
 
 ### 9. Prepare verification hash
 - Generate a verification hash by **MS-PASSWORD**.
 [GitHub (Lines 24)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L24-L24)
 
 **Call**
-[GitHub (Lines 28)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L28-L28)
+[GitHub (Lines 35)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L35-L35)
 
 **Doc**
-[GitHub (Lines 36–39)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/encryption/useEncryption.ts#L36-L39)
+[GitHub (Lines 36–39)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L36-L39)
 
 - Produces a one-way **SHA-256 fingerprint** that proves the client still possesses the correct master password, without revealing the password itself.
 - Pass **verificationHash** inside to sdk method **addUserEncryptionInfo()**
 
 ### See also 
 - Hash function
-[GitHub (Lines 276–290)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/utils/encryption.ts#L276-L290)
+[GitHub (Lines 276–290)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L276-L290)
 
 ### 10. Encrypt the Private Key optional using IV and Salt
 - IV and salt are embedded automatically or click on checkbox in *Encryption Options*
 **Call**
-[GitHub (Lines 53–57)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/encryption/useEncryption.ts#L53-L57)
+[GitHub (Lines 53–57)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L53-L57)
 
 - **Purpose**: Encrypts the Base64-encoded private key using a password-derived key, embedding the IV and salt in the resulting string.
 - **Usage**:
@@ -132,23 +132,23 @@ sequenceDiagram
     3. Store or send this **encrypted private key**, which contains the IV and salt.
 
 ### Doc
-[GitHub (Lines 140–149)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/utils/encryption.ts#L140-L149)
+[GitHub (Lines 140–149)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L140-L149)
 
 ### See also
 - Full function what inside
-[GitHub (Lines 151–171)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/utils/encryption.ts#L151-L171)
+[GitHub (Lines 151–171)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L151-L171)
 - Derive password
-[GitHub (Lines 111-125)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/utils/encryption.ts#L111-L125)
+[GitHub (Lines 111-125)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L111-L125)
 
 
 ### 11. Persist encryption info (Bob)
-- **addUserEncryptionInfo** — Bob uploads his *publicKey*, encrypted *privateKey*, IV and salt to the server.
+- **[getUserEncryptionInfo](getUserEncryptionInfo)** — Bob uploads his *publicKey*, encrypted *privateKey*, IV and salt to the server.
 
 **Call**
-[GitHub (Lines 69)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/sdk/useSdkEncryption.ts#L69-L69)
+[GitHub (Lines 69)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkEncryption.ts#L69-L69)
 
 **Doc**
-[GitHub (Lines 38-47)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/sdk/useSdkEncryption.ts#L38-L47)
+[GitHub (Lines 38-47)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkEncryption.ts#L38-L47)
 
 
 ### 12. Receive CONTACT_UPDATED
@@ -156,12 +156,12 @@ sequenceDiagram
 - The payload below shows the typical structure after Bob enables encryption:
 - When the user already has contacts, the SDK pushes **CONTACT_UPDATED** events to contacts.
 ### Doc
-[GitHub (Lines 68–79)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/events/contacts.ts#L68-L79)
+[GitHub (Lines 68–79)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L68-L79)
 
 ### 13. USER_ENCRYPTION_INFO_ADDED
 - the server acknowledges Bob’s encryption data is now stored.
 
-[GitHub (Lines 48-55)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1030/src/hooks/sdk/useSdkEncryption.ts#L48-L55)
+[GitHub (Lines 48-55)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkEncryption.ts#L48-L55)
 
 ###  SDK Methods
 
