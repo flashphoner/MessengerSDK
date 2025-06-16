@@ -67,6 +67,22 @@ export function useSdkConnection() {
            });
          }
          else {
+           /**
+            * @param url - WebSocket URL (e.g. `wss://sfu.example.com`)
+            * @param credentials - Authentication data
+            * @param credentials.username - Login or e-mail
+            * @param credentials.password - Plain-text password
+            * @param credentials.device - Human-readable device label
+            * @param details - Connection metadata
+            * @param detail.id - Unique connection ID
+            * @param detail.type - Connection purpose (`MAIN`, `MEETING`, `CHAT`, `MEETING_CHAT`, …)
+            *
+            * @returns Promise that resolves with:
+            *
+            * {
+            *   authToken: string;
+            * }
+            */
            connectResp = await sdkInstance.current.connect({
              url: serverUrl,
              username: credentials.email,
@@ -78,6 +94,13 @@ export function useSdkConnection() {
              },
            });
          }
+         /**
+          * {
+          *   email: string,
+          *   nickname: string,
+          *   status: string,
+          * }
+          */
          const userInfoResponse = await sdkInstance.current.getUserInfo();
          if (connectResp) {
            const updatedUserInfo = {

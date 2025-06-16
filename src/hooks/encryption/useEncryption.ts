@@ -22,14 +22,33 @@ const useEncryption = (
   const turnOnEncryption = useCallback(async () => {
 
     const ms = "MS-PASSWORD";
+    const selfKeys = await keyManagementService.generateKeysForUser(username);
+    /**
+     @param username: string
 
-    await keyManagementService.generateKeysForUser(username);
-    const selfKeys = keyManagementService.getUserKeys(username);
+     @return keyPair
+     {
+       publicKey,
+       privateKey
+     }
+     */
     const verificationHash = await hashSHA256(ms);
+    /**
+     * @param ms: string - Master Password value
+     * @return Promise<string>
+     */
 
-    if (selfKeys?.keyPair?.privateKey) {
-      const strPrivateKey = await exportPrivateKeyToBase64(selfKeys.keyPair.privateKey);
-      const strPublicKey = await exportPublicKeyToBase64(selfKeys.keyPair.publicKey);
+    if (selfKeys.privateKey) {
+      const strPrivateKey = await exportPrivateKeyToBase64(selfKeys.privateKey);
+      /**
+       * @param privateKey CryptoKey
+       * @returns Promise<string>
+       */
+      const strPublicKey = await exportPublicKeyToBase64(selfKeys.publicKey);
+      /**
+       * @param public CryptoKey
+       * @returns Promise<string>
+       */
 
       const { encryptedPrivateKey, iv, salt } = await encryptPrivateKeyWithSeparateIvSalt(
         strPrivateKey,
@@ -37,7 +56,7 @@ const useEncryption = (
         options.useIVAndSalt
       );
 
-      const encryptionData = {
+      const info = {
         publicKey: strPublicKey,
         privateKey: encryptedPrivateKey,
         verificationHash,
@@ -45,7 +64,7 @@ const useEncryption = (
         salt,
       };
 
-      await addEncryptionInfo(encryptionData);
+      await addEncryptionInfo(info);
     }
   }, [username, options, addEncryptionInfo]);
 

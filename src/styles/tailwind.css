@@ -5,34 +5,66 @@
   .calc-main-height {
     height: calc(100vh - 5rem);
   }
-  
+
   .imageIcon {
     display: block;
     width: 100%;
     height: 100%;
   }
-  
+
   .custom-scrollbar {
     scrollbar-width: thin; /* Firefox */
     scrollbar-color: rgba(0, 0, 0, 0.3) transparent; /* Firefox */
   }
-  
+
   /* WebKit (Chrome, Safari) */
   .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.3);
     border-radius: 4px;
   }
-  
+
   .custom-scrollbar:hover::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.5);
   }
+  .messageText {
+    color: black;
+  }
+  .noselect {
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+  }
+}
+@layer components {
+  .seealso-box {
+    @apply mb-4 rounded-lg;
+  }
+
+  .seealso-summary {
+    @apply list-none cursor-pointer select-none
+    py-2 font-semibold relative;
+  }
+
+  .seealso-arrow {
+    @apply absolute right-3 top-1/2 -translate-y-1/2
+    transition-transform duration-200;
+  }
+}
+
+summary.seealso-summary::-webkit-details-marker,
+summary.seealso-summary::marker {
+  display: none;
+}
+
+details.seealso-box[open] .seealso-arrow {
+  transform: translateY(-50%) rotate(90deg);
 }

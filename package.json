@@ -7,7 +7,8 @@
     "lint:fix": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack serve --config config/webpack/webpack.dev.js",
-    "build": "webpack --config config/webpack/webpack.prod.js"
+    "build": "webpack --config config/webpack/webpack.prod.js",
+    "md:replace:github": "node mass-replace-md-links.js"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,7 @@
     "color-hash": "^2.0.2",
     "crypto-js": "^4.2.0",
     "idb": "^8.0.1",
+    "mermaid": "^11.6.0",
     "moment": "^2.30.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

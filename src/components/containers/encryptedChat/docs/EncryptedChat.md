@@ -1,238 +1,204 @@
-This guide explains how to use the **Encrypted Chat** feature, which enables secure communication by encrypting messages, creating private chats, and managing user profiles with advanced encryption settings.
 
+```mermaid
+sequenceDiagram
+    participant Bob
+    participant SDK
+    participant Alice
+    
+    Bob ->> SDK: 1. createChat()
+    SDK -->> Bob: 2. Resolve SFU_NEW_CHAT  
+    SDK -->> Alice: 3. Event SFU_NEW_CHAT object
+    Note over Bob: App actions: <br/> 4. Set text to input message  <br/> 5. Try to send message <br/> 6. Show modal warning
+    Bob ->> SDK: 7. sendMessage()
+    SDK -->> Bob: 8. Resolve SFU_MESSAGE_STATE
+    SDK -->> Alice: 9. Event SFU_MESSAGE
+```
+# Security‑Upgrade Prompt Flow (Bob ⇌ Alice)
 
-### Key Features
+### UI trigger (contacts list)
 
-1. **Server Connection**
-   - Connect or disconnect from the server using a simple button.
-   - The connection status is clearly displayed (e.g., Connected, Disconnected).
+- In Bob’s **Contacts** panel each entry has a small **shield** icon to the right of the username.
+- When Bob hovers over the shield, a tooltip appears with a **“Ask”** button.
+- Pressing that button automatically
+    1. opens (or focuses) a one‑on‑one chat with the contact;
+    2. pre‑fills the input field with a polite request to enable profile encryption.
 
-2. **Profile Encryption**
-   - Enable encryption for your profile to secure sensitive information.
-   - Encryption is activated using a "Turn On Encryption" button.
+---
 
-3. **Upgrade Security Level**
-   - Upgrade your profile security level to access encrypted features.
-   - An "Upgrade" option is provided for enhancing security and unlocking chat encryption.
+### Network sequence
 
-4. **Encrypted Chat Creation**
-   - Create secure, encrypted one-on-one chats with other users.
-   - Available only after **both** participants have upgraded their security levels.
+1. **Bob → SDK — createChat()**  
+   Bob’s client asks the server to create the dedicated chat.
 
-5. **Secure Messaging**
-   - Messages are encrypted using public/private key pairs for maximum security.
-   - A prompt is shown when attempting to send messages in non-encrypted chats.
+2. **SDK → Bob — Resolve SFU_NEW_CHAT**  
+   Server confirms creation and returns the chatId.
 
-6. **Contact Card**
-   - View your contacts and their encryption status in the contact card.
-   - Use the "Ask to Upgrade" button to notify contacts to enable encryption for enhanced security.
+3. **SDK → Alice — Event SFU_NEW_CHAT**  
+   Alice is notified in real time that a new chat with Bob exists.
 
+#### App‑side actions (Bob)
 
-### How to Use
+4. The prepared upgrade message is already in the input box.
+5. Bob presses **Send**.
+6. A modal warning pops up:  
+   *“This message will be sent unencrypted”*  
+   Bob can **Cancel** or **Send anyway**.
 
-1. **Connect to the Server**
-   - Click the "Connect" button to establish a connection.
-   - Verify that the status changes to "Connected" in the interface.
+7. **Bob → SDK — sendMessage()**  
+   If Bob confirms, the request is dispatched.
 
-2. **Turn On Encryption**
-   - Click the "Turn On Encryption" button to enable encryption for your profile.
-   - Once enabled, your profile data and chats are protected by cryptographic keys.
+8. **SDK → Bob — Resolve SFU_MESSAGE_STATE**  
+   Server stores the message and marks its state as *sent*.
 
-3. **Upgrade Security Level**
-   - If required, click the "Upgrade" button to enhance your security level.
-   - Upgrading grants access to encrypted chat features.
+9. **SDK → Alice — Event SFU_MESSAGE**  
+   Alice receives the plain‑text upgrade prompt in real time.
 
-4. **Add or View Contacts**
-   - Open the contact card to view your contacts.
-   - If a contact has not enabled encryption, click "Ask to Upgrade" to send them a request.
+**Result:**  
+Both users now see the conversation. Bob’s reminder remains visible until Alice finishes the profile‑encryption setup.
 
-5. **Create an Encrypted Chat**
-   - When both you and the other user have encryption enabled, click "Create Encrypted Chat."
-   - A secure chat will be created, allowing you to exchange encrypted messages.
+**Encrypted steps**
+  - Upgrade profiles
+  - Create encrypted chat
+  - Send encrypted message
+  - Decrypt message
 
-6. **Send an Encrypted Message**
-   - Type your message in the input field within the chat.
-   - Click "Send Message" to transmit the **encrypted** message.
-   - If encryption is not enabled, a warning modal will appear, asking you to confirm sending unencrypted.
+```mermaid
+sequenceDiagram
+    participant Bob
+    participant SDK
+    participant Alice
+    
+    Note over Bob: App actions: <br/>1. Generate keys<br/>2. Prepare keys to export<br/>3. Derive password key<br/>4. Prepare Verification hash<br/>5. Optional add salt and IV
+    Note over Alice: App actions: <br/>6. Generate keys<br/>7. Prepare keys to export<br/>8. Derive password key<br/>9. Prepare Verification hash<br/>10. Optional add salt and IV
+    Bob ->> SDK: 11. addUserEncryptionInfo()
+    SDK -->> Bob: 12. Event CONTACT_UPDATED
+    SDK -->> Bob: 13. USER_ENCRYPTION_INFO_ADDED
+    SDK ->> Alice: 14. Event CONTACT_UPDATED
+    Alice ->> SDK: 15. addUserEncryptionInfo()
+    SDK -->> Alice: 16. Event CONTACT_UPDATED
+    SDK -->> Alice: 17. USER_ENCRYPTION_INFO_ADDED
+    SDK ->> Bob: 18. Event CONTACT_UPDATED
+    Bob ->> SDK: 19. createChat() -  encrypted
+    SDK -->> Bob: 20. Resolve SFU_NEW_CHAT  
+    SDK -->> Alice: 21. Event SFU_NEW_CHAT object
+    Bob ->> SDK: 22. sendMessage() 
+    SDK -->> Bob: 23. Resolve SFU_MESSAGE_STATE
+    SDK -->> Alice: 24. Event SFU_MESSAGE
+    Note over Bob: App actions: <br/>25. Decrypt message<br/>
+    Note over Alice: App actions: <br/>25. Decrypt message<br/>
+```
 
-7. **Manage Messages**
-   - View chat history and decrypt messages when needed.
-   - Use the "Decrypt" button to securely access any encrypted messages.
+# End‑to‑End Encryption Flow (Bob ⇌ Alice)
 
+## Profile upgrade (per user)
+
+### App actions:
 
 ### 1. Generate RSA Key Pair
-
-[Code from GitHub (Lines 1–10)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L1-L10)
-
-- Generates an RSA key pair (public and private keys).
-- **Public key**: Used to encrypt messages.
-- **Private key**: Used to decrypt messages.
-
-
-### Encryption Implementation Steps (Using Web Crypto)
-
-Below is the **sequence of actions** required to **encrypt and decrypt** messages in a secure single-user (private) chat environment.
-
-
-### 1. Generate & Store User Keys
-
-Each user requires a unique **RSA key pair** to encrypt and decrypt messages.
-
-**Generate an RSA Key Pair**  
 [GitHub (Lines 1–13)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L1-L13)
-- Creates both a public and private key.
-- The **public key** is shared with contacts for encrypting messages; the **private key** remains confidential.
+- Required for encrypting your data.
 
-#### 1.1 exportPrivateKeyToBase64()
+
+
+#### 2. Export Keys to Base64
 
 [GitHub (Lines 15–18)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L15-L18)
 
 - **Purpose**: Converts the generated private key into a Base64 string for storage or transmission.
 - **Usage**:
-   1. After generating a key pair via **generateRSAKeyPair()**, call **exportPrivateKeyToBase64(privateKey)**.
-   2. The returned Base64-encoded private key can be stored or sent to a server.
+    1. After generating a key pair via **generateRSAKeyPair()**, call **exportPrivateKeyToBase64(privateKey)**.
+    2. The returned Base64-encoded private key can be stored or sent to a server.
 
 > **Important**: Always protect the Base64 private key. Encrypt it (e.g., with a password) before saving or transmitting.
-
-#### 1.2 exportPublicKeyToBase64()
 
 [GitHub (Lines 34–37)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L34-L37)
 
 - **Purpose**: Converts the generated public key into a Base64 string so that others can easily encrypt messages for you.
 - **Usage**:
-   1. Call **exportPublicKeyToBase64(publicKey)** after generating your RSA key pair.
-   2. Store or share the Base64-encoded public key so other users can encrypt messages for you.
-
-#### 1.3 importPublicKeyFromBase64()
-
-[GitHub (Lines 39–51)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L39-L51)
-
-- **Purpose**: Converts a Base64-encoded **public key** back into a **CryptoKey** object.
-- **Usage**:
-   1. When receiving a contact’s public key in Base64 format, call **importPublicKeyFromBase64(base64Key)**.
-   2. Use the resulting **public CryptoKey** to encrypt messages or share chat-specific keys for that user.
+    1. Call **exportPublicKeyToBase64(publicKey)** after generating your RSA key pair.
+    2. Store or share the Base64-encoded public key so other users can encrypt messages for you.
 
 
-### 2. Protect the Private Key
-
-#### 2.1 deriveKeyFromPassword()
+#### 3. Derive a key from the Master Password
 
 [GitHub (Lines 53–75)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L53-L75)
 
-- **Purpose**: Derives a cryptographic key from a user-supplied password.
+- **Purpose**: Derives a cryptographic key from a user-supplied password now we are using static *MS-PASSWORD* value.
 - **Usage**:
-   - Internally used to generate a strong key from a user-chosen password or passphrase.
-   - This derived key is then used to encrypt or decrypt the private key.
+    - Internally used to generate a strong key from a user-chosen password or passphrase.
+    - This derived key is then used to encrypt or decrypt the private key.
 
-#### 2.2 encryptPrivateKeyWithEmbeddedIvSalt()
+- Used to encrypt the private key securely.
 
-[GitHub (Lines 96–114)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L96-L114)
+### 4. Prepare verification hash
+- Generate a verification hash by **MS-PASSWORD**.
+  [GitHub (Lines 174 – 183)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L174-L183)
+
+- Produces a one-way **SHA-256 fingerprint** that proves the client still possesses the correct master password, without revealing the password itself.
+- Pass **verificationHash** inside **addUserEncryptionInfo()**
+
+
+### 5. Encrypt the Private Key optional using IV and Salt
+- IV and salt are embedded automatically or click on checkbox in *Encryption Options*
+  [GitHub (Lines 96–114)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L96-L114)
 
 - **Purpose**: Encrypts the Base64-encoded private key using a password-derived key, embedding the IV and salt in the resulting string.
 - **Usage**:
-   1. Get the Base64 private key via **exportPrivateKeyToBase64()**.
-   2. Call **encryptPrivateKeyWithEmbeddedIvSalt(base64PrivateKey, password, useIVAndSalt)**.
-   3. Store or send this **encrypted private key**, which contains the IV and salt.
-
-#### 2.3 decryptPrivateKey()
-
-[GitHub (Lines 116–147)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L116-L147)
-
-- **Purpose**: Decrypts the **encrypted private key** (including embedded IV and salt) back into its original Base64 form.
-- **Usage**:
-   1. Retrieve the **encrypted private key** from storage.
-   2. Use the same password used in **encryptPrivateKeyWithEmbeddedIvSalt()**.
-   3. Restores the **original private key** (in Base64), which can then be imported as a CryptoKey for decryption.
+    1. Get the Base64 private key via **exportPrivateKeyToBase64()**.
+    2. Call **encryptPrivateKeyWithEmbeddedIvSalt(base64PrivateKey, password, useIVAndSalt)**.
+    3. Store or send this **encrypted private key**, which contains the IV and salt.
 
 
-### 3. Encrypt & Decrypt Messages
+### 6-10. Repeat key-generation flow (second user)
+These steps mirror **6–10**, but are performed by the second user (Alice):
 
-#### 3.1 encryptMessageWithPublicKey()
+### 11-13. Persist encryption info (Bob)
+- **11. addUserEncryptionInfo** — Bob uploads his *publicKey*, encrypted *privateKey*, IV and salt to the server.
+- **12. CONTACT_UPDATED** — the server confirms Bob’s contact card was refreshed.
+- **13. USER_ENCRYPTION_INFO_ADDED** — the server acknowledges Bob’s encryption data is now stored.
 
-[GitHub (Lines 149–160)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L149-L160)
+### 14–16. Persist encryption info (Alice)
+- **14. CONTACT_UPDATED** — Event for Alice about Bob updates.
+- **15. addUserEncryptionInfo** — Alice performs the same upload with her own keys.
+- **16. CONTACT_UPDATED** — the server confirms Alice’s contact card was refreshed.
+- **17. USER_ENCRYPTION_INFO_ADDED** — the server acknowledges Bob’s encryption data is now stored.
+- **18. CONTACT_UPDATED** — Event for Bob about Alice's updates.
+- 
+## 19–25. Encrypted‑chat workflow (runtime)
+- **19. Create encrypted chat**
+    Bob calls **handleCreateEncryptedChat**, which
+[GitHub (Lines 143–177)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L143-L177)
+- generates a temporary RSA key pair and an AES‑256;
+- creates a random chat password with **uuidv4()**;
+- encrypts the chat’s private key with **encryptPrivateKeyWithEmbeddedIvSalt**;
+- loops through every contact and for each one
+    - imports the contact’s public key with **importPublicKeyFromBase64**,
+    - encrypts the chat password using **encryptMessageWithPublicKey**,
+    - appends the result to **encryptedChatPasswords**;
+- finally invokes **handleCreateChat** with  
+  publicKey, encryptedPrivateKey, encryptedChatPasswords and encryptedAttachmentsSecretKey.
 
-- **Purpose**: Encrypts a message (plaintext) using a recipient’s **public key**.
-- **Usage**:
-   1. Convert or import the recipient’s public key into a CryptoKey (e.g., *importPublicKeyFromBase64()*).
-   2. Call **encryptMessageWithPublicKey(publicKey, plaintextMessage)**.
-   3. Only the matching **private key** can decrypt this message.
+- **20. Resolve SFU_NEW_CHAT** — server returns the final **chatId**; the client replaces the temporary id via **keyManagementService.replaceChatId**.
 
-#### 3.2 decryptMessageWithPrivateKey()
+- **21. Event SFU_NEW_CHAT** — Alice receives chat metadata: Bob’s chat public key and her encrypted chat password.
 
-[GitHub (Lines 162–172)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L162-L172)
+- **22. sendMessage** — Inside **handleSendMessage** the plaintext is encrypted with the chat public key and dispatched to the server.
 
-- **Purpose**: Decrypts ciphertext using the corresponding **private key**.
-- **Usage**:
-   1. Make sure the private key is available as a CryptoKey (import it if needed).
-   2. Pass the ciphertext to **decryptMessageWithPrivateKey(privateKey, encryptedMessage)**.
-   3. The function returns the **original plaintext** message.
-
-
-### 4. Create an Encrypted Chat
-
-1. **Generate an RSA Key Pair**
-   - Use a function like **generateRSAKeyPair()** to produce a **unique** public/private key pair dedicated to this chat (if needed).
-
-2. **Convert & Protect the Chat’s Private Key** (Optional)
-   - If you create a **separate** key pair for the chat itself (rather than per-user keys), you may:
-      1. Call **exportPrivateKeyToBase64(chatKeyPair.privateKey)** to get the private key in Base64.
-      2. Derive a **chat password** (e.g., using *uuidv4()*).
-      3. Encrypt the private key with **encryptPrivateKeyWithEmbeddedIvSalt(base64PrivateKey, chatPassword, useIVAndSalt)**.
-
-3. **Share the Chat Password (If Applicable)**
-   1. Import the participant’s public key via **importPublicKeyFromBase64()**.
-   2. Use **encryptMessageWithPublicKey()** to encrypt the **chat password** for that participant.
-   3. The participant can then decrypt it with their own private key.
-
-4. **Save the Chat Data**
-   - Pass relevant fields to your chat creation function (e.g., **createChat()**):
-      - **encryptedPrivateKey** (if using a dedicated chat key pair and you encrypt it),
-      - **publicKey** (Base64 representation of the chat’s public key),
-      - **encryptedChatPasswords** (one for each participant, if applicable),
-      - or an **AES key** for attachments (via **generateAESKey()**).
-
-5. **Initialization**
-   - Store the chat’s metadata (public key, encrypted private key, etc.) so clients can retrieve and decrypt it as needed.
+[GitHub (Lines 198–240)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L198-L240)
 
 
-### 5. Send & Receive Messages in the Encrypted Chat
+- **23. Resolve SFU_MESSAGE_STATE** — server stores the ciphertext and marks the message as **sent**.
 
-#### 5.1 Sending Encrypted Messages
+- **24. Event SFU_MESSAGE** — Alice’s client receives the encrypted payload in real time.
 
-1. **Retrieve the Public Key**
-   - Get or import the **public key** (from the user or the dedicated chat).
+- **25. Decrypt message**
+  - Alice retrieves chat keys via **getChatKeys** from keyManagementService(first access decrypts them with her chat password).
+  [GitHub (Lines 41–48)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/services/keyManagementService.ts#L41-L48)
+       
+  - Passes the ciphertext to reveal the plaintext.
+  [GitHub (Lines 162–172)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L162-L172)
 
-2. **Encrypt the Message**
-   - Call **encryptMessageWithPublicKey(publicKey, messageContent)**.
-
-3. **Transmit**
-   - Send the encrypted text (e.g., via **sendMessage()**) to the server or directly to the recipient.
-
-#### 5.2 Receiving & Decrypting Messages
-
-1. **Decrypt the Private Key (If Necessary)**
-   - If the private key is encrypted, retrieve it from storage and decrypt it with the known password.
-
-2. **Import the Private Key**
-   - Convert the Base64 private key into a **CryptoKey** object.
-
-3. **Decrypt the Message**
-   - Call **decryptMessageWithPrivateKey(privateKey, encryptedMessage)** to obtain the original plaintext.
-
-
-### Functional Highlights
-
-- **Connection Status**  
-  Clear indication of whether you are connected or disconnected from the server.
-
-- **Security Levels**  
-  Easily upgrade your profile security to access advanced features.
-
-- **Warning Modal**  
-  Alerts you if you attempt to send messages in a non-encrypted chat.
-
-- **Contact Notifications**  
-  Prompt contacts to enable encryption for truly secure communication.
+**Result:** From this point on, every message and attachment in the chat is protected end‑to‑end.
 
 ### SDK Methods
 ---

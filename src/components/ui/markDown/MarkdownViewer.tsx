@@ -7,16 +7,29 @@ import CopyButton from "@/components/ui/buttons/CopyButton";
 import { EXTENDED_PATH, SDK_DOC_URL } from "@/utils/constants";
 import CodeLinkIcon from "@/assets/icons/codeLink.svg";
 import Icon from '@/components/ui/icon/Icon';
+import Mermaid from '@/components/ui/Mermaid';
+import {stripCommonIndent, removeMarkersButKeepText, stripAsterisks} from "@/utils/helpers";
 
 export type MarkdownViewerProps = {
   content?: string;
 };
-
+function toRawUrl(url: string): string | null {
+  if (url.includes("github.com")) {
+    return url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
+  }
+  if (url.includes("gitlab.flashphoner.com")) {
+    const match = url.match(/gitlab\.flashphoner\.com\/(.+)\/blob\/([^/]+)\/(.+)$/);
+    if (!match) return null;
+    const [, groupAndRepo, branch, filePath] = match;
+    return `https://gitlab.flashphoner.com/${groupAndRepo}/raw/${branch}/${filePath}`;
+  }
+  return null;
+}
 // Caches
 const linesCache: Record<string, string[]> = {};
 const promisesCache: Record<string, Promise<string[]> | undefined> = {};
 
-async function fetchGitHubFile(url: string): Promise<string[]> {
+async function fetchSnippetFile(url: string): Promise<string[]> {
   const cachedLines = linesCache[url];
   if (cachedLines) {
     return cachedLines;
@@ -27,11 +40,13 @@ async function fetchGitHubFile(url: string): Promise<string[]> {
     return existingPromise;
   }
 
+  const rawUrl = toRawUrl(url);
+  if (!rawUrl) {
+    throw new Error(`Unsupported URL: ${url}`);
+  }
+
   const newPromise = (async () => {
     try {
-      const rawUrl = url
-        .replace("github.com", "raw.githubusercontent.com")
-        .replace("/blob/", "/");
       const resp = await fetch(rawUrl);
       if (!resp.ok) {
         throw new Error(`Failed to fetch file: ${url}`);
@@ -73,7 +88,7 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
   useEffect(() => {
     if (!content) return;
 
-    const regex = /\[(.*?)\]\((https:\/\/github\.com\/[^#]+)#L(\d+)-L(\d+)\)/g;
+    const regex = /\[(.*?)\]\((https:\/\/(?:github\.com|gitlab\.flashphoner\.com)\/[^)]+)#L(\d+)-L(\d+)\)/g;
     const matches = [...content.matchAll(regex)];
 
     if (matches.length === 0) {
@@ -121,14 +136,17 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
           observer.unobserve(entry.target);
 
           if (!linesCache[snippetInfo.url]) {
-            await fetchGitHubFile(snippetInfo.url);
+            await fetchSnippetFile(snippetInfo.url);
           }
 
           const lines = linesCache[snippetInfo.url] || [];
-          const snippetCode = lines
+          let snippetCode = lines
             .slice(snippetInfo.start - 1, snippetInfo.end)
             .join("\n");
+          const snippetLines = lines.slice(snippetInfo.start - 1, snippetInfo.end);
+          snippetCode   = snippetLines.join('\n');
 
+          snippetCode = stripCommonIndent(snippetCode);
           setResolvedContent((prev) =>
             prev
               ? prev.replace(
@@ -147,6 +165,7 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
     <div className="p-6 overflow-x-hidden">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
+        skipHtml={true}
         components={{
           h1: ({ children }) => (
             <h1 className="mb-4 text-2xl font-bold tracking-tight">{children}</h1>
@@ -155,7 +174,7 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
             <h2 className="mb-4 text-xl font-semibold">{children}</h2>
           ),
           h3: ({ children }) => (
-            <h3 className="mb-4 text-lg font-semibold">{children}</h3>
+            <h3 className="mb-2 mt-4 text-lg font-semibold">{children}</h3>
           ),
           h4: ({ children }) => (
             <h4 className="mb-3 text-base font-semibold">{children}</h4>
@@ -204,81 +223,88 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
               );
             }
 
-            const lang = className?.replace("language-", "") || "plaintext";
-            const codeString = String(children).trim();
-            const snippetKey = codeString.match(/\/\/ snippet-key:\s+(.+)/)?.[1] ?? "";
+            const infoString   = className?.replace('language-', '').trim() || 'plaintext';
+            const [rawLang, ...flags] = infoString.split(/\s+/);
+            const isTsDoc   = rawLang === 'tsdoc';
+            const highlightLang = isTsDoc ? 'ts' : rawLang;
+            const manualSnippet = flags.includes('snippet') || isTsDoc;
+            const codeString   = String(children).trim();
+            const cleanedCode = stripAsterisks(stripCommonIndent(
+              removeMarkersButKeepText(codeString.replace(/\/\/ snippet-key: .+\n?/, ''))
+            ));
+
+            const snippetKey   = codeString.match(/\/\/ snippet-key:\s+(.+)/)?.[1] ?? '';
             const rawSnippetUrl = snippetMapRef.current[snippetKey];
-            const cleanedCode = codeString.replace(/\/\/ snippet-key: .+\n?/, "");
+
+            if (highlightLang === 'mermaid') {
+              return <Mermaid code={codeString}/>;
+            }
+
+            if (manualSnippet || snippetKey) {
+              return (
+                <div
+                  data-snippet-key={snippetKey}
+                  ref={el => el && observerRef.current?.observe(el)}
+                  className="relative mb-4 not-prose inline-block max-w-full overflow-x-auto
+                             rounded-lg shadow-md bg-[#213C45] p-4 min-h-10"
+                >
+                  <div className="absolute top-2 right-2 z-10 flex">
+                    {rawSnippetUrl && (
+                      <a
+                        href={rawSnippetUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-customColors-textBlue mr-1"
+                      >
+                        <Icon src={CodeLinkIcon} size={16} strokeColor="#758F93" fillColor="#758F93" />
+                      </a>
+                    )}
+                    <CopyButton text={cleanedCode} className="text-sm color-customColors-lightGrayGreen" />
+                  </div>
+
+                  <SyntaxHighlighter
+                    language={highlightLang}
+                    style={dracula}
+                    customStyle={{
+                      display: 'inline-block',
+                      width: 'max-content',
+                      maxWidth: '100%',
+                      margin: 0,
+                      background: 'transparent',
+                      fontFamily: '"Courier New", monospace',
+                      fontSize: 14,
+                      whiteSpace: 'pre',
+                    }}
+                    codeTagProps={{ style: { color: '#F89E0B' } }}
+                  >
+                    {cleanedCode}
+                  </SyntaxHighlighter>
+                </div>
+              );
+            }
 
             return (
-              <div
-                className="relative mb-4 not-prose"
-                data-snippet-key={snippetKey}
-                ref={(el) => el && observerRef.current?.observe(el)}
-                style={{
-                  position: 'relative',
-                  borderRadius: '8px',
-                  backgroundColor: '#213C45',
-                  padding: '16px',
-                  boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)'
+              <SyntaxHighlighter
+                language={highlightLang}
+                style={dracula}
+                customStyle={{
+                  display: 'inline-block',
+                  width: 'max-content',
+                  maxWidth: '100%',
+                  margin: 0,
+                  background: 'transparent',
+                  fontFamily: '"Courier New", monospace',
+                  fontSize: 14,
+                  whiteSpace: 'pre',
                 }}
+                codeTagProps={{ style: { color: '#F89E0B' } }}
               >
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    zIndex: 10,
-                    display: 'flex',
-                    justifyContent: 'center'
-                  }}
-                >
-                  {rawSnippetUrl && (
-                    <a
-                      href={rawSnippetUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-customColors-textBlue block mr-1"
-                    >
-                      <Icon src={CodeLinkIcon} size={16} strokeColor="#758F93" fillColor="#758F93" />
-                    </a>
-                  )}
-                  <CopyButton
-                    text={cleanedCode}
-                    className="text-sm color-customColors-lightGrayGreen"
-                  />
-                </div>
-                <SyntaxHighlighter
-                  language={lang}
-                  style={dracula}
-                  customStyle={{
-                    marginTop: '20px',
-                    padding: '10px',
-                    borderRadius: '8px',
-                    backgroundColor: '#213C45',
-                    fontFamily: '"Courier New", Courier, monospace',
-                    fontSize: '14px',
-                    /**
-                     * 2) Ensure no horizontal scroll by wrapping long lines
-                     *    and restricting the maximum width:
-                     */
-                    maxWidth: '100%',         // prevents code from exceeding the container
-                    overflowX: 'scroll',
-                    whiteSpace: 'pre-wrap',
-                    wordWrap: 'break-word',
-                    scrollbarWidth: 'none', // Firefox
-                    msOverflowStyle: 'none' // IE
-                  }}
-                  codeTagProps={{
-                    style: { color: '#F89E0B' }
-                  }}
-                >
-                  {cleanedCode}
-                </SyntaxHighlighter>
-              </div>
+                {cleanedCode}
+              </SyntaxHighlighter>
             );
+
           },
-          a: ({ href, ...props }) => (
+          a: ({href, ...props}) => (
             <a
               className="font-bold hover:underline text-customColors-textBlue mx-1"
               {...props}

@@ -1,210 +1,304 @@
-This guide explains how to use the Encrypted Group Chat feature, which enables secure communication by encrypting messages, creating group chats, and managing user profiles with advanced encryption settings.
+This guide explains how to use the Encrypted group chat feature.
 
-### Key Features
+#  SDK Interaction Diagram
+- Connect three users
+- Add friend
+- Share contacts
 
-1. **Server Connection**:
-    - Connect or disconnect from the server using a simple button.
-    - The connection status is clearly displayed (e.g., Connected, Disconnected).
+## Friend‑request sequence
 
-2. **Profile Encryption**:
-    - Enable encryption for your profile to secure sensitive information.
-    - Encryption is activated using a "Turn On Encryption" button.
-
-3. **Upgrade Security Level**:
-    - Upgrade your profile security level to access encrypted features.
-    - An "Upgrade" option is provided for enhancing security and unlocking chat encryption.
-
-4. **Encrypted Group Chat Creation**:
-    - Create secure, encrypted group chats with selected contacts.
-    - Available only after all participants have upgraded their security levels.
-
-5. **Fallback to Regular Chat**:
-    - If a participant has not upgraded their encryption, a regular chat will be created instead.
-    - When sending a message in a regular chat, a warning modal will appear stating that the chat is not encrypted.
-6. **Secure Messaging**:
-    - Messages in group chats are encrypted using public/private key pairs for maximum security.
-    - A prompt is shown when attempting to send messages in non-encrypted chats.
-
-7. **Contact Card**:
-    - View your contacts and their encryption status in the contact card.
-    - Use the "Ask to Upgrade" button to notify contacts to enable encryption for enhanced security.
-
-8. **Decryption of Messages**:
-    - Decrypt messages in encrypted chats using your private key.
-    - Messages are automatically decrypted if you have access to the correct encryption keys.
-
-### How to Use
-
-1. **Connect to the Server**:
-    - Click the "Connect" button to establish a connection.
-    - Verify that the connection status changes to "Connected" in the interface.
-
-2. **Turn On Encryption**:
-    - Click the "Turn On Encryption" button to enable encryption for your profile.
-    - This generates public/private keys, ensuring secure communication.
-
-3. **Upgrade Security Level**:
-    - If required, click the "Upgrade" button to enhance your security level.
-    - Upgrading allows you to access encrypted group chat features.
-
-4. **Add or View Contacts**:
-    - Open the contact card to view your contacts.
-    - If a contact does not have encryption enabled, click "Ask to Upgrade" to send them a request.
-
-5. **Create an Encrypted Group Chat**:
-    - Select participants from your contact list who have enabled encryption.
-    - Click "Create Encrypted Chat" to start a secure group chat.
-    - If one or more participants have not enabled encryption, a regular chat will be created instead.
-
-6. **Send an Encrypted or Regular Message**:
-    - Type your message in the input field within the group chat.
-    - If the chat is encrypted, the message will be encrypted before sending.
-    - If the chat is not encrypted, a warning modal will appear stating:
+```mermaid
+sequenceDiagram
+    participant Bob
+    participant SDK
+    participant Alice
+    participant Kiri
     
-     **End-to-End security is OFF. [Recipient] does not have encryption enabled. Are you sure you want to send this message?**
-     Confirm to send the message or cancel to avoid sending it unencrypted.
+    Bob   ->> SDK: 1. connect()
+    SDK   -->> Bob: 2. USER_INFO
+    Alice ->> SDK: 3. connect()
+    SDK   -->> Alice: 4. USER_INFO
+    Kiri  ->> SDK: 5. connect()
+    SDK   -->> Kiri: 6. USER_INFO
+    Bob   ->> SDK: 7. addFriend(Alice)
+    Bob   ->> SDK: 8. addFriend(Kiri)
+    SDK   -->> Bob: 9.  NEW_OUTGOING_FRIEND_INVITE
+    SDK   -->> Bob: 10. NEW_OUTGOING_FRIEND_INVITE
+    SDK   -->> Alice: 11. NEW_INCOMING_FRIEND_INVITE
+    SDK   -->> Kiri: 12. NEW_INCOMING_FRIEND_INVITE
+    Alice ->> SDK: 13. acceptFriendInvite
+    Kiri  ->> SDK: 14. acceptFriendInvite
+    SDK   -->> Alice: 15. INCOMING_FRIEND_INVITE_DELETED
+    SDK   -->> Kiri: 16. INCOMING_FRIEND_INVITE_DELETED
+    SDK   -->> Bob: 17. OUTGOING_FRIEND_INVITE_DELETED
+    SDK   -->> Alice: 18. NEW_CONTACT
+    SDK   -->> Bob: 19. NEW_CONTACT
+    SDK   -->> Kiri: 20. NEW_CONTACT
+```
 
-7. **Decrypt Messages**:
-    - View messages in the chat history and decrypt them automatically if you have access to the private key.
-    - Use the "Decrypt" button if manual decryption is required.
+1. **Bob → SDK — connect()**  
+   Bob opens a WebSocket session and authenticates.
 
+2. **SDK → Bob — USER_INFO**  
+   SDK sends Bob his profile, feature flags, and authoritative userId.
 
-### Encryption Implementation Steps (Using Web Crypto)
+3. **Alice → SDK — connect()**  
+   Alice starts her own session.
 
-This section explains the **sequence of actions** required to **encrypt and decrypt** messages in a secure chat environment.
+4. **SDK → Alice — USER_INFO**  
+   Server returns Alice’s profile and userId.
 
-### 1. Generate & Store User Keys
+5. **Kiri → SDK — connect()**  
+   Kiri opens a third session.
 
-Each user requires a unique **RSA key pair** to encrypt and decrypt messages.
+6. **SDK → Kiri — USER_INFO**  
+   Server returns Kiri’s profile and userId.
 
-### 1. Generate an RSA key pair
-[Code from GitHub](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L1-L13)
-   - This will create a **public** and **private** key pair.
-   - The **public key** is shared with others.
-   - The **private key** is kept secret for decrypting messages.
+7. **Bob → SDK — addFriend(Alice)**  
+   Bob sends a friend request addressed to Alice.
 
+8. **Bob → SDK — addFriend(Kiri)**  
+   Bob sends a friend request addressed to Kiri.
 
-#### 1.1 exportPrivateKeyToBase64()
-[Code from GitHub](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L15-L18)
-- **Purpose**: Converts the generated **private key** into a Base64 string for storage or transmission.
+9. **SDK → Bob — NEW_OUTGOING_FRIEND_INVITE**  
+   Bob’s request to Alice is now marked *pending*.
+
+10. **SDK → Bob — NEW_OUTGOING_FRIEND_INVITE**  
+    Bob’s request to Kiri is now marked *pending*.
+
+11. **SDK → Alice — NEW_INCOMING_FRIEND_INVITE**  
+    Alice is notified of Bob’s request.
+
+12. **SDK → Kiri — NEW_INCOMING_FRIEND_INVITE**  
+    Kiri is notified of Bob’s request.
+
+13. **Alice → SDK — acceptFriendInvite**  
+    Alice accepts Bob’s invite.
+
+14. **Kiri → SDK — acceptFriendInvite**  
+    Kiri accepts Bob’s invite.
+
+15. **SDK → Alice — INCOMING_FRIEND_INVITE_DELETED**  
+    Alice’s pending invite disappears.
+
+16. **SDK → Kiri — INCOMING_FRIEND_INVITE_DELETED**  
+    Kiri’s pending invite disappears.
+
+17. **SDK → Bob — OUTGOING_FRIEND_INVITE_DELETED**  
+    Bob’s outgoing invite list is cleared.
+
+18. **SDK → Alice — NEW_CONTACT**  
+    Bob is added to Alice’s confirmed contacts.
+
+19. **SDK → Bob — NEW_CONTACT**  
+    Alice is added to Bob’s confirmed contacts.
+
+20. **SDK → Kiri — NEW_CONTACT**  
+    Bob is added to Kiri’s confirmed contacts.
+
+**Result:** After step 20 all three users are mutual contacts and can chat one‑on‑one or together in a group.
+
+> **How the chat is started in the UI**  
+> Bob opens **section with title - New chat*, ticks **Alice** and **Kiri**, then clicks **Create**.  
+> The component now runs the encrypted sequence shown below.
+
+**Encrypted steps**
+- Upgrade profiles
+- Share contact 
+
+```mermaid
+sequenceDiagram
+    participant Bob
+    participant SDK
+    participant Alice
+    participant Kiri
+    
+    Note over Bob: App actions:<br/> 1. Generate keys<br/>2. Export keys<br/>3. Derive AES key<br/>4. Make verification hash<br/>5. (opt) add IV + salt
+    Note over Alice: App actions:<br/> 6‑10. Same five steps
+    Note over Kiri: App actions:<br/> 11‑15. Same five steps
+
+    Bob   ->> SDK: 16. addUserEncryptionInfo()
+    SDK   -->> Bob: 17. CONTACT_UPDATED
+    SDK   -->> Bob: 18. USER_ENCRYPTION_INFO_ADDED
+    SDK   ->> Alice: 19. CONTACT_UPDATED
+    SDK   ->> Kiri: 20. CONTACT_UPDATED
+
+    Alice ->> SDK: 21. addUserEncryptionInfo()
+    SDK   -->> Alice: 22. CONTACT_UPDATED
+    SDK   -->> Alice: 23. USER_ENCRYPTION_INFO_ADDED
+    SDK   ->> Bob: 24. CONTACT_UPDATED
+    SDK   ->> Kiri: 25. CONTACT_UPDATED
+
+    Kiri  ->> SDK: 26. addUserEncryptionInfo()
+    SDK   -->> Kiri: 27. CONTACT_UPDATED
+    SDK   -->> Kiri: 28. USER_ENCRYPTION_INFO_ADDED
+    SDK   ->> Bob: 29. CONTACT_UPDATED
+    SDK   ->> Alice: 30. CONTACT_UPDATED
+```
+
+# End‑to‑End Encryption Flow (Bob ⇌ Alice)
+
+## Profile upgrade (per user)
+
+### App actions:
+
+### 1. Generate RSA Key Pair
+[GitHub (Lines 1–13)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L1-L13)
+- Required for encrypting your data.
+
+#### 2. Export Keys to Base64
+
+[GitHub (Lines 15–18)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L15-L18)
+
+- **Purpose**: Converts the generated private key into a Base64 string for storage or transmission.
 - **Usage**:
-    1. After generating an RSA key pair (e.g., via **generateRSAKeyPair()**), call **exportPrivateKeyToBase64(privateKey)**.
-    2. The returned **Base64-encoded private key** can be stored in a database or sent to a server.
-- **Important**: Always protect the Base64 private key. Encrypt it before saving or sending it over the network.
+    1. After generating a key pair via **generateRSAKeyPair()**, call **exportPrivateKeyToBase64(privateKey)**.
+    2. The returned Base64-encoded private key can be stored or sent to a server.
 
-#### 1.2 exportPublicKeyToBase64()
-[Code from GitHub](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L34-L37)
-- **Purpose**: Converts the generated **public key** into a Base64 string so that others can easily encrypt messages for you.
+> **Important**: Always protect the Base64 private key. Encrypt it (e.g., with a password) before saving or transmitting.
+
+[GitHub (Lines 34–37)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L34-L37)
+
+- **Purpose**: Converts the generated public key into a Base64 string so that others can easily encrypt messages for you.
 - **Usage**:
     1. Call **exportPublicKeyToBase64(publicKey)** after generating your RSA key pair.
-    2. Store or transmit the **public key** (in Base64) so other participants can encrypt messages specifically for you.
+    2. Store or share the Base64-encoded public key so other users can encrypt messages for you.
 
-#### 1.3 importPublicKeyFromBase64()
-[Code from GitHub](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L39-L51)
-- **Purpose**: Converts a Base64-encoded **public key** back into a **CryptoKey** object.
+
+#### 3. Derive a key from the Master Password
+
+[GitHub (Lines 53–75)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L53-L75)
+
+- **Purpose**: Derives a cryptographic key from a user-supplied password now we are using static *MS-PASSWORD* value.
 - **Usage**:
-    1. When receiving a contact’s public key in Base64 format, call **importPublicKeyFromBase64(base64Key)**.
-    2. Use the resulting **public CryptoKey** to encrypt messages or share a chat password for that participant.
+    - Internally used to generate a strong key from a user-chosen password or passphrase.
+    - This derived key is then used to encrypt or decrypt the private key.
 
-### 2. Protect the Private Key
+- Used to encrypt the private key securely.
 
-#### 2.1 deriveKeyFromPassword()
-[Code from GitHub](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L53-L75)
-- **Purpose**: Derives a cryptographic key from a user-supplied password.
+### 4. Prepare verification hash
+- Generate a verification hash by **MS-PASSWORD**.
+  [GitHub (Lines 174 – 183)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L174-L183)
+
+- Produces a one-way **SHA-256 fingerprint** that proves the client still possesses the correct master password, without revealing the password itself.
+- Pass **verificationHash** inside **addUserEncryptionInfo()**
+
+
+### 5. Encrypt the Private Key optional using IV and Salt
+- IV and salt are embedded automatically or click on checkbox in *Encryption Options*
+  [GitHub (Lines 96–114)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L96-L114)
+
+- **Purpose**: Encrypts the Base64-encoded private key using a password-derived key, embedding the IV and salt in the resulting string.
 - **Usage**:
-    1. This function is called internally to generate a strong key based on a user-chosen password (or passphrase).
-    2. The derived key is then used to encrypt or decrypt the private key.
-
-#### 2.2 encryptPrivateKeyWithEmbeddedIvSalt()
-[Code from GitHub](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L96-L114)
-- **Purpose**: Encrypts the Base64-encoded private key using a password-derived key, embedding the IV (initialization vector) and salt into the resulting encrypted string.
-- **Usage**:
-    1. Obtain the Base64 private key from **exportPrivateKeyToBase64()**.
+    1. Get the Base64 private key via **exportPrivateKeyToBase64()**.
     2. Call **encryptPrivateKeyWithEmbeddedIvSalt(base64PrivateKey, password, useIVAndSalt)**.
-    3. Store or send this **encrypted private key** which contains the IV and salt.
+    3. Store or send this **encrypted private key**, which contains the IV and salt.
 
-#### 2.3 decryptPrivateKey()
-[Code from GitHub](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L116-L147)
-- **Purpose**: Decrypts the **encrypted private key** (which includes the embedded IV and salt) back into its original Base64 form.
-- **Usage**:
-    1. Retrieve the **encrypted private key** from storage.
-    2. Supply the same password used in **encryptPrivateKeyWithEmbeddedIvSalt()**.
-    3. Restores the **original private key** (in Base64) so you can import it as a CryptoKey for decryption.
+### Repeat key-generation flow (second user, third user)
+- These steps mirror **6–10**, but are performed by the second user (Alice):
+- These steps mirror **11–15**, but are performed by the third user (Kiri):
 
-### 3 Encrypt & Decrypt Messages
+### Persist encryption info (Bob)
+- **16. addUserEncryptionInfo** — Bob uploads his *publicKey*, encrypted *privateKey*, IV and salt to the server.
+- **17. CONTACT_UPDATED** — for Bob.
+- **18. USER_ENCRYPTION_INFO_ADDED** — the server acknowledges Bob’s encryption data is now stored.
+- **19. CONTACT_UPDATED** - about Bob to Alice
+- **20. CONTACT_UPDATED** - about Bob to Kiri
 
-#### 3.1 encryptMessageWithPublicKey()*
-[Code from GitHub](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L149-L160)
-- **Purpose**: Encrypts a message (plaintext) using a recipient’s **public key**.
-- **Usage**:
-    1. Convert or import the recipient’s public key into a CryptoKey (e.g., **importPublicKeyFromBase64()**).
-    2. Call **encryptMessageWithPublicKey(publicKey, plaintextMessage)**.
-    3. The resulting ciphertext can only be decrypted by the matching **private key**.
+### Persist encryption info (Alice)
+- **21. addUserEncryptionInfo** — Alice performs the same upload with her own keys.
+- **22. CONTACT_UPDATED** — the server confirms Alice’s contact card was refreshed.
+- **23. USER_ENCRYPTION_INFO_ADDED** — the server acknowledges Bob’s encryption data is now stored.
+- **24. CONTACT_UPDATED** — Event for Bob about Alice's updates.
+- **25. CONTACT_UPDATED** — Event for Kiri about Alice's updates.
 
-#### 3.2 decryptMessageWithPrivateKey()*
-[Code from GitHub](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L162-L172)
-- **Purpose**: Decrypts ciphertext using the corresponding **private key**.
-- **Usage**:
-    1. Ensure the private key is imported or available as a CryptoKey (after decryption from storage if needed).
-    2. Pass the ciphertext to **decryptMessageWithPrivateKey(privateKey, encryptedMessage)**.
-    3. The function returns the **original plaintext** message.
- 
-### 4. Create an Encrypted Group Chat
 
-1. **Generate an RSA Key Pair for the Chat**
-    - Use a function like **generateRSAKeyPair()** to produce a **unique** public/private key pair dedicated to this group chat.
+### Persist encryption info (Kiri)
+- **26. addUserEncryptionInfo** — Kiri performs the same upload with her own keys.
+- **27. CONTACT_UPDATED** — the server confirms Kiri’s contact card was refreshed.
+- **28. USER_ENCRYPTION_INFO_ADDED** — the server acknowledges Kiri’s encryption data is now stored.
+- **29. CONTACT_UPDATED** — Event for Bob about Alice's updates.
+- **30. CONTACT_UPDATED** — Event for Alice about Alice's updates.
 
-2. **Convert & Protect the Chat’s Private Key**
-    1. Call **exportPrivateKeyToBase64(chatKeyPair.privateKey)** to get the private key in Base64.
-    2. Generate a **chat password** (e.g., using **uuidv4()**).
-    3. Encrypt the private key with **encryptPrivateKeyWithEmbeddedIvSalt(base64PrivateKey, chatPassword, useIVAndSalt)** to store it securely.
+### Create encrypted chat diagram description
 
-3. **Share the Chat Password with Participants**
-    1. Import each participant’s public key via **importPublicKeyFromBase64()**.
-    2. Use **encryptMessageWithPublicKey()** with each participant’s public key to encrypt the **chat password**.
-    3. Save or transmit these **encrypted passwords** so each participant can later decrypt the chat password with their private key.
+- Create encrypted chat
+- Send encrypted message
+- Decrypt message
 
-4. **Save the Chat Data**
-    - Pass the required fields to your chat creation handler (e.g., **handleCreateChat()**):
-        - **encryptedPrivateKey** (result of **encryptPrivateKeyWithEmbeddedIvSalt()**),
-        - **publicKey** (Base64 representation of the chat’s public key),
-        - **encryptedChatPasswords** (one for each participant),
-        - optionally an **AES key** for attachments (generated via **generateAESKey()**).
 
-5. **Initialization**
-    - Store the chat’s metadata (public key, encrypted private key, encrypted passwords) so clients can retrieve and decrypt it as needed.
+```mermaid
+sequenceDiagram
+    participant Bob
+    participant SDK
+    participant Alice
+    participant Kiri
+    Bob   ->> SDK: 1. createChat(isEncryptionEnabled=true)
+    SDK   -->> Bob: 2. Resolve SFU_NEW_CHAT
+    SDK   -->> Alice: 3. Event SFU_NEW_CHAT
+    SDK   -->> Kiri: 4. Event SFU_NEW_CHAT
 
-### 5. Send & Receive Messages in the Encrypted Chat
+    Bob   ->> SDK: 5. sendMessage(encrypted)
+    SDK   -->> Bob: 6. Resolve SFU_MESSAGE_STATE
+    SDK   -->> Alice: 7. Event SFU_MESSAGE
+    SDK   -->> Kiri: 8. Event SFU_MESSAGE
+    
+    Note over Bob: App actions: <br/>9. Decrypt message
+    Note over Alice: App actions: <br/>10. Decrypt message    
+    Note over Kiri: App actions: <br/>11. Decrypt message   
+```
 
-#### 5.1 Sending Encrypted Messages
-1. **Sender Retrieves Public Key**
-    - Get the chat’s **public key** (or use the stored CryptoKey if already imported).
-2. **Encrypt the Message**
-    - Call **encryptMessageWithPublicKey(chatPublicKey, messageContent)**.
-3. **Transmit**
-    - Use your chat function (e.g., **sendMessage()**) to send the encrypted message body to the server or directly to participants.
 
-#### 5.2 Receiving & Decrypting Messages
-1. **User Decrypts the Private Key**
-    - Retrieve the **encrypted private key** of the chat from storage.
-    - Decrypt it locally with the user’s chat password (if necessary), resulting in the **Base64 private key**.
-2. **Import the Private Key**
-    - Convert that Base64 private key into a **CryptoKey** object.
-3. **Decrypt the Message**
-    - Call **decryptMessageWithPrivateKey(chatPrivateKey, encryptedMessage)** to get the original plaintext.
+### 1. Encrypted‑chat workflow (runtime)
+- **Create encrypted chat**
+  Bob calls **handleCreateEncryptedChat**, which
+  [GitHub (Lines 143–177)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L143-L177)
+- generates a temporary RSA key pair and an AES‑256;
+- creates a random chat password with **uuidv4()**;
+- encrypts the chat’s private key with **encryptPrivateKeyWithEmbeddedIvSalt**;
+- loops through every contact and for each one
+    - imports the contact’s public key with **importPublicKeyFromBase64**,
+    - encrypts the chat password using **encryptMessageWithPublicKey**,
+    - appends the result to **encryptedChatPasswords**;
+- finally invokes **handleCreateChat** with  
+  publicKey, encryptedPrivateKey, encryptedChatPasswords and encryptedAttachmentsSecretKey.
+
+**2. Resolve SFU_NEW_CHAT** — server returns **chatId**
+
+**3. Event SFU_NEW_CHAT** — Alice receives chat metadata: Bob’s chat public key and her encrypted chat password.
+**4. Event SFU_NEW_CHAT** — Kiri receives chat metadata: Bob’s chat public key and her encrypted chat password.
+
+**5. sendMessage** — Inside **handleSendMessage** the plaintext is encrypted with the chat public key and dispatched to the server.
+
+[GitHub (Lines 198–240)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L198-L240)
+
+
+**6. Resolve SFU_MESSAGE_STATE** — server stores the ciphertext and marks the message as **sent**.
+
+**7. Event SFU_MESSAGE** — Alice’s client receives the encrypted payload in real time.
+**8. Event SFU_MESSAGE** — Kiri’s client receives the encrypted payload in real time.
+
+**9-11. Decrypt message**
+- Alice retrieves chat keys via **getChatKeys** from keyManagementService(first access decrypts them with her chat password).
+  [GitHub (Lines 41–48)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/services/keyManagementService.ts#L41-L48)
+
+- Passes the ciphertext to reveal the plaintext.
+  [GitHub (Lines 162–172)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L162-L172)
+
+**Result:** From this point on, every message and attachment in the chat is protected end‑to‑end.
 
 ### SDK Methods
 ---
-| **Method**                                        | **Description**                                                                                              |
-|---------------------------------------------------|--------------------------------------------------------------------------------------------------------------|
-| [Connect](connect)                                | Connect to the server using user credentials and shared tokens.                                              |
-| [Disconnect](disconnect)                          | Disconnect from the server.                                                                                  |
-| [Add User Encryption Info](addUserEncryptionInfo) | Add encryption settings to user profile.                                                                    |
-| [Get User Encryption Info](getUserEncryptionInfo) | Retrieve the current encryption settings of the user profile.                                                |
-| [Create Chat](createChat)                         | Create a new chat (either regular or encrypted) and handle chat initialization.                              |
-| [Send Message](sendMessage)                       | Send a message to the chat, either encrypted or unencrypted, depending on the chat's encryption status.       |
-| [Get User Chats](getUserChats)                    | Load the list of chats, including details on encryption status for each chat.                                 |
-| [Get Contacts](getContacts)                       | Retrieve the list of contacts that the user has, which is necessary for creating or managing chats.          |
-| [Accept Friend Invite](acceptFriendInvite)        | Accept an incoming friend request.                                                                          |
-| [Add Friend](addFriend)                           | Send a friend request to another user.                                                                      |
-| [Remove Friend](removeFriend)                     | Remove a friend from your contact list.                                                                     |
+| **Method**                                        | **Description**                                                                                               |
+|---------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
+| ****[Connect](connect)****                        | Connect to the server using user credentials and shared tokens.                                               |
+| ****[Disconnect](disconnect)****                  | Disconnect from the server.                                                                                   |
+| ****[Add User Encryption Info](addUserEncryptionInfo)**** | Add encryption settings to the user's profile.                                                                |
+| ****[Get User Encryption Info](getUserEncryptionInfo)**** | Retrieve the current encryption settings of the user's profile.                                               |
+| ****[Create Chat](createChat)****                 | Create a new chat (regular or encrypted) and handle chat initialization.                                      |
+| ****[Send Message](sendMessage)****               | Send a message (encrypted or unencrypted, depending on the chat's encryption status).                         |
+| ****[Get User Chats](getUserChats)****            | Load the list of chats, including details on whether each chat is encrypted.                                  |
+| ****[Get Contacts](getContacts)****               | Retrieve the list of contacts for managing or creating chats.                                                 |
+| ****[Accept Friend Invite](acceptFriendInvite)**** | Accept an incoming friend request.                                                                            |
+| ****[Add Friend](addFriend)****                   | Send a friend request to another user.                                                                        |
+| ****[Remove Friend](removeFriend)****             | Remove a friend from your contact list.                                                                       |

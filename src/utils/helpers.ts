@@ -70,18 +70,37 @@ export const checkServerAvailability = async (url: string): Promise<boolean> => 
   }
 };
 
-export const getStorageKey = (key: string): string => `${key}`;
+export function stripCommonIndent(code: string): string {
+  const lines = code.split('\n');
 
-export const encodeBase64 = (buffer: ArrayBuffer): string => {
-  const binary = String.fromCharCode(...new Uint8Array(buffer));
-  return btoa(binary);
-};
-export const decodeBase64 = (base64: string): ArrayBuffer => {
-  const binary = atob(base64);
-  const buffer = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) {
-    buffer[i] = binary.charCodeAt(i);
-  }
-  return buffer.buffer;
-};
+  const indents = lines
+    .filter(l => l.trim().length)
+    .map(l => l.match(/^(\s*)/)![0].length);
 
+  const minIndent = indents.length ? Math.min(...indents) : 0;
+
+  return lines.map(l => l.slice(minIndent)).join('\n');
+}
+
+export function stripMarkers(commentBlock: string): string {
+  return commentBlock
+    .split('\n')
+    .map(line =>
+      // remove stars
+      line.replace(/^\s*\*\s?/, '').trimEnd()
+    )
+    .join('\n')
+    .trim();
+}
+export function stripAsterisks(text: string): string {
+  return text
+    .split('\n')
+    .map(line => line.replace(/^\s*\*\s?/, '').trimEnd())
+    .join('\n')
+    .trim();
+}
+export function removeMarkersButKeepText(src: string): string {
+  return src.replace(/\/\*\*([\s\S]*?)\*\//g, (_, inner) => {
+    return '\n' + stripMarkers(inner) + '\n';
+  });
+}

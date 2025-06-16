@@ -120,6 +120,13 @@ const UpgradeSecurityPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes
               onUpgradeSecurity={handleTurnOnEncryption}
               isDisconnectOff
             />
+            {/* Encryption Options Form */}
+            <Card className={colorName}>
+              <EncryptionOptionsForm
+                onOptionsChange={setOptions}
+                isDisabled={encryptionEnabled}
+              />
+            </Card>
 
             {/* Master Password Card */}
             <Card className={colorName}>
@@ -153,14 +160,6 @@ const UpgradeSecurityPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes
                   Salt: <span className="font-bold">{encryptionInfo.salt}</span>
                 </p>
               )}
-            </Card>
-
-            {/* Encryption Options Form */}
-            <Card className={colorName}>
-              <EncryptionOptionsForm
-                onOptionsChange={setOptions}
-                isDisabled={encryptionEnabled}
-              />
             </Card>
 
             {/* Security Status Card */}
@@ -198,7 +197,7 @@ const UpgradeSecurityPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes
                   onClick={handleTurnOnEncryption}
                   isDisabled={!isConnected}
                 >
-                  Turn ON
+                  Turn ON Encryption
                 </ActionButton>
               )}
               <p className="text-xs text-customColors-lightGray mt-0.5">

@@ -14,7 +14,7 @@ import { useLayoutStore } from '@/hooks/helpers/useLayoutStore';
 import { toggleDocsOpen } from '@/stores/layoutStore';
 
 const UpgradeSecurity: FC<ExamplePageTypes> = ({ serverUrl, handleSetDynamicTitle, isShowSecondConnection, isCanUseSecondConnection }) => {
-  const countUsers = 2;
+  const countUsers = 1;
   const docsOpen = useLayoutStore(state => state.docsOpen);
   const {
     setSecondConnectionToken,
@@ -61,7 +61,6 @@ const UpgradeSecurity: FC<ExamplePageTypes> = ({ serverUrl, handleSetDynamicTitl
             <div className="flex gap-4 whitespace-nowrap">
               {renderPanel(0, "bg-customColors-lightGrayBg")}
               {isShowSecondConnection && renderPanel(0, "bg-customColors-lightGrayBg", secondConnectionToken)}
-              {renderPanel(1, "bg-customColors-lightGrayBg")}
             </div>
           ) : (
             <div className="w-full flex gap-4 whitespace-nowrap">

@@ -14,10 +14,12 @@ class KeyManagementService {
   /**
    * Generates and stores RSA key pair for a user.
    * @param userId - Unique identifier for the user.
+   * @returns keyPair - public, private keys.
    */
-  public async generateKeysForUser(userId: string): Promise<void> {
+  public async generateKeysForUser(userId: string): Promise<CryptoKeyPair> {
     const keyPair = await generateRSAKeyPair();
     this.userKeys.set(userId, { keyPair, createdAt: new Date() });
+    return keyPair;
   }
 
   /**

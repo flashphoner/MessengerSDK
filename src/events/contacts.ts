@@ -65,6 +65,18 @@ export const handleContactEvents = (
       );
     })
     .on(SfuEvent.CONTACT_UPDATED, (event) => {
+      /**
+       * Returns user info
+       *
+       * @returns {
+       *   userId: string;            // Unique user ID
+       *   nickname: string;          // Display name
+       *   status: string;            // Presence state
+       *   publicKey: string;         // SPKI in Base64 (present when encryption is on)
+       *   encryptionEnabled: boolean;// Keys exist and are usable
+       *   friend: boolean;           // True if mutual friendship established
+       * }
+       */
       const { contact } = event as ContactUpdated;
       setContacts((prev) =>
         updateArrayByProperties(prev, contact.userId, contact),
