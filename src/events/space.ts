@@ -32,9 +32,29 @@ export const handleSpaceEvents = (
       getUserSpaces();
     })
     .on(SpaceEvent.SPACE_CHANNEL_DELETED, (event) => {
+      /**
+      * Returns SpaceChannelDeleted
+      *
+      * @returns {
+      *   spaceId: string;
+      *   channelId: string;
+      * }
+      */
       getUserSpaces();
     })
     .on(SpaceEvent.SPACE_CHANNEL_UPDATED, (event) => {
+      /**
+      * Returns SpaceChannelUpdated
+      *
+      * @returns {
+      *   spaceId: string;
+      *   channelId: string;
+      *   private: boolean;
+      *   name: string;
+      *   accessRights: SfuSpaceChannelAccessRights;
+      *   members: Array<string>;
+      * }
+      */
       getUserSpaces();
     })
     .on(SpaceEvent.NEW_SPACE_THREAD, async (event) => {
@@ -44,9 +64,28 @@ export const handleSpaceEvents = (
     .on(SpaceEvent.SPACE_THREAD_DELETED, (event) => {
     })
     .on(SpaceEvent.USER_JOINED_TO_SPACE, (event) => {
+      /**
+      * Returns UserJoinedToSpaceEvent
+      *
+      * @returns {
+      *   spaceId: string;
+      *   userId: string;
+      *   nickname: string;
+      *   channels: Array<string>;
+      *   threads: Array<string>;
+      * }
+      */
       getUserSpaces();
     })
     .on(SpaceEvent.USER_LEFT_SPACE, (event) => {
+      /**
+      * Returns UserLeftSpace
+      *
+      * @returns {
+      *   spaceId: string;
+      *   userId: string;
+      * }
+      */
       getUserSpaces();
     })
     .on(SpaceEvent.NEW_SPACE_ROLE, (event) => {
