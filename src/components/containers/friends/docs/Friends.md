@@ -7,106 +7,118 @@ sequenceDiagram
     participant Alice
     
     Bob ->> SDK: 1. connect()
-    SDK -->> Bob: 2. USER_INFO
-    Alice ->> SDK: 3. connect()
-    SDK -->> Alice: 4. USER_INFO
-    Bob ->> SDK: 5. Add friend
-    SDK -->> Bob: 6.Event NEW_OUTGOING_FRIEND_INVITE
-    SDK -->> Alice: 7.Event  NEW_INCOMING_FRIEND_INVITE
-    Alice ->> SDK: 8. Event acceptFriendInvite
-    SDK -->> Alice: 9. Event INCOMING_FRIEND_INVITE_DELETED
-    SDK -->> Bob: 10. Event OUTGOING_FRIEND_INVITE_DELETED
-    SDK -->> Alice: 11. Event NEW_CONTACT
-    SDK -->> Bob: 12. Event NEW_CONTACT
+    SDK -->> Bob: 2. connect response with authToken
+    Bob ->> SDK: 3. getUserInfo()
+    SDK -->> Bob: 4. resolve Promise USER_INFO
+    Alice ->> SDK: 5. connect()
+    Alice ->> SDK: 6. getUserInfo()
+    SDK -->> Alice: 7. resolve Promise USER_INFO
+    Bob ->> SDK: 8. addFriend()
+    SDK -->> Bob: 9. Event NEW_OUTGOING_FRIEND_INVITE
+    SDK -->> Alice: 10. Event  NEW_INCOMING_FRIEND_INVITE
+    Alice ->> SDK: 11. acceptFriendInvite()
+    SDK -->> Alice: 12. Event INCOMING_FRIEND_INVITE_DELETED
+    SDK -->> Bob: 13. Event OUTGOING_FRIEND_INVITE_DELETED
+    SDK -->> Alice: 14. Event NEW_CONTACT
+    SDK -->> Bob: 15. Event NEW_CONTACT
 ```
 
 # Friend‑Request Sequence - (Bob ⇌ Alice)
 
-1. **Bob → SDK — connect()**  
-   Bob’s client opens a WebSocket session and authenticates.
+### 1. Bob Connect
+- Click on **Connect** button invoke  **[connect](connect)**  function on the SDK.
+  Bob’s client opens a WebSocket session and authenticates.
 
-2. **SDK → Bob — USER_INFO**  
-   The server returns Bob’s profile, feature flags, and authoritative userId.
+**Call**
+[Github (Lines 86–95)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L86-L95)
 
-3. **Alice → SDK — connect()**  
-   Alice starts her own session (another tab or device).
+**Doc**
+[Github (Lines 71–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L71-L84)
 
-4. **SDK → Alice — USER_INFO**  
-   Same handshake data, scoped to Alice.
+### 2. Receive authToken from **[connect](connect)** response
+- used to bob's second connection
+[Github (Lines 80–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L80-L84)
 
-5. **Bob → SDK — addFriend(targetUserId)**  
-   Bob sends a friend request addressed to Alice’s userId.
+### 3. Bob calls **[getUserInfo](getUserInfo)**
+- After the connection is established, we are getting self-information about user
+[Github (Lines 104)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L104-L104)
 
-6. **SDK → Bob — NEW_OUTGOING_FRIEND_INVITE**  
-   Confirmation that the request is now “pending.”
+### 4. Bob receives USER_INFO
+- Information about user
+[Github (Lines 98-102)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L98-L102)
 
-7. **SDK → Alice — NEW_INCOMING_FRIEND_INVITE**  
-   Push‑notification so Alice can accept or reject the request.
+### 5. Alice Connect
+- Click on **Connect** button invoke  **[connect](connect)**  function on the SDK.
+  Alice’s client opens a WebSocket session and authenticates.
+  
+**Call**
+[Github (Lines 86–95)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L86-L95)
 
-8. **Alice → SDK — acceptFriendInvite(inviteId)**  
-   Alice clicks “Accept.” in application. The SDK verifies the invite is still valid.
+**Doc**
+[Github (Lines 71–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L71-L84)
 
-9. **SDK → Alice — INCOMING_FRIEND_INVITE_DELETED**  
-   The pending request is removed from Alice’s list.
+### 6. Alice calls **[getUserInfo](getUserInfo)**
+- After the connection is established, we are getting self-information about user
+[Github (Lines 104)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L104-L104)
 
-10. **SDK → Bob — OUTGOING_FRIEND_INVITE_DELETED**  
-    Bob’s pending badge disappears the request is closed.
+### 7. Alice receives USER_INFO
+- Information about user
+[Github (Lines 98-102)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L98-L102)
 
-11. **SDK → Alice — NEW_CONTACT**  
-    Bob is added to Alice’s confirmed contacts.
+### 8. Bob calls **[addFriend](addFriend)**
+- Bob sends a friend request addressed to Alice’s userId.
 
-12. **SDK → Bob — NEW_CONTACT**  
-    Alice is added to Bob’s confirmed contacts.
+**Call**
+[Github (Lines 44–44)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkContacts.ts#L44-L44)
 
-**Result:** After step-12 Bob and Alice are official contacts and can start chat.
+**Doc**
+[Github (Lines 36–39)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkContacts.ts#L36-L39)
 
-**Ask user for upgrade to encrypted profile**
-- Create a chat
-- Send message for ask to upgrade security
+### 9. Bob receives NEW_OUTGOING_FRIEND_INVITE
+- Confirmation that the request is now “pending.”
+[Github (Lines 83–91)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L83-L91)
 
-## Key Features
+### 10. Alice receives NEW_INCOMING_FRIEND_INVITE
+- Push‑notification so Alice can accept or reject the request.
+[Github (Lines 68–76)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L68-L76)
 
-- **Server Connection**: Connect or disconnect from a server.
-- **Friend Requests**: Send, accept, reject, or revoke requests.
-- **Pending Requests**: Manage incoming and outgoing requests.
-- **Friend List**: View, refresh, and manage friends.
+## 11. Alice calls **[acceptFriendInvite](acceptFriendInvite)**
+- Alice clicks “Accept.” in application. The SDK verifies the invite is still valid.
 
+**Call**
+[Github (Lines 71–71)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkContacts.ts#L71-L71)
 
-## How to Use
+**Doc**
+[Github (Lines 63–66)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkContacts.ts#L63-L66)
 
-### 1. Server Connection
+### 12. Alice receives INCOMING_FRIEND_INVITE_DELETED
+- The pending request is removed from Alice’s list.
+[Github (Lines 98–104)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L98-L104)
 
-- Connect or disconnect using credentials.
-- Status reflects connection state.
-- If issues arise, check server URL and credentials.
+### 13. Bob receives OUTGOING_FRIEND_INVITE_DELETED
+- Bob’s pending badge disappears the request is closed.
+[Github (Lines 112–118)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L112-L118)
 
-### 2. Sending Friend Requests
+### 14. Alice receives NEW_CONTACT
+- Bob is added to Alice’s confirmed contacts.
+[Github (Lines 33–50)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L33-L50)
 
-- Enter a username or email and click **Add Friend**.
-- An error is displayed if the username is incorrect.
-- Track requests under **Pending Requests**.
+### 15. Bob receives NEW_CONTACT
+- Alice is added to Bob’s confirmed contacts.
+[Github (Lines 33–50)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L33-L50)
 
-### 3. Managing Pending Requests
-
-- **Incoming Requests**: Accept or reject requests.
-- **Outgoing Requests**: Revoke sent requests.
-- Accepted requests move to the **Friends** list.
-
-### 4. Friend List Management
-
-- Use **Refresh** to update the list.
-- Remove friends using **Remove Friend**.
 
 ###  Methods
 ---
-| **Method**                          | **Description**                       |
-|-------------------------------------|---------------------------------------|
-| [Connect](connect)                  | Connect to the server.                |
-| [Disconnect](disconnect)            | Disconnect from the server.           |
-| [Add friend](addFriend)             | Send a friend request.                |
-| [Revoke invite](revokeFriendInvite) | Revoke an outgoing friend request.    |
-| [Accept friend](acceptFriendInvite) | Accept an incoming friend request.    |
-| [Reject invite](rejectFriendInvite) | Reject an incoming friend request.    |
-| [Get contacts](getContacts)         | Retrieve the list of friends.         |
-| [Remove friend](removeFriend)       | Remove a friend from your list.       |
-
+| **Method**                                       | **Description**                                                 |
+|--------------------------------------------------|-----------------------------------------------------------------|
+| ****[connect](connect)****                       | Connect to the server using user credentials and shared tokens. |
+| ****[disconnect](disconnect)****                 | Disconnect from the server.                                     |
+| ****[getUserInfo](getUserInfo)****               | Get information about user.                                     |
+| ****[addFriend](addFriend)****                   | Send a friend request.                                          |
+| ****[revokeFriendInvite](revokeFriendInvite)**** | Revoke an outgoing friend request.                              |
+| ****[acceptFriendInvite](acceptFriendInvite)**** | Accept an incoming friend request.                              |
+| ****[rejectFriendInvite](rejectFriendInvite)**** | Reject an incoming friend request.                              |
+| ****[getContacts](getContacts)****               | Retrieve the list of friends.                                   |
+| ****[removeFriend](removeFriend)****             | Remove a friend from your list.                                 |
+---

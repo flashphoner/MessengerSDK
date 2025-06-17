@@ -17,6 +17,41 @@ export const handleChatEvents = (
   sdkInstance
     .on(SfuEvent.NEW_CHAT, (event) => {
       setMessages([]);
+      /**
+      * Returns UserSpecificChatInfo
+      *
+      * @returns {
+      *   id: string;
+      *   roomId: string;
+      *   favourite: boolean;
+      *   hidden: boolean;
+      *   channel: boolean;
+      *   name: string;
+      *   owner: UserId;
+      *   creationDate: number;
+      *   members: Array<UserId>;
+      *   lastReadMessageId: string;
+      *   lastReadMessageDate: number;
+      *   canSend: boolean;
+      *   type: ChatType;
+      *   notificationSettings: NotificationMode;
+      *   muteSettings: MuteSettings;
+      *   channelSendPolicy: ChannelSendPolicy;
+      *   chatReceivePolicy: ChatReceivePolicy;
+      *   sendPermissionList: Array<string>;
+      *   allowedToAddExternalUser: boolean;
+      *   messagesCount: number;
+      *   firstMessageId: string;
+      *   firstMessageDate: number;
+      *   lastMessageId: string;
+      *   lastMessageDate: number;
+      *   encryptionEnabled: boolean;
+      *   encryptedPrivateKey: string;
+      *   publicKey: string;
+      *   encryptedChatPassword: string;
+      *   encryptedAttachmentsSecretKey: string;
+      * }
+      */
       const newChat = event as UserSpecificChatInfo;
       setSingleChat((prevState: UserSpecificChatInfo | null) => {
         if (!prevState) {
@@ -27,9 +62,79 @@ export const handleChatEvents = (
 
     })
     .on(SfuEvent.CHAT_DELETED, () => {
+      /**
+      * Returns UserSpecificChatInfo
+      *
+      * @returns {
+      *   id: string;
+      *   roomId: string;
+      *   favourite: boolean;
+      *   hidden: boolean;
+      *   channel: boolean;
+      *   name: string;
+      *   owner: UserId;
+      *   creationDate: number;
+      *   members: Array<UserId>;
+      *   lastReadMessageId: string;
+      *   lastReadMessageDate: number;
+      *   canSend: boolean;
+      *   type: ChatType;
+      *   notificationSettings: NotificationMode;
+      *   muteSettings: MuteSettings;
+      *   channelSendPolicy: ChannelSendPolicy;
+      *   chatReceivePolicy: ChatReceivePolicy;
+      *   sendPermissionList: Array<string>;
+      *   allowedToAddExternalUser: boolean;
+      *   messagesCount: number;
+      *   firstMessageId: string;
+      *   firstMessageDate: number;
+      *   lastMessageId: string;
+      *   lastMessageDate: number;
+      *   encryptionEnabled: boolean;
+      *   encryptedPrivateKey: string;
+      *   publicKey: string;
+      *   encryptedChatPassword: string;
+      *   encryptedAttachmentsSecretKey: string;
+      * }
+      */
       setSingleChat(null);
     })
     .on(SfuEvent.CHAT_UPDATED, (event) => {
+      /**
+      * Returns UserSpecificChatInfo
+      *
+      * @returns {
+      *   id: string;
+      *   roomId: string;
+      *   favourite: boolean;
+      *   hidden: boolean;
+      *   channel: boolean;
+      *   name: string;
+      *   owner: UserId;
+      *   creationDate: number;
+      *   members: Array<UserId>;
+      *   lastReadMessageId: string;
+      *   lastReadMessageDate: number;
+      *   canSend: boolean;
+      *   type: ChatType;
+      *   notificationSettings: NotificationMode;
+      *   muteSettings: MuteSettings;
+      *   channelSendPolicy: ChannelSendPolicy;
+      *   chatReceivePolicy: ChatReceivePolicy;
+      *   sendPermissionList: Array<string>;
+      *   allowedToAddExternalUser: boolean;
+      *   messagesCount: number;
+      *   firstMessageId: string;
+      *   firstMessageDate: number;
+      *   lastMessageId: string;
+      *   lastMessageDate: number;
+      *   encryptionEnabled: boolean;
+      *   encryptedPrivateKey: string;
+      *   publicKey: string;
+      *   encryptedChatPassword: string;
+      *   encryptedAttachmentsSecretKey: string;
+      * }
+      */
       const updatedChat = event as UserSpecificChatInfo;
       setSingleChat(updatedChat);
     })

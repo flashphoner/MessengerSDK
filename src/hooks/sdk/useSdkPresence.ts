@@ -5,7 +5,10 @@ import { PresenceStatus } from "@flashphoner/sfusdk/dist/sdk/constants";
 export function useSdkPresence(sdkInstance: SfuExtended | null) {
   const [ownStatus, setOwnStatus] = useState<PresenceStatus>();
 
-  // Update presence status
+  /**
+  * @param status - user presence status
+  * @return - Promise<void>
+  */
   const updatePresenceStatus = useCallback(
     async (status: PresenceStatus) => {
       if (!sdkInstance) {
@@ -22,7 +25,10 @@ export function useSdkPresence(sdkInstance: SfuExtended | null) {
     [sdkInstance],
   );
 
-  // Update presence status activity
+  /**
+  * @param isActive - user activity
+  * @return - Promise<void>
+  */
   const changePresenceStatusActivity = useCallback(
     async (isActive: boolean) => {
       if (!sdkInstance) {

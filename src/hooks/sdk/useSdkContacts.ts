@@ -33,7 +33,10 @@ export function useSdkContacts(sdkInstance: SfuExtended | null, isConnected: boo
     }
   }, [isConnected]);
 
-  // Add a friend
+  /**
+  * @param userId - Unique user ID
+  * @returns Promise<void>
+  */
   const addFriend = useCallback(
     async (userId: string) => {
       if (!sdkInstance) return;
@@ -57,7 +60,10 @@ export function useSdkContacts(sdkInstance: SfuExtended | null, isConnected: boo
     [sdkInstance, contacts],
   );
 
-  // Accept friend request
+  /**
+  * @param iviteId - id of incoming friend invite
+  * @returns Promise<void>
+  */
   const acceptFriendRequest = useCallback(
     async (inviteId: string) => {
       if (!sdkInstance) return;
@@ -81,7 +87,10 @@ export function useSdkContacts(sdkInstance: SfuExtended | null, isConnected: boo
     [sdkInstance],
   );
 
-  // Reject friend invite
+  /**
+  * @param iviteId - id of incoming friend invite
+  * @returns Promise<void>
+  */
   const rejectIncomingFriendInvite = useCallback(
     async (inviteId: string) => {
       if (!sdkInstance) return;
@@ -100,7 +109,10 @@ export function useSdkContacts(sdkInstance: SfuExtended | null, isConnected: boo
     [sdkInstance],
   );
 
-  // Revoke self friend request
+  /**
+  * @param iviteId - id of outgoing friend invite
+  * @returns Promise<void>
+  */
   const revokeOutGoingFriendRequest = useCallback(
     async (inviteId: string) => {
       if (!sdkInstance) return;
@@ -122,7 +134,10 @@ export function useSdkContacts(sdkInstance: SfuExtended | null, isConnected: boo
     [sdkInstance],
   );
 
-  // Remove friend
+  /**
+  * @param userId - Unique user ID
+  * @returns Promise<void>
+  */
   const handleRemoveFriend = useCallback(
     async (userId: string) => {
       if (!sdkInstance) {

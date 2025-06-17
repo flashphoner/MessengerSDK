@@ -1,48 +1,132 @@
 Use the **Change Nickname** SDK to manage server connections, create group chats, and update nicknames. This guide explains how nickname changes are reflected for all users in real-time.
 
-## Key Features
+```mermaid
+sequenceDiagram
+    participant Bob
+    participant SDK
+    participant Alice
+    
+    Bob ->> SDK: 1. connect()
+    SDK -->> Bob: 2. connect response with authToken
+    Bob ->> SDK: 3. getUserInfo()
+    SDK -->> Bob: 4. resolve Promise USER_INFO
+    Alice ->> SDK: 5. connect()
+    Alice ->> SDK: 6. getUserInfo()
+    SDK -->> Alice: 7. resolve Promise USER_INFO
+    Bob ->> SDK: 8. createChat()
+    SDK -->> Alice: 9. Event NEW_CHAT
+    SDK -->> Bob: 10. Event NEW_CONTACT
+    SDK -->> Alice: 11. Event NEW_CONTACT
+    Bob ->> SDK: 12. changeUserNickname()
+    SDK -->> Bob: 13. Event CONTACT_UPDATED
+    SDK -->> Bob: 14. Event USER_INFO_CHANGED
+    SDK -->> Alice: 15. Event CONTACT_UPDATED
+    SDK -->> Bob: 16. Event CHAT_UPDATED
+    SDK -->> Alice: 17. Event CHAT_UPDATED
+    
+```
 
-- **Server Connection**: Connect or disconnect from the server.
-- **Group Chat Management**: Create group chats.
-- **Nickname Change**: Update your nickname, and changes are visible to all participants.
-- **Contacts**: View the updated contacts with modified nicknames.
+### 1. Bob Connect
+- Click on **Connect** button invoke  **[connect](connect)**  function on the SDK.
+  Bob’s client opens a WebSocket session and authenticates.
 
+**Call**
+[Github (Lines 86–95)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L86-L95)
 
-## How to Use
+**Doc**
+[Github (Lines 71–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L71-L84)
 
-### 1. Server Connection
+### 2. Receive authToken from **[connect](connect)** response
+- used to bob's second connection
+[Github (Lines 80–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L80-L84)
 
-- Connect or Disconnect from the server.
-- Status updates to **CONNECTED** or **DISCONNECTED**.
+### 3. Bob calls **[getUserInfo](getUserInfo)**
+- After the connection is established, we are getting self-information about user
+[Github (Lines 104)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L104-L104)
 
-### 2. Group Chat Management
+### 4. Bob receives USER_INFO
+- Information about user
+[Github (Lines 98-102)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L98-L102)
 
-- **Create Group Chat**: Click **Create Group Chat** to start a conversation with selected users.
+### 5. Alice Connect
+- Click on **Connect** button invoke  **[connect](connect)**  function on the SDK.
+  Alice’s client opens a WebSocket session and authenticates.
+  
+**Call**
+[Github (Lines 86–95)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L86-L95)
 
-### 3. Nickname Change
+**Doc**
+[Github (Lines 71–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L71-L84)
 
-- **Change Nickname**: Enter your new nickname in the **Change Nickname** section and click **Submit**.
-  - **Real-time Update**: All users in shared group chats will see the updated nickname instantly.
+### 6. Alice calls **[getUserInfo](getUserInfo)**
+- After the connection is established, we are getting self-information about user
+[Github (Lines 104)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L104-L104)
 
-### 4. Contacts
+### 7. Alice receives USER_INFO
+- Information about user
+[Github (Lines 98-102)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L98-L102)
 
-- **Contacts Update**:
-  - Contact lists will reflect the **new nickname** once it is changed.
-  - All participants in the same group or chat will **automatically see** the updated name in their contact lists and chat participants.
+### 8. Bob calls **[createChat](createChat)**
+- Click **Create Chat** in the **Chat** section to establish a one-to-one chat between the connected users.
 
+**Call**
+[Github (Lines 47-56)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkChats.ts#L47-L56)
 
-## Scenario Summary
+**Doc**
+[Github (Lines 25-37)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkChats.ts#L25-L37)
 
-- **Nickname Changes**:
-  - Changing your **nickname** will automatically update the display for all users in **group chats** or **contact lists**.
-  - This ensures all participants are aware of any **name changes** and keeps the information consistent and synchronized in real-time.
+### 9. Alice receives NEW_CHAT
+[Github (Lines 20–54)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/chat.ts#L20-L54)
+
+### 10. Bob receives NEW_CONTACT
+- Alice was added to Bob's contact list because they share a common chat.
+[Github (Lines 33–50)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L33-L50)
+
+### 11. Alice receives NEW_CONTACT
+- Bob was added to Alice's contact list because they share a common chat.
+[Github (Lines 33–50)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L33-L50)
+
+### 12. Bob calls **[changeUserNickname](changeUserNickname)**
+
+**Call**
+[Github (Lines 148)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkChats.ts#L148-L148)
+
+**Doc**
+[Github (Lines 140-143)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkChats.ts#L140-L143)
+
+### 13. Bob receives CONTACT_UPDATED
+- Self contact
+[Github (Lines 125–136)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L125-L136)
+
+### 14. Bob receives USER_INFO_CHANGED
+
+```tsdoc
+{
+  userId: UserId,
+  info: UserInfo
+}
+```
+
+### 15. Alice receives CONTACT_UPDATED
+- Bob with updated nickname
+[Github (Lines 125–136)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L125-L136)
+
+### 16. Bob receives CHAT_UPDATED
+- Chat name will be updated
+[Github (Lines 103–137)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/chat.ts#L103-L137)
+
+### 17. Alice receives CHAT_UPDATED
+- Chat name will be updated
+[Github (Lines 103–137)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/chat.ts#L103-L137)
 
 ### SDK Methods
 ---
-| **Method**                                     | **Description**                              |
-|------------------------------------------------|----------------------------------------------|
-| [Connect](connect)                             | Connect to the server.                       |
-| [Disconnect](disconnect)                       | Disconnect from the server.                  |
-| [Create a chat](createChat)                    | Create a new chat with selected users.  |
-| [Change the user nickname](changeUserNickname) | Change the user's nickname.                  |
-| [Get contacts](getContacts)                    | Retrieve the updated list of contacts.       |
+| **Method**                                       | **Description**                                                  |
+|--------------------------------------------------|------------------------------------------------------------------|
+| ****[connect](connect)****                       | Connect to the server using user credentials and shared tokens.  |
+| ****[disconnect](disconnect)****                 | Disconnect from the server.                                      |
+| ****[getUserInfo](getUserInfo)****               | Get information about user.                                      |
+| ****[createChat](createChat)****                 | Create a new chat with selected users.                           |
+| ****[changeUserNickname](changeUserNickname)**** | Change the user's nickname.                                      |
+| ****[getContacts](getContacts)****               | Retrieve the updated list of contacts.                           |
+---

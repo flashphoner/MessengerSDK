@@ -20,6 +20,14 @@ export const handlePresenceEvents = (
 ) => {
   sdkInstance
     .on(SfuEvent.USER_PRESENCE_STATUS_UPDATED, (event) => {
+      /**
+      * Returns UserPresenceStatusUpdated
+      *
+      * @returns {
+      *   userId: string;
+      *   status: PresenceStatus;
+      * }
+      */
       const { userId, status } = event as UpdatedUserStatus;
       setContacts((prev) =>
         updateArrayByProperties(prev, userId, {

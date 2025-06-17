@@ -129,7 +129,7 @@ const ChangeNickNamePanel = forwardRef<ExamplePanelHandlers, ExamplePagePanelTyp
           <ChatCard name={singleChat?.name} members={singleChat?.members} />
         )}
       </Card>
-      <Card className={colorName} title='Change nick name'>
+      <Card className={colorName} title='Change nickname'>
         <div className="flex items-center">
           <StyledInput
             value={nickNameValue}

@@ -22,6 +22,19 @@ export function useSdkChats(sdkInstance: SfuExtended | null) {
   const [messages, setMessages] = useState<Array<Message>>([]);
   const [userChats, setUserChats] = useState<ChatMap>();
 
+  /**
+  * @param type - ChatType.PRIVATE - personal chat, ChatType.PUBLIC - group chat
+  * @param members - chat members
+  *
+  * Creating a Secure Chat with Encryption:
+  * @param isEncryptionEnabled - must be true for a Secure Chat
+  * @param encryptedPrivateKey - the private key of the chat, encrypted with a chat password, used to decrypt messages
+  * @param publicKey - the public key of the chat used to encrypt messages
+  * @param encryptedChatPasswords - an array of chat passwords for each member encrypted with the member's public keys, which must be decrypted using the user's private key.
+  * @param encryptedAttachmentsSecretKey - encrypted key for encrypting attachments.
+  *
+  * @return Promise<UserSpecificChatInfo>
+  */
   const handleCreateChat = useCallback(
     async ({ type, channel, members,
              isEncryptionEnabled, encryptedPrivateKey,
@@ -50,6 +63,10 @@ export function useSdkChats(sdkInstance: SfuExtended | null) {
     [sdkInstance],
   );
 
+  /**
+  * @param id - chat id
+  * @return Promise<void>
+  */
   const handleDeleteChat = useCallback(
     async (id: string) => {
       if (!sdkInstance) return;
@@ -65,7 +82,11 @@ export function useSdkChats(sdkInstance: SfuExtended | null) {
     },
     [sdkInstance],
   );
-
+  /**
+  * @param chatId - chat id
+  * @param userId - Unique user ID. Provide your userId to exit the chat.
+  * @return Promise<void>
+  */
   const handleLeaveFromChat = useCallback(
     async (chatId: string, userId: string) => {
       if (!sdkInstance) return;
@@ -116,6 +137,10 @@ export function useSdkChats(sdkInstance: SfuExtended | null) {
     }
   }, [sdkInstance]);
 
+  /**
+  * @param nickname - new nickname
+  * @return Promise<void>
+  */
   const handleChangeNickName = useCallback(
     async (nickname: string) => {
       if (!sdkInstance) return;
