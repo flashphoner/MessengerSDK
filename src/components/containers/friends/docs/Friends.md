@@ -1,5 +1,3 @@
-The **Friends** example page demonstrates how to use the SDK for managing server connections, friend requests, and friend lists.
-
 ```mermaid
 sequenceDiagram
     participant Bob
@@ -25,8 +23,8 @@ sequenceDiagram
 
 # Friend‑Request Sequence - (Bob ⇌ Alice)
 
-### 1. Bob Connect
-- Click on **Connect** button invoke  **[connect](connect)**  function on the SDK.
+#### 1. Bob Connect
+- Click on **Connect** button invoke **[connect](connect)** function on the SDK.
   Bob’s client opens a WebSocket session and authenticates.
 
 **Call**
@@ -35,11 +33,12 @@ sequenceDiagram
 **Doc**
 [Github (Lines 71–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L71-L84)
 
-### 2. Receive authToken from **[connect](connect)** response
+#### 2. Receive authToken from **[connect](connect)** response
 - used to bob's second connection
 [Github (Lines 80–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L80-L84)
 
-### 3. Bob calls **[getUserInfo](getUserInfo)**
+### 3. Bob calls
+- **[getUserInfo](getUserInfo)**
 - After the connection is established, we are getting self-information about user
 [Github (Lines 104)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L104-L104)
 
@@ -57,7 +56,8 @@ sequenceDiagram
 **Doc**
 [Github (Lines 71–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L71-L84)
 
-### 6. Alice calls **[getUserInfo](getUserInfo)**
+### 6. Alice calls
+- **[getUserInfo](getUserInfo)**
 - After the connection is established, we are getting self-information about user
 [Github (Lines 104)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L104-L104)
 
@@ -65,7 +65,10 @@ sequenceDiagram
 - Information about user
 [Github (Lines 98-102)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L98-L102)
 
-### 8. Bob calls **[addFriend](addFriend)**
+
+### 8. Bob's friend flow
+
+- **[addFriend](addFriend)** method
 - Bob sends a friend request addressed to Alice’s userId.
 
 **Call**
@@ -103,13 +106,14 @@ sequenceDiagram
 - Bob is added to Alice’s confirmed contacts.
 [Github (Lines 33–50)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L33-L50)
 
-### 15. Bob receives NEW_CONTACT
+## 15. Bob receives NEW_CONTACT_1
 - Alice is added to Bob’s confirmed contacts.
-[Github (Lines 33–50)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L33-L50)
+[Github (Lines 33–50)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L33-L50)  
+
 
 
 ###  Methods
----
+
 | **Method**                                       | **Description**                                                 |
 |--------------------------------------------------|-----------------------------------------------------------------|
 | ****[connect](connect)****                       | Connect to the server using user credentials and shared tokens. |
@@ -121,4 +125,4 @@ sequenceDiagram
 | ****[rejectFriendInvite](rejectFriendInvite)**** | Reject an incoming friend request.                              |
 | ****[getContacts](getContacts)****               | Retrieve the list of friends.                                   |
 | ****[removeFriend](removeFriend)****             | Remove a friend from your list.                                 |
----
+

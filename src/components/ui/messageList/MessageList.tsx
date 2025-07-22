@@ -38,29 +38,77 @@ const MessageList = (props: MessageListProps) => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const [decryptedMessages, setDecryptedMessages] = useState<Set<string>>(new Set());
-
+  /**
+   * Decrypts a chat message for the current user, using the chat's encrypted password and private key.
+   *
+   * 1. Checks if private key and encrypted password are present.
+   * 2. Retrieves user's key pair and chat key pair from key management.
+   * 3. Decrypts chat password with user's private key.
+   * 4. Decrypts chat private key with decrypted password.
+   * 5. Imports the chat private key and uses it to decrypt the message body.
+   * 6. Updates the message in UI and tracks decrypted messages.
+   *
+   * @async
+   * @param msg {Message} - The encrypted message object to decrypt.
+   * @returns {Promise<void>} Promise resolving after message is decrypted and UI updated.
+   *
+   * @throws {Error} Logs error if decryption fails at any stage.
+   */
   const handleDecryptMessage = async (msg: Message) => {
 
     if (!singleChat?.encryptedPrivateKey || !encryptionInfo?.privateKey) return;
 
     try {
+      /**
+       * @function keyManagementService.getUserKeys
+       * @param username {string}
+       * @returns {{ keyPair: { publicKey: string, privateKey: string } }|undefined}
+       */
       const selfKeys = keyManagementService.getUserKeys(userCredentials.username);
-      if (!selfKeys) throw new Error("Self keys not found");
-
+      if (!selfKeys) {
+        throw new Error("Self keys not found");
+      }
+      /**
+       * @function keyManagementService.getChatKeys
+       * @param chatId {string}
+       * @returns {{ keyPair: { publicKey: string, privateKey: string } }|undefined}
+       */
       const chatKeys = keyManagementService.getChatKeys(singleChat.id);
-      if (!chatKeys) throw new Error("Chat keys not found");
-
+      if (!chatKeys) {
+        throw new Error("Chat keys not found");
+      }
+      /**
+       * @function decryptMessageWithPrivateKey
+       * @param privateKey {string}
+       * @param encrypted {string}
+       * @returns {Promise<string>} - Decrypted chat password.
+       */
       const chatPassword = await decryptMessageWithPrivateKey(
         selfKeys.keyPair.privateKey,
         singleChat.encryptedChatPassword
       );
+      /**
+       * @function decryptPrivateKey
+       * @param encryptedPrivateKey {string}
+       * @param password {string}
+       * @returns {Promise<string>} - Decrypted chat private key.
+       */
       const decryptedChatPrivateKey = await decryptPrivateKey(
         singleChat.encryptedPrivateKey,
         chatPassword
       );
-
+      /**
+       * @function importPrivateKeyFromBase64
+       * @param privateKeyBase64 {string}
+       * @returns {Promise<CryptoKey>} - Imported private key object.
+       */
       const importedChatPrivateKey = await importPrivateKeyFromBase64(decryptedChatPrivateKey);
-
+      /**
+       * @function decryptMessageWithPrivateKey
+       * @param privateKey {CryptoKey}
+       * @param encryptedMessage {string}
+       * @returns {Promise<string>} - Decrypted message text.
+       */
       const decryptedMessageTxt = await decryptMessageWithPrivateKey(importedChatPrivateKey, msg.body);
 
       onUpdateMessage(msg.id, { body: decryptedMessageTxt });

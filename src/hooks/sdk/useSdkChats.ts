@@ -152,7 +152,19 @@ export function useSdkChats(sdkInstance: SfuExtended | null) {
     },
     [sdkInstance],
   );
-
+  /**
+   * Sends a message via the SDK.
+   *
+   * @param messageObj - Message payload object.
+   * @param messageObj.body - (Optional) Text content of the message.
+   * @param messageObj.to - (Optional) Recipient user ID.
+   * @param messageObj.parentId - (Optional) Parent message ID for threads/replies.
+   * @param messageObj.targetEntityType - Target entity type (e.g., 'user', 'group').
+   * @param messageObj.targetEntityId - Target entity ID (e.g., userId or groupId).
+   * @param messageObj.attachments - (Optional) List of message attachments.
+   *
+   * @returns {Promise<void>} Promise resolves when message is sent and added to the state.
+   */
   const sendMessage = useCallback(
     async (messageObj: {
       body?: string;

@@ -5,62 +5,71 @@ sequenceDiagram
     participant SDK
     participant Alice
     
-    Bob ->> SDK: 1. createChat()
-    SDK -->> Bob: 2. Resolve SFU_NEW_CHAT  
-    SDK -->> Alice: 3. Event SFU_NEW_CHAT object
-    Note over Bob: App actions: <br/> 4. Set text to input message  <br/> 5. Try to send message <br/> 6. Show modal warning
-    Bob ->> SDK: 7. sendMessage()
-    SDK -->> Bob: 8. Resolve SFU_MESSAGE_STATE
-    SDK -->> Alice: 9. Event SFU_MESSAGE
+    Bob ->> SDK: 1. Connect
+    SDK -->> Bob: 2. connect response with authToken
+    Bob ->> SDK: 3. getUserInfo
+    SDK -->> Bob: 4. resolve Promise USER_INFO
+    Bob ->> SDK: 5. getUserEncryptionInfo
+    SDK -->> Bob: 6. resolve Promise USER_ENCRYPTION_INFO
+    Note over Alice: Alice performs the same actions as Bob, steps 1–6.
+    Bob ->> SDK: 7. Using a friend flow
+    Alice ->> SDK: 8. Using a friend flow
+    Kiri ->> SDK: 9. Using a friend flow
+    Note over Bob: App actions: <br/>9. Hover on shield icon in contacts <br/>10.Click on ask button<br/> 11. Automatic paste a text to message field<br/> 12. Send a message request encryption
 ```
-# Security‑Upgrade Prompt Flow (Bob ⇌ Alice)
+### 1. Connect
+- Click on **Connect** button invoke  **[connect](connect)**  function on the SDK.
 
-### UI trigger (contacts list)
+#### Call
+[Github (Lines 86–95)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L86-L95)
 
-- In Bob’s **Contacts** panel each entry has a small **shield** icon to the right of the username.
-- When Bob hovers over the shield, a tooltip appears with a **“Ask”** button.
-- Pressing that button automatically
-    1. opens (or focuses) a one‑on‑one chat with the contact;
-    2. pre‑fills the input field with a polite request to enable profile encryption.
 
----
+#### Doc
+[Github (Lines 71–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L71-L84)
 
-### Network sequence
+### 2. Receive authToken from **[connect](connect)** response
+[Github (Lines 80–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L80-L84)
 
-1. **Bob → SDK — createChat()**  
-   Bob’s client asks the server to create the dedicated chat.
+### 3. Call **[getUserInfo](getUserInfo)**
+- After the connection is established, we are getting self-information about user
+[Github (Lines 104)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L104-L104)
 
-2. **SDK → Bob — Resolve SFU_NEW_CHAT**  
-   Server confirms creation and returns the chatId.
+### 4. Receive USER_INFO
+- Information about user
+  [Github (Lines 98-102)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L98-L102)
 
-3. **SDK → Alice — Event SFU_NEW_CHAT**  
-   Alice is notified in real time that a new chat with Bob exists.
 
-#### App‑side actions (Bob)
+### 5. Call **[getUserEncryptionInfo](getUserEncryptionInfo)**
+- Retrieves encryption parameters previously saved for the user.
+[Github (Lines 17)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkEncryption.ts#L17-L17)
 
-4. The prepared upgrade message is already in the input box.
-5. Bob presses **Send**.
-6. A modal warning pops up:  
-   *“This message will be sent unencrypted”*  
-   Bob can **Cancel** or **Send anyway**.
+### 6. Response USER_ENCRYPTION_INFO
 
-7. **Bob → SDK — sendMessage()**  
-   If Bob confirms, the request is dispatched.
+[Github (Lines 19–27)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkEncryption.ts#L19-L27)
 
-8. **SDK → Bob — Resolve SFU_MESSAGE_STATE**  
-   Server stores the message and marks its state as *sent*.
+#### 7. [Bob friend flow](/#8-bob-s-friend-flow)
+- Opens the [**Friends**](/) page to demonstrate [Bob’s friend flow](/#8-bob-s-friend-flow)
 
-9. **SDK → Alice — Event SFU_MESSAGE**  
-   Alice receives the plain‑text upgrade prompt in real time.
+#### 8. [Alice friend flow](/#10-alice-receives-new_incoming_friend_invite)
+- Opens the [**Friends**](/) page to demonstrate [Alice’s invite process](/#10-alice-receives-new_incoming_friend_invite)
 
-**Result:**  
-Both users now see the conversation. Bob’s reminder remains visible until Alice finishes the profile‑encryption setup.
+### 9. Hover on shield icon in contacts card
+- it show the tooltip with **"ASK"** button 
+### 10. Click on ask button
+- On clicking “ASK”, a simple (unencrypted) chat is created (see flow in [One to one chat](/oneToOneChat#8-bob-calls)). In this context, the chat is used to prompt the user to upgrade their profile.
+### 11. Automatic paste a text to message field
+- After created chat, we paste ask a text message to input field
+### 12. Try to send the automatic paste text message
+- **[sendMessage](sendMessage)**
+- this is a simple sending message for user
 
-**Encrypted steps**
-  - Upgrade profiles
-  - Create encrypted chat
-  - Send encrypted message
-  - Decrypt message
+#### Call
+[Github (Lines 226–231)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L226-L231)
+
+#### Doc
+[Code (Lines 155–167)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/hooks/sdk/useSdkChats.ts#L155-L167)
+
+### Encrypted chat workflow
 
 ```mermaid
 sequenceDiagram
@@ -68,137 +77,155 @@ sequenceDiagram
     participant SDK
     participant Alice
     
-    Note over Bob: App actions: <br/>1. Generate keys<br/>2. Prepare keys to export<br/>3. Derive password key<br/>4. Prepare Verification hash<br/>5. Optional add salt and IV
-    Note over Alice: App actions: <br/>6. Generate keys<br/>7. Prepare keys to export<br/>8. Derive password key<br/>9. Prepare Verification hash<br/>10. Optional add salt and IV
-    Bob ->> SDK: 11. addUserEncryptionInfo()
-    SDK -->> Bob: 12. Event CONTACT_UPDATED
-    SDK -->> Bob: 13. USER_ENCRYPTION_INFO_ADDED
-    SDK ->> Alice: 14. Event CONTACT_UPDATED
-    Alice ->> SDK: 15. addUserEncryptionInfo()
-    SDK -->> Alice: 16. Event CONTACT_UPDATED
-    SDK -->> Alice: 17. USER_ENCRYPTION_INFO_ADDED
-    SDK ->> Bob: 18. Event CONTACT_UPDATED
-    Bob ->> SDK: 19. createChat() -  encrypted
-    SDK -->> Bob: 20. Resolve SFU_NEW_CHAT  
-    SDK -->> Alice: 21. Event SFU_NEW_CHAT object
-    Bob ->> SDK: 22. sendMessage() 
-    SDK -->> Bob: 23. Resolve SFU_MESSAGE_STATE
-    SDK -->> Alice: 24. Event SFU_MESSAGE
-    Note over Bob: App actions: <br/>25. Decrypt message<br/>
-    Note over Alice: App actions: <br/>25. Decrypt message<br/>
+    Bob ->> SDK: 1. Upgrade security profile
+    SDK -->> Bob: 2.  CONTACT_UPDATED, USER_ENCRYPTION_INFO_ADDED
+    Alice ->> SDK: 3. Upgrade security profile
+    SDK -->> Alice: 4. CONTACT_UPDATED, USER_ENCRYPTION_INFO_ADDED
+    Bob ->> SDK: 5. Create encrypted chat
+    SDK -->> Bob: 6. Receive created chat information
+    SDK -->> Alice: 7. New incoming encrypted chat 
+    Bob ->> SDK: 8. Send encrypted message
+    SDK -->> Bob: 9. Resolve MessageStatus
+    SDK -->> Alice: 10. Receive encrypted message
+    Note over Bob: App actions: <br/>11. Decrypt message
+    Note over Alice: 12. Decrypt message
 ```
+#### 1. [Bob upgrades security profile](/upgradeSecurity#upgradepart)
+- This page describes the security upgrade functionality for user profiles.
 
-# End‑to‑End Encryption Flow (Bob ⇌ Alice)
+#### 2. Bob receives updated info
+- After upgrading, the SDK sends [CONTACT_UPDATED](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/types/constants.ContactUpdated.html) and [USER_ENCRYPTION_INFO_ADDED](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/enums/constants.SfuEvent.html#USER_ENCRYPTION_INFO_ADDED)
 
-## Profile upgrade (per user)
+#### 3. [Alice upgrades security profile](/upgradeSecurity#upgradepart)
+- This page describes the security upgrade functionality for user profiles.
 
-### App actions:
+#### 4. Alice receives updated info
+- After upgrading, Alice receives the [CONTACT_UPDATED](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/types/constants.ContactUpdated.html) and [USER_ENCRYPTION_INFO_ADDED](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/enums/constants.SfuEvent.html#USER_ENCRYPTION_INFO_ADDED)
 
-### 1. Generate RSA Key Pair
-[GitHub (Lines 1–13)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L1-L13)
-- Required for encrypting your data.
+### 5. Create encrypted chat
+- **[createChat](createChat)** - sdk method
+- [handleCreateChat()](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L138-L260) - call in a component
+#### Call 
+[Code (Lines 47–56)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/hooks/sdk/useSdkChats.ts#L47-L56)
+#### Doc
+[Code (Lines 25–37)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/hooks/sdk/useSdkChats.ts#L25-L37)
+### See also
+- Preparing fields to create encrypted chat
+#### Call
+[Code (Lines 153–153)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L153-L153)
+#### Doc
+[Code (Lines 148–152)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L148-L152)
+### Attachment aes key
+#### Call
+[Code (Lines 158–158)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L158-L158)
+#### Doc
+[GitHub (Lines 154–157)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L154-L157)
+### Convert to the aes key to string
+#### Call
+[GitHub (Lines 164–164)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L164-L164)
+#### Doc
+[GitHub (Lines 159–163)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L159-L163)
+### Export private key to base64
+#### Call
+[GitHub (Lines 170–170)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L170-L170)
+#### Doc
+[GitHub (Lines 165–169)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L165-L169)
+### Export public key to base64
+#### Call
+[GitHub (Lines 176–176)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L176-L176)
+#### Doc
+[GitHub (Lines 171–175)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L171-L175)
+### Create chat password
+#### Call 
+[GitHub (Lines 181–181)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L181-L181)
+#### Doc
+[GitHub (Lines 177–180)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L177-L180)
+### Encrypted private key with salt optional
+#### Call
+[GitHub (Lines 193–193)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L193-L193)
+#### Doc
+[GitHub (Lines 186–192)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L186-L192)
+### Prepare members
+[GitHub (Lines 198–198)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L198-L198)
+#### Doc
+[GitHub (Lines 194–197)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L194-L197)
+### Prepare passwords
+[GitHub (Lines 209–220)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L209-L220)
+#### Doc
+[GitHub (Lines 199–208)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L199-L208)
+### Using prepared data
+#### Call 
+[GitHub (Lines 232–239)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L232-L239)
+#### Doc
+[GitHub (Lines 221–231)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L221-L231)
+
+## 6. Bob receives created encrypted chat information
+[UserSpecificChatInfo](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/types/constants.UserSpecificChatInfo.html)
+## 7. Alice received event about new encrypted chat
+[UserSpecificChatInfo](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/types/constants.UserSpecificChatInfo.html)
+
+## 8. Bob sends the encrypted message to chat  **[sendMessage](sendMessage)**
+#### Call
+[GitHub (Lines 179–179)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/hooks/sdk/useSdkChats.ts#L179-L179)
+#### Doc
+[GitHub (Lines 155–167)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/hooks/sdk/useSdkChats.ts#L155-L167)
+### See also
+- get keys from service
+#### Call
+[GitHub (Lines 302–302)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L302-L302)
+#### Doc
+[GitHub (Lines 297–301)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L297-L301)
+#### Encrypt message with a private key
+#### Call
+[GitHub (Lines 312–312)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L312-L312)
+#### Doc
+[GitHub (Lines 306–311)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L306-L311)
+### Finally, call  **[sendMessage](sendMessage)**
+[GitHub (Lines 322–327)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L322-L327)
+## 9. Bob resolves the MessageStatus
+- [MessageStatus](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/types/constants.MessageStatus.html)
+## 10. Alice receives the encrypted message
+- [MessageStatus](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/types/constants.MessageStatus.html)
+
+### 11. Bob decrypts message
+- decrypt message function [handleDecryptMessage()](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L41-L121)
+
+#### Call
+[GitHub (Lines 112-112](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L112-L112)
+#### Doc
+[GitHub (Lines 106-111](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L106-L111)
+
+### 12. Alice decrypts message
+- decrypt message function [handleDecryptMessage()](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L41-L121)
+#### Call
+[GitHub (Lines 112-112](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L112-L112)
+#### Doc
+[GitHub (Lines 106-111](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L106-L111)
+
+### See also
+### What inside decrypt message function
+### Get user keys
+[GitHub (Lines 67-67](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L67-L67)
+### Doc
+[GitHub (Lines 62-66](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L62-L66)
+### Get chat keys
+[GitHub (Lines 76-76](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L76-L76)
+### Doc
+[GitHub (Lines 71-75](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L71-L75)
+### Chat password
+[GitHub (Lines 86-89](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L86-L89)
+### Doc
+[GitHub (Lines 80-85](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L80-L85)
+### Decrypt chat private key
+[GitHub (Lines 96-99](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L96-L99)
+### Doc
+[GitHub (Lines 90-95](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L90-L95)
+### Import a chat private key
+[GitHub (Lines 105-105](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L105-L105)
+### Doc
+[GitHub (Lines 100-104](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L100-L104)
 
 
-
-#### 2. Export Keys to Base64
-
-[GitHub (Lines 15–18)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L15-L18)
-
-- **Purpose**: Converts the generated private key into a Base64 string for storage or transmission.
-- **Usage**:
-    1. After generating a key pair via **generateRSAKeyPair()**, call **exportPrivateKeyToBase64(privateKey)**.
-    2. The returned Base64-encoded private key can be stored or sent to a server.
-
-> **Important**: Always protect the Base64 private key. Encrypt it (e.g., with a password) before saving or transmitting.
-
-[GitHub (Lines 34–37)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L34-L37)
-
-- **Purpose**: Converts the generated public key into a Base64 string so that others can easily encrypt messages for you.
-- **Usage**:
-    1. Call **exportPublicKeyToBase64(publicKey)** after generating your RSA key pair.
-    2. Store or share the Base64-encoded public key so other users can encrypt messages for you.
-
-
-#### 3. Derive a key from the Master Password
-
-[GitHub (Lines 53–75)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L53-L75)
-
-- **Purpose**: Derives a cryptographic key from a user-supplied password now we are using static *MS-PASSWORD* value.
-- **Usage**:
-    - Internally used to generate a strong key from a user-chosen password or passphrase.
-    - This derived key is then used to encrypt or decrypt the private key.
-
-- Used to encrypt the private key securely.
-
-### 4. Prepare verification hash
-- Generate a verification hash by **MS-PASSWORD**.
-  [GitHub (Lines 174 – 183)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L174-L183)
-
-- Produces a one-way **SHA-256 fingerprint** that proves the client still possesses the correct master password, without revealing the password itself.
-- Pass **verificationHash** inside **addUserEncryptionInfo()**
-
-
-### 5. Encrypt the Private Key optional using IV and Salt
-- IV and salt are embedded automatically or click on checkbox in *Encryption Options*
-  [GitHub (Lines 96–114)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L96-L114)
-
-- **Purpose**: Encrypts the Base64-encoded private key using a password-derived key, embedding the IV and salt in the resulting string.
-- **Usage**:
-    1. Get the Base64 private key via **exportPrivateKeyToBase64()**.
-    2. Call **encryptPrivateKeyWithEmbeddedIvSalt(base64PrivateKey, password, useIVAndSalt)**.
-    3. Store or send this **encrypted private key**, which contains the IV and salt.
-
-
-### 6-10. Repeat key-generation flow (second user)
-These steps mirror **6–10**, but are performed by the second user (Alice):
-
-### 11-13. Persist encryption info (Bob)
-- **11. addUserEncryptionInfo** — Bob uploads his *publicKey*, encrypted *privateKey*, IV and salt to the server.
-- **12. CONTACT_UPDATED** — the server confirms Bob’s contact card was refreshed.
-- **13. USER_ENCRYPTION_INFO_ADDED** — the server acknowledges Bob’s encryption data is now stored.
-
-### 14–16. Persist encryption info (Alice)
-- **14. CONTACT_UPDATED** — Event for Alice about Bob updates.
-- **15. addUserEncryptionInfo** — Alice performs the same upload with her own keys.
-- **16. CONTACT_UPDATED** — the server confirms Alice’s contact card was refreshed.
-- **17. USER_ENCRYPTION_INFO_ADDED** — the server acknowledges Bob’s encryption data is now stored.
-- **18. CONTACT_UPDATED** — Event for Bob about Alice's updates.
-- 
-## 19–25. Encrypted‑chat workflow (runtime)
-- **19. Create encrypted chat**
-    Bob calls **handleCreateEncryptedChat**, which
-[GitHub (Lines 143–177)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L143-L177)
-- generates a temporary RSA key pair and an AES‑256;
-- creates a random chat password with **uuidv4()**;
-- encrypts the chat’s private key with **encryptPrivateKeyWithEmbeddedIvSalt**;
-- loops through every contact and for each one
-    - imports the contact’s public key with **importPublicKeyFromBase64**,
-    - encrypts the chat password using **encryptMessageWithPublicKey**,
-    - appends the result to **encryptedChatPasswords**;
-- finally invokes **handleCreateChat** with  
-  publicKey, encryptedPrivateKey, encryptedChatPasswords and encryptedAttachmentsSecretKey.
-
-- **20. Resolve SFU_NEW_CHAT** — server returns the final **chatId**; the client replaces the temporary id via **keyManagementService.replaceChatId**.
-
-- **21. Event SFU_NEW_CHAT** — Alice receives chat metadata: Bob’s chat public key and her encrypted chat password.
-
-- **22. sendMessage** — Inside **handleSendMessage** the plaintext is encrypted with the chat public key and dispatched to the server.
-
-[GitHub (Lines 198–240)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L198-L240)
-
-
-- **23. Resolve SFU_MESSAGE_STATE** — server stores the ciphertext and marks the message as **sent**.
-
-- **24. Event SFU_MESSAGE** — Alice’s client receives the encrypted payload in real time.
-
-- **25. Decrypt message**
-  - Alice retrieves chat keys via **getChatKeys** from keyManagementService(first access decrypts them with her chat password).
-  [GitHub (Lines 41–48)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/services/keyManagementService.ts#L41-L48)
-       
-  - Passes the ciphertext to reveal the plaintext.
-  [GitHub (Lines 162–172)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L162-L172)
-
-**Result:** From this point on, every message and attachment in the chat is protected end‑to‑end.
 
 ### SDK Methods
 ---

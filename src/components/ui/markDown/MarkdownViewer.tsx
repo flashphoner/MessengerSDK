@@ -7,12 +7,20 @@ import CopyButton from "@/components/ui/buttons/CopyButton";
 import { EXTENDED_PATH, SDK_DOC_URL } from "@/utils/constants";
 import CodeLinkIcon from "@/assets/icons/codeLink.svg";
 import Icon from '@/components/ui/icon/Icon';
-import Mermaid from '@/components/ui/Mermaid';
+
 import {stripCommonIndent, removeMarkersButKeepText, stripAsterisks} from "@/utils/helpers";
+import {useSmartScrollToHash} from "@/hooks/helpers/useSmartScrollToHash";
+import Mermaid from "@/components/ui/mermaid/Mermaid";
 
 export type MarkdownViewerProps = {
   content?: string;
 };
+/**
+ * Converts repository blob URL to a raw file URL (GitHub/GitLab).
+ *
+ * @param {string} url - Repository blob URL
+ * @returns {string|null} - Raw file URL or null if not supported
+ */
 function toRawUrl(url: string): string | null {
   if (url.includes("github.com")) {
     return url.replace("github.com", "raw.githubusercontent.com").replace("/blob/", "/");
@@ -28,7 +36,12 @@ function toRawUrl(url: string): string | null {
 // Caches
 const linesCache: Record<string, string[]> = {};
 const promisesCache: Record<string, Promise<string[]> | undefined> = {};
-
+/**
+ * Fetches file lines from a raw URL and caches them.
+ *
+ * @param {string} url - Raw file URL
+ * @returns {Promise<string[]>} - File lines
+ */
 async function fetchSnippetFile(url: string): Promise<string[]> {
   const cachedLines = linesCache[url];
   if (cachedLines) {
@@ -67,7 +80,33 @@ async function fetchSnippetFile(url: string): Promise<string[]> {
   promisesCache[url] = newPromise;
   return newPromise;
 }
+/**
+ * Slugifies a heading string for use as an element id.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
 
+function slugify(text: string) {
+  return text
+    .toString()
+    .toLowerCase()
+    .replace(/[\s\W-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+/**
+ * MarkdownViewer component
+ *
+ * Renders Markdown content with custom styles, code highlighting, and GitHub/GitLab snippet auto-loading.
+ *
+ * - Loads and displays code snippets for links to GitHub/GitLab files with line ranges.
+ * - Supports syntax highlighting, mermaid diagrams, copy-to-clipboard, and internal/external link handling.
+ * - Uses react-markdown, remark-gfm, and Prism for rendering and highlighting.
+ *
+ * @param {MarkdownViewerProps} props
+ * @param {string} [props.content] - Markdown content to render
+ * @returns {JSX.Element}
+ */
 const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
   const [resolvedContent, setResolvedContent] = useState(content);
   const deferredContent = useDeferredValue(resolvedContent);
@@ -87,9 +126,10 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
 
   useEffect(() => {
     if (!content) return;
+    // Parses content, replaces code snippet links with loading blocks, and sets up IntersectionObserver for lazy loading.
 
-    const regex = /\[(.*?)\]\((https:\/\/(?:github\.com|gitlab\.flashphoner\.com)\/[^)]+)#L(\d+)-L(\d+)\)/g;
-    const matches = [...content.matchAll(regex)];
+    const snippetRegex = /\[([^\]]*Lines[^\]]*)\]\((https:\/\/(?:github\.com|gitlab\.flashphoner\.com)\/[^)]+)#L(\d+)-L(\d+)\)/g;
+    const matches = [...content.matchAll(snippetRegex)];
 
     if (matches.length === 0) {
       setResolvedContent(content);
@@ -159,6 +199,7 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
       });
     });
   }, [content]);
+  useSmartScrollToHash([content]);
 
   return (
     // 1) Prevent horizontal scroll on the parent container:
@@ -170,14 +211,16 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
           h1: ({ children }) => (
             <h1 className="mb-4 text-2xl font-bold tracking-tight">{children}</h1>
           ),
-          h2: ({ children }) => (
-            <h2 className="mb-4 text-xl font-semibold">{children}</h2>
-          ),
-          h3: ({ children }) => (
-            <h3 className="mb-2 mt-4 text-lg font-semibold">{children}</h3>
-          ),
+          h2: ({ children }) => {
+            return <h2 className="mb-4 text-lg font-semibold scroll-mt-57">{children}</h2>;
+          },
+          h3: ({ children }) => {
+            const text = String(children);
+            const id = slugify(text);
+            return <h3 id={id} className="mb-3 text-base font-semibold">{children}</h3>;
+          },
           h4: ({ children }) => (
-            <h4 className="mb-3 text-base font-semibold">{children}</h4>
+            <h4 className="mb-2 text-base font-semibold">{children}</h4>
           ),
           h5: ({ children }) => (
             <h5 className="mb-2 text-sm font-bold">{children}</h5>
@@ -237,7 +280,9 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
             const rawSnippetUrl = snippetMapRef.current[snippetKey];
 
             if (highlightLang === 'mermaid') {
-              return <Mermaid code={codeString}/>;
+              return (
+                <Mermaid code={cleanedCode} />
+              );
             }
 
             if (manualSnippet || snippetKey) {
@@ -304,15 +349,64 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
             );
 
           },
-          a: ({href, ...props}) => (
-            <a
-              className="font-bold hover:underline text-customColors-textBlue mx-1"
-              {...props}
-              href={href ? `${SDK_DOC_URL}${EXTENDED_PATH}${href}` : undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-            />
-          ),
+          a: ({ href, children, ...props }) => {
+            if (!href) return <span {...props}>{children}</span>;
+            const isAbsolute = /^https?:\/\//.test(href);
+            const isInternal = href.startsWith("/");
+            const isSourceWithLines =
+              /^https?:\/\/(?:github\.com|gitlab\.flashphoner\.com)\/.+#L\d+-L\d+$/.test(href);
+            const isLinesLabel =
+              typeof React.Children.toArray(children)[0] === "string" &&
+              (React.Children.toArray(children)[0] as string).includes("Lines");
+
+            // [name](url) - link with the marked lines code
+            if (isSourceWithLines && isLinesLabel) {
+              return <>{children}</>;
+            }
+            // [Github (Lines 19–27)](url) - out
+            if (isAbsolute) {
+              return (
+                <a
+                  className="font-bold hover:underline text-customColors-textBlue mx-1"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  {...props}
+                >
+                  {children}
+                </a>
+              );
+            }
+
+            // [Upgrade security profiles](/page#upgradepart) - local
+            if (isInternal) {
+              return (
+                <a
+                  className="font-bold hover:underline text-customColors-textBlue mx-1"
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  {...props}
+                >
+                  {children}
+                </a>
+              );
+            }
+
+            // ****[connect](connect)**** — api doc
+            return (
+              <a
+                className="font-bold hover:underline text-customColors-textBlue mx-1"
+                href={`${SDK_DOC_URL}${EXTENDED_PATH}${href}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                {...props}
+              >
+                {children}
+              </a>
+            );
+
+          },
         }}
       >
         {deferredContent}
@@ -320,5 +414,4 @@ const MarkdownViewer: FC<MarkdownViewerProps> = ({ content }) => {
     </div>
   );
 };
-
 export default MarkdownViewer;

@@ -1,5 +1,3 @@
-This page allows you to **connect** to the server, **create or join** a space, **manage categories**, **toggle channel privacy**, and view your **contacts**. It is designed so that **only the appropriate buttons and forms** appear, depending on your status (e.g., whether you're the space creator or an invited member).
-
 ```mermaid
 sequenceDiagram
     participant Bob
@@ -142,4 +140,3 @@ sequenceDiagram
 | ****[updateSpaceChannel](updateSpaceChannel)****          | Change channel between public and private.                      |
 | ****[getContacts](getContacts)****                        | Retrieve the list of contacts.                                  |
 | ****[deleteSpace](deleteSpace)****                        | Delete space                                                    |
----

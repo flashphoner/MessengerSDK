@@ -1,5 +1,3 @@
-Use the **Change Nickname** SDK to manage server connections, create group chats, and update nicknames. This guide explains how nickname changes are reflected for all users in real-time.
-
 ```mermaid
 sequenceDiagram
     participant Bob

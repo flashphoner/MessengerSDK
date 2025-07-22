@@ -140,21 +140,72 @@ const EncryptedChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
         setSingleChat(null);
         setMessages([]);
 
+        /**
+         * @function uuidv4
+         * @returns {string} - Randomly generated UUID string.
+         */
         const chatTemporaryId = uuidv4();
+        /**
+         * @function keyManagementService.generateKeysForChat
+         * @param chatId {string} - Temporary chat ID.
+         * @returns {Promise<{ publicKey: string, privateKey: string }>} - Generated key pair.
+         */
         await keyManagementService.generateKeysForChat(chatTemporaryId);
+        /**
+         * @function generateAESKey
+         * @returns {Promise<CryptoKey>} - Newly generated AES key.
+         */
         const attachmentsAESKey = await generateAESKey();
+        /**
+         * @function exportAESKeyToString
+         * @param key {CryptoKey} - AES key to export.
+         * @returns {Promise<string>} - AES key as string (base64).
+         */
         const aesAsString = await exportAESKeyToString(attachmentsAESKey);
-
+        /**
+         * @function keyManagementService.exportChatPrivateKeyBase64
+         * @param chatId {string} - Temporary chat ID.
+         * @returns {Promise<string>} - Private key as base64 string.
+         */
         const strPrivateKey = await keyManagementService.exportChatPrivateKeyBase64(chatTemporaryId);
+        /**
+         * @function keyManagementService.exportChatPublicKeyBase64
+         * @param chatId {string} - Temporary chat ID.
+         * @returns {Promise<string>} - Public key as base64 string.
+         */
         const strPublicKey = await keyManagementService.exportChatPublicKeyBase64(chatTemporaryId);
+        /**
+         * @function uuidv4
+         * @returns {string} - Randomly generated password for chat.
+         */
         const chatPassword = uuidv4();
 
-        if (!strPrivateKey) throw new Error("Private key generation failed");
-
+        if (!strPrivateKey) {
+          throw new Error("Private key generation failed");
+        }
+        /**
+         * @function encryptPrivateKeyWithEmbeddedIvSalt
+         * @param privateKey {string} - Private key to encrypt.
+         * @param password {string} - Password to encrypt with.
+         * @param useIVAndSalt {boolean} - Whether to use IV and salt.
+         * @returns {Promise<string>} - Encrypted private key as string.
+         */
         const encryptedPrivateKey = await encryptPrivateKeyWithEmbeddedIvSalt(strPrivateKey, chatPassword, options.useIVAndSalt);
-
+        /**
+         * @type {Array<string>}
+         * @description List of userIds for chat members except current user.
+         */
         const members = contacts.map(contact => contact.userId).filter(userId => userId !== userCredentials.username);
-
+        /**
+         * @function importPublicKeyFromBase64
+         * @param publicKey {string} - Public key as base64 string.
+         * @returns {Promise<CryptoKey>} - Imported CryptoKey object.
+         *
+         * @function encryptMessageWithPublicKey
+         * @param key {CryptoKey} - Recipient's public key.
+         * @param message {string} - Message to encrypt.
+         * @returns {Promise<string>} - Encrypted message.
+         */
         const passwords = await Promise.all(
           contacts.map(async (contact) => {
             try {
@@ -167,6 +218,17 @@ const EncryptedChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
             }
           })
         );
+        /**
+         * @function handleCreateChat
+         * @param params {object}
+         * @param params.members {Array<string>} - List of chat member user IDs.
+         * @param params.isEncryptionEnabled {boolean} - Whether encryption is enabled.
+         * @param params.encryptedPrivateKey {string} - Encrypted chat private key.
+         * @param params.publicKey {string} - Chat public key.
+         * @param params.encryptedChatPasswords {Array<{ userId: string, password: string }>} - Encrypted passwords for participants.
+         * @param params.encryptedAttachmentsSecretKey {string} - Encrypted AES key for attachments.
+         * @returns {Promise<Chat>} - The created chat object.
+         */
         const createdChat = await handleCreateChat({
           members,
           isEncryptionEnabled: true,
@@ -175,13 +237,24 @@ const EncryptedChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
           encryptedChatPasswords: passwords,
           encryptedAttachmentsSecretKey: aesAsString
         });
-
+        /**
+         * @function keyManagementService.replaceChatId
+         * @param oldId {string} - Temporary chat ID.
+         * @param newId {string} - Real chat ID from server.
+         * @returns {void}
+         */
         if (createdChat) {
           keyManagementService.replaceChatId(chatTemporaryId, createdChat.id);
         } else {
           console.error("Error creating chat");
         }
       } catch (error) {
+        /**
+         * @function console.error
+         * @param message {string} - Error message.
+         * @param error {Error} - Caught error.
+         * @returns {void}
+         */
         console.error("Error in handleCreateEncryptedChat:", error);
       }
     };
@@ -189,7 +262,24 @@ const EncryptedChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
     const handleChangeInputMessageValue = (event: ChangeEvent<HTMLInputElement>) => {
       setInputMessageValue(event.target.value);
     };
-
+    /**
+     * Handles sending a chat message (encrypted or plaintext, depending on chat settings).
+     *
+     * 1. Validates input and chat ID.
+     * 2. For encrypted chats:
+     *    - Retrieves the chat's public key.
+     *    - Encrypts the message.
+     *    - Sends encrypted message via sendMessage().
+     * 3. For unencrypted chats:
+     *    - Opens a modal for confirmation if needed.
+     *    - Otherwise, sends plaintext message.
+     * 4. Resets input and modal state after send.
+     *
+     * @async
+     * @returns {Promise<void>} Promise resolving after message is sent or aborted.
+     *
+     * @throws {Error} Logs error if message cannot be sent or encryption fails.
+     */
     const handleSendMessage = async (): Promise<void> => {
       if (!singleChat?.id || inputMessageValue.trim().length === 0) {
         return;
@@ -204,11 +294,31 @@ const EncryptedChatPanel = forwardRef<UserPanelHandlers, ExamplePagePanelTypes>(
         }
 
         if (singleChat.encryptionEnabled) {
+          /**
+           * @function keyManagementService.getChatKeys
+           * @param chatId {string}
+           * @returns {{ keyPair: { publicKey: string, privateKey: string } }|undefined}
+           */
           const chatKeys = keyManagementService.getChatKeys(singleChat.id);
-          if (!chatKeys) throw new Error("Chat encryption keys not found!");
-
+          if (!chatKeys) {
+            throw new Error("Chat encryption keys not found!");
+          }
+          /**
+           * @function encryptMessageWithPublicKey
+           * @param publicKey {string}
+           * @param message {string}
+           * @returns {Promise<string>} - Encrypted message body.
+           */
           messageBody = await encryptMessageWithPublicKey(chatKeys.keyPair.publicKey, messageBody);
-
+          /**
+           * @function sendMessage
+           * @param messageObj {object}
+           * @param messageObj.targetEntityType {string}
+           * @param messageObj.targetEntityId {{ chatId: string }}
+           * @param messageObj.body {string}
+           * @param messageObj.attachments {Array}
+           * @returns {Promise<void>}
+           */
           await sendMessage({
             targetEntityType: MessageTargetEntityType.CHAT,
             targetEntityId: { chatId: singleChat.id },

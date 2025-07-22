@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, {FC, memo} from "react";
 import markdownContent from "./EncryptedChat.md";
 import ResizableDocsPanel from "@/components/ui/ResizableDocsPanel";
 import {toggleDocsOpen} from "@/stores/layoutStore";
@@ -10,7 +10,7 @@ type DocsPanelProps = {
   onClickCollapseDocHeader?: () => void;
 };
 
-const DocsPanel: FC<DocsPanelProps> = (props) => {
+const DocsPanel: FC<DocsPanelProps> = memo((props) => {
   const { onClickCollapseDocHeader, docsOpen } = props;
 
   return (
@@ -20,6 +20,6 @@ const DocsPanel: FC<DocsPanelProps> = (props) => {
       content={markdownContent}
     />
   );
-};
-
+});
+DocsPanel.displayName = "DocsPanel";
 export default DocsPanel;

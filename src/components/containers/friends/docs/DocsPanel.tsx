@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, {FC, useEffect} from "react";
 import markdownContent from "./Friends.md";
 import ResizableDocsPanel from "@/components/ui/ResizableDocsPanel";
 import {toggleDocsOpen} from "@/stores/layoutStore";
@@ -12,7 +12,6 @@ type DocsPanelProps = {
 
 const DocsPanel: FC<DocsPanelProps> = (props) => {
   const { docsOpen } = props;
-
   return (
     <ResizableDocsPanel
       docsOpen={docsOpen}

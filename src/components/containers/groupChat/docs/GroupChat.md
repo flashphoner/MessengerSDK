@@ -1,5 +1,3 @@
-Use the **Group Chat** SDK to manage server connections, create group chats, and interact with contacts. This guide explains how group chats dynamically influence contact connections between users.
-
 ```mermaid
 sequenceDiagram
     participant Bob

@@ -20,11 +20,11 @@ sequenceDiagram
 ### 1. Connect
 - Click on **Connect** button invoke  **[connect](connect)**  function on the SDK.
 
-### Call
+#### Call
 [Github (Lines 86–95)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L86-L95)
 
 
-### Doc
+#### Doc
 [Github (Lines 71–84)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L71-L84)
 
 ### 2. Receive authToken from **[connect](connect)** response
@@ -47,6 +47,7 @@ sequenceDiagram
 
 [Github (Lines 19–27)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkEncryption.ts#L19-L27)
 
+### UpgradePart
 
 ### App actions:
 **Enable Salt & IV (optional)**
@@ -82,23 +83,22 @@ sequenceDiagram
 **Doc**
 [GitHub (Lines 44–45)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L44-L45)
 
-
 ### See also
 - Utils
 [GitHub (Lines 29–52)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L29-L52)
 
+- **Purpose**: Converts the generated private key into a Base64 string for storage or transmission.
+- **Usage**:
+  1. After generating a key pair via **generateKeysForUser()**, call **exportPrivateKeyToBase64(privateKey)**.
+  2. The returned Base64-encoded private key can be stored or sent to a server.
+
+
 **Call export public key**
 [GitHub (Lines 47-47)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L47-L47)
 
-- **Purpose**: Converts the generated private key into a Base64 string for storage or transmission.
-- **Usage**:
-    1. After generating a key pair via **generateKeysForUser()**, call **exportPrivateKeyToBase64(privateKey)**.
-    2. The returned Base64-encoded private key can be stored or sent to a server.
-
-> **Important**: Always protect the Base64 private key. Encrypt it (e.g., with a password) before saving or transmitting.
 
 **Doc**
-[GitHub (Lines 44–45)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L44-L45)
+[GitHub (Lines 48–51)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/encryption/useEncryption.ts#L48-L51)
 ### See also
 - Utils
 [GitHub (Lines 54–77)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L54-L77)
@@ -131,7 +131,7 @@ sequenceDiagram
     2. Call **encryptPrivateKeyWithEmbeddedIvSalt(base64PrivateKey, password, useIVAndSalt)**.
     3. Store or send this **encrypted private key**, which contains the IV and salt.
 
-### Doc
+#### Doc
 [GitHub (Lines 140–149)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/utils/encryption.ts#L140-L149)
 
 ### See also
@@ -151,14 +151,16 @@ sequenceDiagram
 [GitHub (Lines 38-47)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkEncryption.ts#L38-L47)
 
 
-### 12. Receive CONTACT_UPDATED
-- The server emits **CONTACT_UPDATED** whenever it modifies a user’s contact record (encryption data).
+### 12. Receive a [CONTACT_UPDATED](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/enums/constants.SfuEvent.html#CONTACT_UPDATED)
+
+- The server emits [CONTACT_UPDATED](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/enums/constants.SfuEvent.html#CONTACT_UPDATED) whenever it modifies a user’s contact record (encryption data).
 - The payload below shows the typical structure after Bob enables encryption:
-- When the user already has contacts, the SDK pushes **CONTACT_UPDATED** events to contacts.
-### Doc
+- When the user already has contacts, the SDK pushes [CONTACT_UPDATED](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/enums/constants.SfuEvent.html#CONTACT_UPDATED) events to contacts.
+
+#### Doc
 [GitHub (Lines 68–79)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/events/contacts.ts#L68-L79)
 
-### 13. USER_ENCRYPTION_INFO_ADDED
+### 13.Receive a  [USER_ENCRYPTION_INFO_ADDED](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/enums/constants.SfuEvent.html#USER_ENCRYPTION_INFO_ADDED)
 - the server acknowledges Bob’s encryption data is now stored.
 
 [GitHub (Lines 48-55)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkEncryption.ts#L48-L55)

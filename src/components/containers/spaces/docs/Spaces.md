@@ -1,8 +1,3 @@
-This page allows you to connect to the server,
-create or join a space, manage categories, toggle channel privacy,
-and view your contacts. It is designed so that only the appropriate buttons and forms appear,
-depending on your status (e.g., whether you're the space creator or an invited member).
-
 ```mermaid
 sequenceDiagram
     participant Bob
@@ -139,4 +134,3 @@ sequenceDiagram
 | ****[joinSpaceByInviteCode](joinSpaceByInviteCode)****   | Join an existing space using an invite code.                    |
 | ****[leaveSpace](leaveSpace)****                         | Leave the current space.                                        |
 | ****[getContacts](getContacts)****                       | Retrieve the list of current contacts.                          |
----

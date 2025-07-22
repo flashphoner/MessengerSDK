@@ -3,15 +3,15 @@ import React, {
   useState,
   useRef,
   useCallback,
-  MouseEvent as ReactMouseEvent,
+  MouseEvent as ReactMouseEvent, useEffect, memo,
 } from 'react';
 import MarkdownViewer from '@/components/ui/markDown/MarkdownViewer';
 import DocHeader from '@/components/ui/docHeader/DocHeader';
 
 /* ——— sizing config ——— */
-const MIN_W = 280;
-const MAX_W = 700;
-const DEFAULT_W = 450;
+const MIN_W = 300;
+const MAX_W = 850;
+const DEFAULT_W = 750;
 const COLLAPSED_W = 52;
 const clamp = (v: number) => Math.min(MAX_W, Math.max(MIN_W, v));
 
@@ -21,7 +21,7 @@ export type ResizableDocsPanelProps = {
   onToggle?: () => void;
 };
 
-const ResizableDocsPanel: FC<ResizableDocsPanelProps> = (props) => {
+const ResizableDocsPanel: FC<ResizableDocsPanelProps> = memo((props) => {
   const {
     docsOpen,
     content,
@@ -69,7 +69,19 @@ const ResizableDocsPanel: FC<ResizableDocsPanelProps> = (props) => {
     widthLive.current = docsOpen ? COLLAPSED_W : DEFAULT_W;
     setWidth(widthLive.current);
   };
-
+  // useEffect(() => {
+  //   const hash = sessionStorage.getItem("pending-scroll-id");
+  //
+  //   if (hash) {
+  //     setTimeout(() => {
+  //       const el = document.getElementById(hash);
+  //       if (el) {
+  //         el.scrollIntoView();
+  //         sessionStorage.removeItem("pending-scroll-id");
+  //       }
+  //     }, 0);
+  //   }
+  // }, []);
   /* ——— render ——— */
   return (
     <div
@@ -102,6 +114,6 @@ const ResizableDocsPanel: FC<ResizableDocsPanelProps> = (props) => {
       )}
     </div>
   );
-};
-
+});
+ResizableDocsPanel.displayName = "ResizableDocsPanel";
 export default ResizableDocsPanel;

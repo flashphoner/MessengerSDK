@@ -1,5 +1,3 @@
-The **One-to-One Chat** page demonstrates a practical example of using the SDK for managing server connections, creating and managing chats, and interacting with contacts. This guide explains each section and includes critical notes about the behavior of chats and contact relationships.
-
 ```mermaid
 sequenceDiagram
     participant Bob
@@ -60,7 +58,8 @@ sequenceDiagram
 - Information about user
 [Github (Lines 98-102)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkConnection.ts#L98-L102)
 
-### 8. Bob calls **[createChat](createChat)**
+### 8. Bob calls
+- **[createChat](createChat)**
 - Click **Create Chat** in the **Chat** section to establish a one-to-one chat between the connected users.
 
 **Call**

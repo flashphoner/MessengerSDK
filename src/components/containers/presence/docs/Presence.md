@@ -1,5 +1,3 @@
-Use the **Presence** SDK to manage server connections, update your status, and interact with friends.
-
 ```mermaid
 sequenceDiagram
     participant Bob
