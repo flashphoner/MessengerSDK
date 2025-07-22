@@ -92,7 +92,7 @@ sequenceDiagram
 #### 16. Bob creates an encrypted group chat
 - Select participants in the New chat card and then click on **Create**.
 - **[createChat](createChat)** - sdk method
-- [handleCreateEncryptedChat](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedGroupChat/panel/EncryptedGroupChatPanel.tsx#L95-L141) - call in a component
+- [handleCreateEncryptedChat](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedGroupChat/panel/EncryptedGroupChatPanel.tsx#L95-L141) - call in a component
 - more information about creating encrypted chat with see also block [here](/encryptedChat#5-create-encrypted-chat)
 ## 17. Bob receives created encrypted chat information
 [UserSpecificChatInfo](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/types/constants.UserSpecificChatInfo.html)
@@ -102,22 +102,22 @@ sequenceDiagram
 [UserSpecificChatInfo](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/types/constants.UserSpecificChatInfo.html)
 ## 20. Bob sends the encrypted message to chat  **[sendMessage](sendMessage)**
 #### Call
-[GitHub (Lines 179–179)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/hooks/sdk/useSdkChats.ts#L179-L179)
+[GitHub (Lines 179–179)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkChats.ts#L179-L179)
 #### Doc
-[GitHub (Lines 155–167)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/hooks/sdk/useSdkChats.ts#L155-L167)
+[GitHub (Lines 155–167)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/hooks/sdk/useSdkChats.ts#L155-L167)
 ### See also
 - get keys from service
 #### Call
-[GitHub (Lines 302–302)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L302-L302)
+[GitHub (Lines 302–302)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L302-L302)
 #### Doc
-[GitHub (Lines 297–301)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L297-L301)
+[GitHub (Lines 297–301)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L297-L301)
 #### Encrypt message with a private key
 #### Call
-[GitHub (Lines 312–312)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L312-L312)
+[GitHub (Lines 312–312)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L312-L312)
 #### Doc
-[GitHub (Lines 306–311)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L306-L311)
+[GitHub (Lines 306–311)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L306-L311)
 ### Finally, call  **[sendMessage](sendMessage)**
-[GitHub (Lines 322–327)](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L322-L327)
+[GitHub (Lines 322–327)](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/containers/encryptedChat/panel/EncryptedChatPanel.tsx#L322-L327)
 ## 21. Bob resolves the MessageStatus
 - [MessageStatus](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/types/constants.MessageStatus.html)
 ## 22. Alice receives the encrypted message
@@ -126,54 +126,54 @@ sequenceDiagram
 - [MessageStatus](https://flashphoner.com//docs/api/WCS5/client/sfu-sdk/2.0/types/constants.MessageStatus.html)
 
 ### 24. Bob decrypts message
-- decrypt message function [handleDecryptMessage()](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L41-L121)
+- decrypt message function [handleDecryptMessage()](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L41-L121)
 
 #### Call
-[GitHub (Lines 112-112](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L112-L112)
+[GitHub (Lines 112-112](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L112-L112)
 #### Doc
-[GitHub (Lines 106-111](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L106-L111)
+[GitHub (Lines 106-111](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L106-L111)
 
 ### 25. Alice decrypts message
-- decrypt message function [handleDecryptMessage()](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L41-L121)
+- decrypt message function [handleDecryptMessage()](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L41-L121)
 #### Call
-[GitHub (Lines 112-112](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L112-L112)
+[GitHub (Lines 112-112](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L112-L112)
 #### Doc
-[GitHub (Lines 106-111](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L106-L111)
+[GitHub (Lines 106-111](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L106-L111)
 ### 26. Kiri decrypts message
-- decrypt message function [handleDecryptMessage()](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L41-L121)
+- decrypt message function [handleDecryptMessage()](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L41-L121)
 #### Call
-[GitHub (Lines 112-112](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L112-L112)
+[GitHub (Lines 112-112](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L112-L112)
 #### Doc
-[GitHub (Lines 106-111](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L106-L111)
+[GitHub (Lines 106-111](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L106-L111)
 
 ### See also
 ### What inside decrypt message function
 ### Get user keys
-[GitHub (Lines 67-67](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L67-L67)
+[GitHub (Lines 67-67](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L67-L67)
 ### Doc
-[GitHub (Lines 62-66](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L62-L66)
+[GitHub (Lines 62-66](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L62-L66)
 ### Get chat keys
-[GitHub (Lines 76-76](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L76-L76)
+[GitHub (Lines 76-76](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L76-L76)
 ### Doc
-[GitHub (Lines 71-75](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L71-L75)
+[GitHub (Lines 71-75](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L71-L75)
 ### Chat password
-[GitHub (Lines 86-89](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L86-L89)
+[GitHub (Lines 86-89](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L86-L89)
 ### Doc
-[GitHub (Lines 80-85](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L80-L85)
+[GitHub (Lines 80-85](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L80-L85)
 ### Decrypt chat private key
-[GitHub (Lines 96-99](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L96-L99)
+[GitHub (Lines 96-99](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L96-L99)
 ### Doc
-[GitHub (Lines 90-95](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L90-L95)
+[GitHub (Lines 90-95](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L90-L95)
 ### Import a chat private key
-[GitHub (Lines 105-105](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L105-L105)
+[GitHub (Lines 105-105](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L105-L105)
 ### Doc
-[GitHub (Lines 100-104](https://gitlab.flashphoner.com/flashphoner-public/SFU-SDK-Extended-Samples/blob/zapp-1036/src/components/ui/messageList/MessageList.tsx#L100-L104)
+[GitHub (Lines 100-104](https://github.com/flashphoner/MessengerSDKSamples/blob/1.0/src/components/ui/messageList/MessageList.tsx#L100-L104)
 
 
 
 
 ### SDK Methods
----
+
 | **Method**                                        | **Description**                                                                                               |
 |---------------------------------------------------|---------------------------------------------------------------------------------------------------------------|
 | ****[Connect](connect)****                        | Connect to the server using user credentials and shared tokens.                                               |
